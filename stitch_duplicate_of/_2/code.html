@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0D0D0D;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+        .glass-panel {
+            background: rgba(32, 31, 31, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body text-on-surface min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-20 overflow-hidden">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-container blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-secondary-container blur-[100px] rounded-full"></div>
+</div>
+<nav class="fixed top-0 right-0 p-8 flex items-center gap-4 z-50">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-lg cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="language">language</span>
+<span class="text-xs font-label uppercase tracking-widest">简体中文</span>
+<span class="material-symbols-outlined text-xs" data-icon="expand_more">expand_more</span>
+</div>
+</nav>
+<main class="w-full max-w-md px-6 z-10">
+<div class="flex flex-col items-center mb-10">
+<div class="mb-4 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-2xl" data-icon="deployed_code" style="font-variation-settings: 'FILL' 1;">deployed_code</span>
+</div>
+<h1 class="text-2xl font-black tracking-tighter text-white">AutoOps Platform</h1>
+</div>
+<p class="text-on-surface-variant text-sm font-label tracking-wide uppercase">企业级自动化运维控制台</p>
+</div>
+<div class="glass-panel p-8 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-outline-variant/10">
+<h2 class="text-xl font-bold text-white mb-8 border-l-4 border-primary-container pl-4">账户登录</h2>
+<form class="space-y-6">
+<div>
+<label class="block text-xs font-label text-on-surface-variant mb-2 tracking-widest uppercase">用户名</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg" data-icon="person">person</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg py-3 pl-11 pr-4 text-sm text-white placeholder:text-outline focus:ring-1 focus:ring-primary-container transition-all" placeholder="请输入用户名" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-xs font-label text-on-surface-variant mb-2 tracking-widest uppercase">密码</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg" data-icon="lock">lock</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg py-3 pl-11 pr-4 text-sm text-white placeholder:text-outline focus:ring-1 focus:ring-primary-container transition-all" placeholder="请输入密码" type="password"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline text-lg cursor-pointer hover:text-white" data-icon="visibility">visibility</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 rounded bg-surface-container-lowest border-outline-variant text-primary-container focus:ring-offset-surface focus:ring-primary-container" type="checkbox"/>
+<span class="text-xs text-on-surface-variant group-hover:text-white transition-colors">记住我</span>
+</label>
+<a class="text-xs text-primary hover:underline font-medium" href="#">忘记密码？</a>
+</div>
+<button class="w-full py-3.5 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-lg text-sm tracking-widest uppercase hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_15px_rgba(15,98,254,0.3)]" type="submit">
+                    登录系统
+                </button>
+</form>
+<div class="mt-8 pt-6 border-t border-outline-variant/10 flex flex-col items-center gap-4">
+<span class="text-[10px] font-label text-on-surface-variant uppercase tracking-widest">其他登录方式</span>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="fingerprint">fingerprint</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="qr_code_scanner">qr_code_scanner</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-12 flex flex-col items-center gap-2 opacity-40">
+<p class="text-[10px] font-mono tracking-tighter">SECURE CONNECTION: AES-256 BIT ENCRYPTION</p>
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+<span class="text-[10px] font-mono">NODE STATUS: OPTIMAL</span>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-6 w-full text-center">
+<p class="text-[10px] text-on-surface-variant font-label tracking-[0.2em] uppercase">© 2024 AUTOOPS PLATFORM V2.4.0-STABLE. 保留所有权利。</p>
+</footer>
+</body></html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #131313; color: #e5e2e1; }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- Background: Host List Page -->
+<div class="flex h-screen w-full bg-background blur-[2px]">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1C1B1B] flex flex-col py-6 font-['Inter'] text-sm tracking-tight z-10">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg">settings_input_component</span>
+</div>
+<div>
+<div class="text-xl font-black text-white tracking-tighter">AutoOps</div>
+<div class="text-[10px] text-[#C3C6D8] opacity-50 uppercase tracking-widest">V2.4.0-Stable</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<div class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A] rounded-l-lg">
+<span class="material-symbols-outlined text-xl" style="color:#0F62FE">inventory_2</span>
+<span>Assets</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-xl">account_tree</span>
+<span>Workflows</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-xl">analytics</span>
+<span>Monitors</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-xl">terminal</span>
+<span>Log Center</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer rounded-lg">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span>Settings</span>
+</div>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-2.5 bg-primary-container text-white font-bold rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+                    Deploy New Node
+                </button>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-20 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-8">
+<div class="flex items-center gap-8">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] border-b border-[#0F62FE] text-[#0F62FE] pb-1 cursor-pointer">Cluster Status</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity cursor-pointer">Active Nodes</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity cursor-pointer">Traffic Matrix</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined text-[#C3C6D8] text-xl cursor-pointer">search</span>
+</div>
+<div class="flex items-center gap-4 text-[#C3C6D8]">
+<span class="material-symbols-outlined cursor-pointer hover:text-white">language</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-white">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-white">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-14 w-full h-full bg-surface">
+<div class="p-8">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h1 class="text-3xl font-bold text-white tracking-tight">Host Management</h1>
+<p class="text-on-surface-variant text-sm mt-1">Manage infrastructure nodes and orchestration layers.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-container-high text-white text-sm font-medium rounded-lg">Export CSV</button>
+<button class="px-4 py-2 bg-primary-container text-white text-sm font-bold rounded-lg">+ Add Host</button>
+</div>
+</div>
+<!-- Table Content -->
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-highest">
+<tr>
+<th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Host Name</th>
+<th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">IP Address</th>
+<th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Status</th>
+<th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">CPU Usage</th>
+<th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Uptime</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/15">
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 text-sm font-medium">production-cluster-01</td>
+<td class="px-6 py-4 font-mono text-xs text-primary">192.168.1.105</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-primary-container/20 text-on-primary-container text-[10px] font-bold rounded uppercase">Healthy</span>
+</td>
+<td class="px-6 py-4 text-sm">24%</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">142 Days</td>
+</tr>
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 text-sm font-medium">database-node-primary</td>
+<td class="px-6 py-4 font-mono text-xs text-primary">10.0.4.22</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-primary-container/20 text-on-primary-container text-[10px] font-bold rounded uppercase">Healthy</span>
+</td>
+<td class="px-6 py-4 text-sm">68%</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">12 Days</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+<!-- Overlay & Modal -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-background/80 backdrop-blur-sm"></div>
+<!-- Modal Window -->
+<div class="relative w-full max-w-2xl bg-[#131313] rounded-xl shadow-2xl overflow-hidden border border-outline-variant/10">
+<!-- Modal Header -->
+<div class="px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center">
+<h2 class="text-xl font-bold text-white tracking-tight">添加主机资产</h2>
+<button class="text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Tabs -->
+<div class="flex px-8 border-b border-outline-variant/10">
+<button class="py-4 px-6 text-sm font-bold text-[#C3C6D8] border-b-2 border-transparent hover:text-white transition-all">
+                    单个添加
+                </button>
+<button class="py-4 px-6 text-sm font-bold text-[#0F62FE] border-b-2 border-[#0F62FE] bg-primary-container/5">
+                    批量导入
+                </button>
+</div>
+<!-- Modal Content -->
+<div class="p-8">
+<!-- Batch Import View -->
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<p class="text-sm text-on-surface-variant">请上传包含主机信息的 Excel 或 CSV 文件进行批量处理。</p>
+<a class="text-xs text-[#0F62FE] font-bold hover:underline flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-sm">download</span>
+                            下载导入模板
+                        </a>
+</div>
+<!-- Drag and Drop Zone -->
+<div class="group relative border-2 border-dashed border-outline-variant/30 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer h-64 flex flex-col items-center justify-center gap-4">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-[#0F62FE] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">upload_file</span>
+</div>
+<div class="text-center">
+<p class="text-white font-bold">点击或拖拽文件到此区域</p>
+<p class="text-xs text-on-surface-variant mt-2">支持 .xlsx, .xls, .csv 格式 (最大 20MB)</p>
+</div>
+</div>
+<!-- Import Instructions (Bento Style) -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm">info</span>
+<span class="text-xs font-bold text-white">数据验证</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">上传后系统将自动进行数据格式校验，检测 IP 重复或非法字符。</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm">security</span>
+<span class="text-xs font-bold text-white">安全审计</span>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">所有导入操作均会被记录至系统日志中，以便后续追溯。</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 py-6 bg-surface-container-low flex justify-end gap-4">
+<button class="px-6 py-2.5 text-sm font-bold text-[#C3C6D8] hover:text-white transition-colors">
+                    取消
+                </button>
+<button class="px-8 py-2.5 bg-[#0F62FE] text-white text-sm font-bold rounded-lg shadow-[0_0_20px_rgba(15,98,254,0.3)] active:scale-95 transition-all">
+                    确认添加
+                </button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #131313; color: #e5e2e1; font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="flex overflow-hidden">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1C1B1B] flex flex-col py-6 z-50">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div>
+<h1 class="text-xl font-black text-white tracking-tighter leading-none">AutoOps</h1>
+<p class="text-[10px] text-outline uppercase tracking-widest mt-1 opacity-60">V2.4.0-Stable</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="inventory_2">inventory_2</span>
+                Assets
+            </a>
+<a class="flex items-center px-6 py-3 text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A] font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="account_tree">account_tree</span>
+                Workflows
+            </a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="analytics">analytics</span>
+                Monitors
+            </a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="terminal">terminal</span>
+                Log Center
+            </a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-6 pt-6">
+<button class="w-full py-3 bg-primary-container text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:brightness-110 active:scale-95 transition-all">
+                Deploy New Node
+            </button>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-8 shadow-[0_4px_30px_rgba(229,226,225,0.05)]">
+<div class="flex items-center gap-6">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">Cluster Status</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">Active Nodes</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#0F62FE] border-b border-[#0F62FE] pb-1 cursor-pointer">Traffic Matrix</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<input class="bg-surface-container border-none text-xs rounded-full py-1.5 pl-8 pr-4 w-64 focus:ring-1 focus:ring-primary-container text-on-surface" placeholder="搜索资源或命令..." type="text"/>
+<span class="material-symbols-outlined absolute left-2.5 top-1.5 text-sm text-outline" data-icon="search">search</span>
+</div>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-white transition-all" data-icon="language">language</span>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-white transition-all" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="portrait of a software engineer in dark tech clothing with focused expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASoZUgfAXjP2R6gBMftomw_8I5YwL0Zd0bRvJeEAgVQpI53gsC4A1Oc-H8WgiJQpFH0SWbqGNcZgA4PzMo9kpvYBQoSxwQ99Y152QtGk58ZadY9qv-TAStGHur10Ai3j3UHpWcPrcC_HnYeX6ZREeX2x6I5PTr8VqCplpeBLrDspUah1qcVHsy3hhrnR5Q4aStrmsAU_2wBtETE8NotXegT30ki4gWzUO7uzH6ix8vHof9kzyZVDy0py5o8A-B2qkft1RVv3j9b2uE"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-14 flex-1 h-[calc(100vh-3.5rem)] overflow-y-auto bg-surface p-8 no-scrollbar">
+<!-- Header Section -->
+<div class="mb-10 flex justify-between items-end">
+<div>
+<nav class="flex items-center gap-2 text-[10px] uppercase tracking-widest text-outline mb-2">
+<span>自动化工作流</span>
+<span class="material-symbols-outlined text-[12px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary">执行任务配置</span>
+</nav>
+<h2 class="text-4xl font-extrabold tracking-tighter text-white">执行任务配置</h2>
+<p class="text-on-surface-variant text-sm mt-2 max-w-2xl opacity-80">配置并启动自动化运维任务。请确保目标主机已通过安全校验。本次执行将记录在操作审计日志中。</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 bg-surface-container border border-outline-variant/20 text-on-surface text-sm font-medium rounded-lg hover:bg-surface-container-high transition-all">保存草稿</button>
+<button class="px-8 py-2.5 bg-gradient-to-r from-[#B4C5FF] to-[#0F62FE] text-on-primary-container text-sm font-bold rounded-lg shadow-lg hover:shadow-primary-container/20 active:scale-95 transition-all">
+                    开始执行
+                </button>
+</div>
+</div>
+<!-- Form Layout - Bento Grid Style -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Step 1: Select Target Hosts -->
+<section class="col-span-12 lg:col-span-8 bg-surface-container rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-all"></div>
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-high rounded flex items-center justify-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary" data-icon="dns">dns</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white">1. 选择目标主机</h3>
+<p class="text-xs text-on-surface-variant">指定执行脚本或命令的受控节点</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="text-[10px] font-bold px-3 py-1 bg-primary-container/10 text-primary border border-primary/20 rounded uppercase">按组选择</button>
+<button class="text-[10px] font-bold px-3 py-1 bg-surface-container-highest text-on-surface-variant border border-outline-variant/10 rounded uppercase">手动输入</button>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="col-span-1 space-y-3">
+<label class="text-[10px] uppercase font-bold text-outline-variant tracking-wider">业务分组</label>
+<div class="space-y-1">
+<div class="flex items-center justify-between px-3 py-2 bg-surface-container-high rounded border border-primary/40 cursor-pointer">
+<span class="text-xs text-white">生产环境 (PROD)</span>
+<span class="text-[10px] bg-primary-container text-white px-1.5 py-0.5 rounded">12</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 hover:bg-surface-container-high rounded cursor-pointer transition-colors">
+<span class="text-xs text-on-surface-variant">测试环境 (UAT)</span>
+<span class="text-[10px] bg-surface-container-highest text-outline px-1.5 py-0.5 rounded">05</span>
+</div>
+<div class="flex items-center justify-between px-3 py-2 hover:bg-surface-container-high rounded cursor-pointer transition-colors">
+<span class="text-xs text-on-surface-variant">预发布 (Staging)</span>
+<span class="text-[10px] bg-surface-container-highest text-outline px-1.5 py-0.5 rounded">08</span>
+</div>
+</div>
+</div>
+<div class="col-span-2">
+<label class="text-[10px] uppercase font-bold text-outline-variant tracking-wider mb-3 block">主机列表</label>
+<div class="border border-outline-variant/15 rounded bg-surface-container-lowest h-48 overflow-y-auto no-scrollbar">
+<table class="w-full text-left">
+<thead class="sticky top-0 bg-surface-container-highest">
+<tr class="text-[10px] text-outline uppercase">
+<th class="px-4 py-2 font-bold"><input class="rounded-sm bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/></th>
+<th class="px-4 py-2 font-bold">主机名</th>
+<th class="px-4 py-2 font-bold">IP 地址</th>
+<th class="px-4 py-2 font-bold">状态</th>
+</tr>
+</thead>
+<tbody class="text-xs font-mono">
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container-high transition-colors">
+<td class="px-4 py-2"><input checked="" class="rounded-sm bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-4 py-2 text-primary-fixed-dim">node-prod-01</td>
+<td class="px-4 py-2 text-on-surface-variant">192.168.1.101</td>
+<td class="px-4 py-2"><span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>运行中</span></td>
+</tr>
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container-high transition-colors">
+<td class="px-4 py-2"><input checked="" class="rounded-sm bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-4 py-2 text-primary-fixed-dim">node-prod-02</td>
+<td class="px-4 py-2 text-on-surface-variant">192.168.1.102</td>
+<td class="px-4 py-2"><span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>运行中</span></td>
+</tr>
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container-high transition-colors">
+<td class="px-4 py-2"><input class="rounded-sm bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-4 py-2 text-primary-fixed-dim">node-prod-03</td>
+<td class="px-4 py-2 text-on-surface-variant">192.168.1.103</td>
+<td class="px-4 py-2"><span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-error-container"></span>离线</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 3: Execution Mode -->
+<section class="col-span-12 lg:col-span-4 bg-surface-container rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary/20 group-hover:bg-secondary transition-all"></div>
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-surface-container-high rounded flex items-center justify-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary" data-icon="alt_route">alt_route</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white">3. 执行模式</h3>
+<p class="text-xs text-on-surface-variant">定义任务下发策略</p>
+</div>
+</div>
+<div class="space-y-3">
+<div class="p-4 bg-surface-container-high rounded-lg border border-primary/30 cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-sm font-bold text-white">并发执行 (Concurrent)</span>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">同时向所有目标主机下发任务。适用于无依赖的大规模快速部署。</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-lg border border-outline-variant/10 hover:border-outline-variant/30 cursor-pointer transition-all">
+<div class="flex items-center justify-between mb-1">
+<span class="text-sm font-medium text-on-surface-variant">串行执行 (Serial)</span>
+</div>
+<p class="text-[10px] text-outline leading-relaxed opacity-60">逐台执行，失败即停。适用于对稳定性要求极高的核心组件升级。</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-lg border border-outline-variant/10 hover:border-outline-variant/30 cursor-pointer transition-all">
+<div class="flex items-center justify-between mb-1">
+<span class="text-sm font-medium text-on-surface-variant">分批执行 (Batch)</span>
+</div>
+<p class="text-[10px] text-outline leading-relaxed opacity-60">按百分比或固定数量分批执行。支持灰度发布与观察期设置。</p>
+</div>
+</div>
+</section>
+<!-- Step 2: Parameters Configuration -->
+<section class="col-span-12 lg:col-span-8 bg-surface-container rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-tertiary/20 group-hover:bg-tertiary transition-all"></div>
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-high rounded flex items-center justify-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-tertiary" data-icon="tune">tune</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white">2. 参数配置</h3>
+<p class="text-xs text-on-surface-variant">动态注入执行脚本的环境变量</p>
+</div>
+</div>
+<button class="flex items-center gap-2 text-xs font-bold text-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span> 新增参数
+                    </button>
+</div>
+<div class="space-y-4">
+<div class="grid grid-cols-12 gap-4 items-end">
+<div class="col-span-4">
+<label class="text-[10px] uppercase font-bold text-outline-variant tracking-wider mb-1 block">Key (变量名)</label>
+<input class="w-full bg-surface-container-lowest border-none font-mono text-xs rounded py-2 px-3 focus:ring-1 focus:ring-primary-container text-primary-fixed-dim" type="text" value="DEPLOY_ENV"/>
+</div>
+<div class="col-span-6">
+<label class="text-[10px] uppercase font-bold text-outline-variant tracking-wider mb-1 block">Value (参数值)</label>
+<input class="w-full bg-surface-container-lowest border-none font-mono text-xs rounded py-2 px-3 focus:ring-1 focus:ring-primary-container text-on-surface" type="text" value="production_stable_v2"/>
+</div>
+<div class="col-span-2 flex justify-end pb-1">
+<button class="w-8 h-8 flex items-center justify-center text-outline-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-4 items-end">
+<div class="col-span-4">
+<input class="w-full bg-surface-container-lowest border-none font-mono text-xs rounded py-2 px-3 focus:ring-1 focus:ring-primary-container text-primary-fixed-dim" type="text" value="LOG_LEVEL"/>
+</div>
+<div class="col-span-6">
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-none font-mono text-xs rounded py-2 px-3 focus:ring-1 focus:ring-primary-container text-on-surface appearance-none">
+<option>INFO</option>
+<option>DEBUG</option>
+<option>ERROR</option>
+<option>WARN</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2 text-sm pointer-events-none text-outline" data-icon="unfold_more">unfold_more</span>
+</div>
+</div>
+<div class="col-span-2 flex justify-end pb-1">
+<button class="w-8 h-8 flex items-center justify-center text-outline-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded border border-dashed border-outline-variant/30 flex items-center justify-center cursor-pointer hover:border-primary/50 transition-all">
+<span class="text-[10px] uppercase font-bold text-outline-variant tracking-widest">点击此处或拖拽 .env 文件快速导入</span>
+</div>
+</div>
+</section>
+<!-- Step 4: Advanced Settings -->
+<section class="col-span-12 lg:col-span-4 bg-surface-container rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-outline-variant/20 group-hover:bg-outline transition-all"></div>
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-surface-container-high rounded flex items-center justify-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings_suggest">settings_suggest</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white">4. 高级设置</h3>
+<p class="text-xs text-on-surface-variant">精细化控制执行环境</p>
+</div>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<span class="text-sm font-medium text-white block">超时间隔 (Timeout)</span>
+<span class="text-[10px] text-outline">单台主机执行最长时间 (秒)</span>
+</div>
+<div class="w-24">
+<input class="w-full bg-surface-container-lowest border-none font-mono text-xs rounded py-1.5 px-3 focus:ring-1 focus:ring-primary-container text-right" type="number" value="300"/>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<span class="text-sm font-medium text-white block">特权执行 (Sudo)</span>
+<span class="text-[10px] text-outline">以 root 用户身份运行脚本</span>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<span class="text-sm font-medium text-white block">失败容忍 (Tolerance)</span>
+<span class="text-[10px] text-outline">允许失败的最大节点比例</span>
+</div>
+<div class="w-24">
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none font-mono text-xs rounded py-1.5 px-3 focus:ring-1 focus:ring-primary-container text-right" type="text" value="10%"/>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/10">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="security">security</span>
+<span class="text-[10px] font-bold text-white uppercase tracking-wider">执行摘要</span>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded text-[10px] font-mono text-outline leading-relaxed">
+                            Target: 12 Hosts<br/>
+                            Mode: CONCURRENT<br/>
+                            Sudo: ENABLED<br/>
+                            Auth: SSH_KEY_AUTO
+                        </div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer / Action Area for Mobile or Bottom Float -->
+<div class="mt-10 p-6 bg-surface-container-high rounded-xl border border-primary/10 flex items-center justify-between backdrop-blur-md">
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-surface-container-high overflow-hidden"><img class="w-full h-full object-cover" data-alt="avatar of team member monitoring infrastructure" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyrUffM7ULRfWlLinoCw7PQy_xdHwivyoIHItIyc50dQXIo1ZwegeAOSB43s_nzV8Vg71eWI2SW1xTvDw1D9Xc91XXERO9Me_AN1glUBCeyMB8LAFU6lir548kmp-vWr5_hjb7YWnEJEKLj1yKACplDBYP6UpFqLDCI_MslMk854LZlzidEiqOsnTW5jlL2hD8uZ9ci_avvmfuZ8GQza2DDswe3fgm2Rao_RVq-Jr48jgLj966a2KVe9DquJq0X7Mrhk3HfTolnRGa"/></div>
+<div class="w-8 h-8 rounded-full border-2 border-surface-container-high overflow-hidden"><img class="w-full h-full object-cover" data-alt="avatar of infrastructure lead architect" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPnM5mYHbYePnYFCtU4t546BZEpbHiK4Qenr7LCHAoERboUan9_xbr7c0DentW8ns5cXCSV2wQlhRVFFGOxe4dCOMyVjg8aUkPsNHqrY_2fAjzP-SejNMUexrjt3DYKVzy0ljYRZ_01r_Oih0cGZT5EQuu4iUulxhmuhRcHf55VD6GEtFoRz8CYEBjnutKsmDcGTLXhTvXxyaqNjD7j0ke0vijRpwcPWRCgABxWh0otcQnTE3ajUOeoAUzC44Izf_tdFyZoo4ICARm"/></div>
+<div class="w-8 h-8 rounded-full border-2 border-surface-container-high bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-outline">+3</div>
+</div>
+<p class="text-xs text-on-surface-variant">该配置将同步通知至 <span class="text-white font-medium">#ops-alert-channel</span> 频道</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase tracking-widest">预估执行时长</p>
+<p class="text-lg font-bold text-white">~ 4m 30s</p>
+</div>
+<button class="px-10 py-3 bg-primary-container text-white text-sm font-black uppercase tracking-widest rounded-lg shadow-[0_10px_20px_rgba(15,98,254,0.3)] hover:translate-y-[-2px] active:translate-y-[0px] active:scale-95 transition-all">
+                    确认并开始执行
+                 </button>
+</div>
+</div>
+</main>
+</body></html>

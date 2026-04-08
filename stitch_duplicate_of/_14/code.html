@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AutoOps - 审计日志</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#dbe1ff",
+                    "inverse-surface": "#e5e2e1",
+                    "tertiary": "#ffb59d",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed-variant": "#832700",
+                    "surface-container-high": "#2a2a2a",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary-fixed": "#390c00",
+                    "secondary-container": "#2d458a",
+                    "on-surface": "#e5e2e1",
+                    "surface-bright": "#393939",
+                    "on-surface-variant": "#c3c6d8",
+                    "on-secondary": "#0e2b6f",
+                    "surface-variant": "#353534",
+                    "inverse-primary": "#0052dd",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-tertiary": "#5d1900",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-container": "#201f1f",
+                    "error": "#ffb4ab",
+                    "primary-container": "#0f62fe",
+                    "outline-variant": "#424656",
+                    "surface-container-low": "#1c1b1b",
+                    "surface-container-highest": "#353534",
+                    "secondary": "#b4c5ff",
+                    "primary": "#b4c5ff",
+                    "on-primary-container": "#f3f3ff",
+                    "on-secondary-container": "#a0b6ff",
+                    "on-tertiary-container": "#fff1ed",
+                    "on-error-container": "#ffdad6",
+                    "surface-tint": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#2a4387",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed": "#00174c",
+                    "outline": "#8c90a2",
+                    "tertiary-container": "#c84000",
+                    "background": "#131313",
+                    "inverse-on-surface": "#313030",
+                    "on-primary-fixed-variant": "#003da9",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "on-primary": "#002979",
+                    "on-background": "#e5e2e1",
+                    "on-primary-fixed": "#00174c",
+                    "surface-dim": "#131313",
+                    "surface": "#131313"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"],
+                    "mono": ["JetBrains Mono", "monospace"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #131313;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #424656;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+<!-- SideNavBar Component -->
+<aside class="bg-[#1C1B1B] h-screen w-64 fixed left-0 top-0 flex flex-col h-full py-6 font-['Inter'] text-sm tracking-tight z-50">
+<div class="px-6 mb-8 flex items-center space-x-3">
+<div class="w-8 h-8 bg-gradient-to-br from-[#b4c5ff] to-[#0f62fe] rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-xl" style="font-variation-settings: 'FILL' 1;">deployed_code</span>
+</div>
+<div>
+<div class="text-xl font-black text-white tracking-tighter">AutoOps</div>
+<div class="text-[10px] uppercase tracking-widest text-[#C3C6D8] opacity-50">V2.4.0-Stable</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center px-4 py-3 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-all group active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center px-4 py-3 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-all group active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">inventory_2</span>
+                Assets
+            </a>
+<a class="flex items-center px-4 py-3 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-all group active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">account_tree</span>
+                Workflows
+            </a>
+<a class="flex items-center px-4 py-3 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-all group active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+                Monitors
+            </a>
+<a class="flex items-center px-4 py-3 rounded-lg text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A] transition-all group active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">terminal</span>
+                Log Center
+            </a>
+<a class="flex items-center px-4 py-3 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-all group active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold py-3 rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-primary-container/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+<span>Deploy New Node</span>
+</button>
+</div>
+</aside>
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-8">
+<div class="flex items-center space-x-6">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8]">Orchestrated Monolith</span>
+<div class="flex space-x-4">
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity" href="#">Cluster Status</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity" href="#">Active Nodes</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#0F62FE] border-b border-[#0F62FE] pb-1" href="#">Traffic Matrix</a>
+</div>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative group">
+<input class="bg-surface-container-low border-none rounded-full px-4 py-1.5 text-xs text-on-surface-variant focus:ring-1 focus:ring-primary w-48 transition-all" placeholder="搜索审计记录..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1.5 text-sm text-[#C3C6D8]">search</span>
+</div>
+<div class="flex items-center space-x-4 text-[#C3C6D8]">
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-all active:scale-95">language</span>
+<div class="relative">
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-all active:scale-95">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<div class="flex items-center space-x-2 cursor-pointer active:scale-95 transition-all">
+<span class="material-symbols-outlined text-2xl">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-14 min-h-screen bg-surface p-8">
+<!-- Dashboard Header -->
+<div class="mb-8">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="text-display-sm text-[2.25rem] font-black tracking-tight text-white mb-1">审计日志 (Audit Log)</h1>
+<p class="text-on-surface-variant text-sm font-medium">全系统操作追踪与合规性监控</p>
+</div>
+<div class="flex space-x-3">
+<button class="flex items-center space-x-2 px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest rounded-lg transition-colors text-sm font-semibold border border-outline-variant/10">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+<span>高级筛选</span>
+</button>
+<button class="flex items-center space-x-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold text-sm shadow-xl shadow-primary/10 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg">file_download</span>
+<span>导出审计报告</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between border-l-4 border-primary">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary">security</span>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant">日志级别 (Log Level)</p>
+<select class="bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 cursor-pointer">
+<option value="all">全部级别 (All Levels)</option>
+<option value="normal">正常 (Normal)</option>
+<option value="warning">警告 (Warning)</option>
+<option value="critical">严重 (Critical)</option>
+</select>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[#C3C6D8]">person</span>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant">操作人 (User)</p>
+<p class="text-sm font-bold text-white">所有管理员</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">expand_more</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[#C3C6D8]">calendar_today</span>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant">时间范围 (Time Range)</p>
+<p class="text-sm font-bold text-white">最近 24 小时</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">expand_more</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[#C3C6D8]">history</span>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant">实时追踪 (Status)</p>
+<p class="text-sm font-bold text-primary flex items-center">
+<span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse mr-2"></span>
+                            正在监控
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Audit Table -->
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-2xl shadow-black/20">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest">
+<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">时间戳 (Timestamp)</th>
+<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">用户 (User)</th>
+<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">操作类型 (Action Type)</th>
+<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">目标 IP (Target IP)</th>
+<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">日志级别</th>
+<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">结果 (Result)</th>
+<th class="px-6 py-4 text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">详情</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1: High Risk -->
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-primary">2023-11-24 14:20:05.122</td>
+<td class="px-6 py-4 text-sm font-semibold text-white">admin_root</td>
+<td class="px-6 py-4">
+<span class="bg-error-container text-on-error-container px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border border-on-error/20">
+                                    SUDO DELETE CLUSTER
+                                </span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">10.0.4.152</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-error text-xs font-bold">
+<span class="material-symbols-outlined text-sm mr-1">report</span> Critical
+                                </span>
+</td>
+<td class="px-6 py-4">
+<span class="text-primary text-xs font-bold bg-primary-container/10 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-white">visibility</span>
+</td>
+</tr>
+<!-- Row 2: Normal -->
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-primary">2023-11-24 14:18:22.901</td>
+<td class="px-6 py-4 text-sm font-semibold text-white">dev_ops_01</td>
+<td class="px-6 py-4">
+<span class="text-on-surface font-bold text-[11px]">UPDATE_CONFIG</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">192.168.1.44</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-on-surface-variant text-xs font-medium">
+<span class="material-symbols-outlined text-sm mr-1">info</span> Normal
+                                </span>
+</td>
+<td class="px-6 py-4">
+<span class="text-primary text-xs font-bold bg-primary-container/10 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-white">visibility</span>
+</td>
+</tr>
+<!-- Row 3: Warning -->
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-primary">2023-11-24 14:15:10.005</td>
+<td class="px-6 py-4 text-sm font-semibold text-white">system_auth</td>
+<td class="px-6 py-4">
+<span class="bg-tertiary-container/20 text-tertiary px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter">
+                                    FAILED LOGIN ATTEMPT
+                                </span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">45.22.12.89</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-tertiary text-xs font-bold">
+<span class="material-symbols-outlined text-sm mr-1">warning</span> Warning
+                                </span>
+</td>
+<td class="px-6 py-4">
+<span class="text-error text-xs font-bold bg-error-container/10 px-2 py-0.5 rounded">BLOCKED</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-white">visibility</span>
+</td>
+</tr>
+<!-- Row 4: High Risk -->
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-primary">2023-11-24 14:12:44.331</td>
+<td class="px-6 py-4 text-sm font-semibold text-white">admin_root</td>
+<td class="px-6 py-4">
+<span class="bg-error-container text-on-error-container px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border border-on-error/20">
+                                    FORCE REBOOT NODE
+                                </span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">10.0.2.11</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-error text-xs font-bold">
+<span class="material-symbols-outlined text-sm mr-1">report</span> Critical
+                                </span>
+</td>
+<td class="px-6 py-4">
+<span class="text-primary text-xs font-bold bg-primary-container/10 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-white">visibility</span>
+</td>
+</tr>
+<!-- Row 5: Normal -->
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-primary">2023-11-24 14:10:01.882</td>
+<td class="px-6 py-4 text-sm font-semibold text-white">read_only_user</td>
+<td class="px-6 py-4">
+<span class="text-on-surface font-bold text-[11px]">EXPORT_VIEW</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">192.168.1.102</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-on-surface-variant text-xs font-medium">
+<span class="material-symbols-outlined text-sm mr-1">info</span> Normal
+                                </span>
+</td>
+<td class="px-6 py-4">
+<span class="text-primary text-xs font-bold bg-primary-container/10 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-white">visibility</span>
+</td>
+</tr>
+<!-- Row 6: Normal -->
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-primary">2023-11-24 14:05:55.210</td>
+<td class="px-6 py-4 text-sm font-semibold text-white">dev_ops_01</td>
+<td class="px-6 py-4">
+<span class="text-on-surface font-bold text-[11px]">SCALING_OUT</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">10.0.5.201</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-on-surface-variant text-xs font-medium">
+<span class="material-symbols-outlined text-sm mr-1">info</span> Normal
+                                </span>
+</td>
+<td class="px-6 py-4">
+<span class="text-primary text-xs font-bold bg-primary-container/10 px-2 py-0.5 rounded">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-white">visibility</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-surface-container-low flex items-center justify-between">
+<div class="text-xs text-on-surface-variant">
+                    显示 <span class="text-white font-bold">1 - 20</span> 共 <span class="text-white font-bold">1,248</span> 条日志
+                </div>
+<div class="flex space-x-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-high text-on-surface-variant active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary-container text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-high text-on-surface-variant text-xs hover:bg-surface-container-highest transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-high text-on-surface-variant text-xs hover:bg-surface-container-highest transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-high text-on-surface-variant active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- System Integrity Section (Asymmetric Detail Card) -->
+<div class="mt-8 flex gap-6">
+<div class="flex-1 bg-surface-container-low p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+<h3 class="text-on-surface-variant uppercase text-[10px] tracking-widest font-bold mb-4">实时完整性监控 (Integrity)</h3>
+<div class="flex items-end space-x-8">
+<div>
+<p class="text-3xl font-black text-white">99.98%</p>
+<p class="text-xs text-primary font-bold mt-1">系统日志签名验证通过</p>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex justify-between text-[10px] uppercase font-bold text-on-surface-variant">
+<span>Hash Validation</span>
+<span>Secure</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[98%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-80 bg-surface-container-lowest p-6 rounded-2xl border-l-2 border-tertiary">
+<h3 class="text-on-surface-variant uppercase text-[10px] tracking-widest font-bold mb-4">今日风险摘要</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-xs text-white">高危操作 (Critical)</span>
+<span class="text-xs font-mono text-error font-bold">12</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-white">权限变更 (Perms)</span>
+<span class="text-xs font-mono text-tertiary font-bold">04</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-white">异常登录 (Anomaly)</span>
+<span class="text-xs font-mono text-on-surface-variant font-bold">0</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Hidden here per instructions for focused Details/Audit pages, but ready if logic dictated home) -->
+<!-- Modal Overlay (Glassmorphism Template) -->
+<div class="fixed inset-0 z-[100] items-center justify-center bg-background/60 backdrop-blur-md hidden" id="log-detail-modal">
+<div class="bg-surface-container w-full max-w-2xl rounded-2xl shadow-2xl border border-outline-variant/10 overflow-hidden">
+<div class="bg-surface-container-highest px-6 py-4 flex justify-between items-center">
+<h4 class="font-bold text-white">日志详情数据 (JSON View)</h4>
+<button class="text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6">
+<pre class="bg-surface-container-lowest p-4 rounded-lg font-mono text-xs text-primary leading-relaxed overflow-x-auto">{
+  "timestamp": "2023-11-24T14:20:05.122Z",
+  "actor": "admin_root",
+  "action": "CLUSTER_DELETION",
+  "target": "prod-cluster-01",
+  "ip_address": "10.0.4.152",
+  "user_agent": "Mozilla/5.0 (AutoOps-Cli-V2)",
+  "status": "SUCCESS",
+  "meta": {
+    "nodes_affected": 24,
+    "auth_method": "MFA_HARDWARE_KEY"
+  }
+}</pre>
+</div>
+<div class="px-6 py-4 flex justify-end space-x-3 bg-surface-container-low">
+<button class="px-4 py-2 text-xs font-bold text-on-surface-variant">复制到剪贴板</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container text-xs font-bold rounded-lg">下载原始日志</button>
+</div>
+</div>
+</div>
+</body></html>

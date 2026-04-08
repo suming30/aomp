@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { background-color: #131313; color: #e5e2e1; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #424656; border-radius: 3px; }
+    </style>
+</head>
+<body class="font-body selection:bg-primary/30">
+<!-- SideNavBar -->
+<aside class="bg-[#1C1B1B] h-screen w-64 fixed left-0 top-0 flex flex-col h-full py-6 font-['Inter'] text-sm tracking-tight z-[60]">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-gradient-to-br from-primary to-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-lg" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div>
+<div class="text-xl font-black text-white tracking-tighter">AutoOps</div>
+<div class="text-[10px] text-on-surface-variant/50 uppercase tracking-widest">V2.4.0-Stable</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center gap-4 px-4 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform">inventory_2</span>
+                Assets
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform">account_tree</span>
+                Workflows
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A]/50 group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform">analytics</span>
+                Monitors
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform">terminal</span>
+                Log Center
+            </a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold rounded-lg text-xs uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">
+                Deploy New Node
+            </button>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-8">
+<div class="flex items-center gap-8">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">Cluster Status</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">Active Nodes</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#0F62FE] border-b border-[#0F62FE] pb-1 cursor-pointer">Traffic Matrix</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<input class="bg-surface-container border-none text-[10px] font-mono tracking-widest px-4 py-1.5 rounded-full w-48 focus:ring-1 focus:ring-primary-container transition-all" placeholder="SEARCH CLUSTER..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-40">search</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer transition-colors text-xl">language</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer transition-colors text-xl">notifications</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB2ERH608WJ7_16q0t7aX4wiDv8UwRCXqVoi3b27XvT6NQKWt8gS80x1yq8hAZ8BX_qANsB2XiIiui7BWvIOfdmluPIQYOjs-FkcejYcbnEe8Ww4_D6Q4lA8r1Uzl2ayqf59oj9fyUU_jaA2IKZAlqT2hFJPCQiYgY8uM3U4QcXWxuYQtU5euOV7houtd-Arus8G_Aa4QjFDnymR2Q4ESXd48bqu_UzrAsvbcBQ4CIFSgt1xh4i4gU12VREsXD51z05pz15IQ2DZSM"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-20 px-8 pb-12 min-h-screen">
+<!-- Page Header Section -->
+<section class="mb-8 flex justify-between items-end">
+<div>
+<h1 class="text-4xl font-black tracking-tighter text-white mb-2">任务执行历史记录</h1>
+<p class="text-on-surface-variant text-sm flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    系统当前正在监控 148 个活动节点
+                </p>
+</div>
+<div class="flex gap-3">
+<div class="bg-surface-container px-4 py-2 rounded-lg flex items-center gap-4 border border-outline-variant/10">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-on-surface-variant font-bold tracking-widest">日期范围</span>
+<span class="text-xs font-mono">2023-10-01 — 2023-10-24</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">calendar_today</span>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-container-highest px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm">filter_alt</span>
+                    高级筛选
+                </button>
+</div>
+</section>
+<!-- Metrics Bento Row -->
+<div class="grid grid-cols-4 gap-4 mb-8">
+<div class="bg-surface-container p-5 rounded-xl border border-outline-variant/5">
+<div class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter mb-1">执行总次数</div>
+<div class="text-3xl font-black text-white">4,829</div>
+<div class="mt-2 text-[10px] text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +12.4% vs 上月
+                </div>
+</div>
+<div class="bg-surface-container p-5 rounded-xl border border-outline-variant/5">
+<div class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter mb-1">成功率</div>
+<div class="text-3xl font-black text-white font-mono">99.82%</div>
+<div class="mt-2 text-[10px] text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">check_circle</span> 运行稳定
+                </div>
+</div>
+<div class="bg-surface-container p-5 rounded-xl border border-outline-variant/5">
+<div class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter mb-1">平均耗时</div>
+<div class="text-3xl font-black text-white font-mono">14.2s</div>
+<div class="mt-2 text-[10px] text-on-surface-variant flex items-center gap-1 opacity-60">
+<span class="material-symbols-outlined text-xs">schedule</span> P95: 22.8s
+                </div>
+</div>
+<div class="bg-surface-container p-5 rounded-xl border border-outline-variant/5">
+<div class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter mb-1">系统负载</div>
+<div class="text-3xl font-black text-white font-mono">24.5%</div>
+<div class="mt-2 w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[24.5%]"></div>
+</div>
+</div>
+</div>
+<!-- Task History Table -->
+<section class="bg-surface-container rounded-xl overflow-hidden shadow-2xl">
+<div class="px-6 py-4 bg-surface-container-highest flex justify-between items-center">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-primary rounded-sm"></span>
+<span class="text-xs font-bold uppercase tracking-widest text-white">所有任务</span>
+</div>
+<div class="flex items-center gap-2 opacity-40">
+<span class="w-3 h-3 border border-outline rounded-sm"></span>
+<span class="text-xs font-bold uppercase tracking-widest">关键错误</span>
+</div>
+</div>
+<div class="text-[10px] text-on-surface-variant font-mono">
+                    LAST UPDATED: 14:02:45 UTC
+                </div>
+</div>
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/50">
+<th class="px-6 py-4 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant border-b border-outline-variant/10">任务名称 / ID</th>
+<th class="px-6 py-4 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant border-b border-outline-variant/10">状态</th>
+<th class="px-6 py-4 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant border-b border-outline-variant/10">执行者</th>
+<th class="px-6 py-4 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant border-b border-outline-variant/10">开始/结束时间</th>
+<th class="px-6 py-4 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant border-b border-outline-variant/10">结果摘要</th>
+<th class="px-6 py-4 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant border-b border-outline-variant/10 text-right">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-high/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Cluster_Provision_v2</span>
+<span class="text-[10px] font-mono text-on-surface-variant">TXN-4902-8821</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter">SUCCESS</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-secondary-container flex items-center justify-center text-[8px] font-bold">SY</div>
+<span class="text-xs text-on-surface font-medium">System_Automator</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col font-mono text-[10px]">
+<span class="text-on-surface">14:00:22.102</span>
+<span class="text-on-surface-variant">14:00:45.829</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-on-surface-variant italic leading-tight">3 nodes initialized; 0 errors reported; Network MTU verified.</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-container/20 rounded text-primary transition-colors" title="Re-run">
+<span class="material-symbols-outlined text-lg">replay</span>
+</button>
+<button class="p-1.5 hover:bg-on-surface/10 rounded text-on-surface-variant transition-colors" title="View Logs">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-high/30 transition-colors group border-l-2 border-error">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">DB_Snapshot_Global</span>
+<span class="text-[10px] font-mono text-on-surface-variant">TXN-4902-8819</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter">FAILED</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-tertiary-container flex items-center justify-center text-[8px] font-bold">JD</div>
+<span class="text-xs text-on-surface font-medium">Jane_Doe</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col font-mono text-[10px]">
+<span class="text-on-surface">13:45:00.000</span>
+<span class="text-on-surface-variant">13:45:01.210</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-error font-mono leading-tight">ERROR: TIMEOUT_WAITING_FOR_IO (Code: 504)</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-container/20 rounded text-primary transition-colors" title="Re-run">
+<span class="material-symbols-outlined text-lg">replay</span>
+</button>
+<button class="p-1.5 hover:bg-on-surface/10 rounded text-on-surface-variant transition-colors" title="View Logs">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-high/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Log_Cleanup_Weekly</span>
+<span class="text-[10px] font-mono text-on-surface-variant">TXN-4902-8815</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter animate-pulse">RUNNING</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] font-bold">CR</div>
+<span class="text-xs text-on-surface font-medium">Cron_Daemon</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col font-mono text-[10px]">
+<span class="text-on-surface">13:30:00.001</span>
+<span class="text-on-surface-variant">PENDING...</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-48 h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[65%]"></div>
+</div>
+<span class="text-[8px] text-on-surface-variant mt-1 block uppercase font-bold tracking-widest">Processing 6.4GB of 12.0GB</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 hover:bg-error-container/20 rounded text-error transition-colors" title="Cancel">
+<span class="material-symbols-outlined text-lg">cancel</span>
+</button>
+<button class="p-1.5 hover:bg-on-surface/10 rounded text-on-surface-variant transition-colors" title="View Logs">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-high/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Security_Audit_Full</span>
+<span class="text-[10px] font-mono text-on-surface-variant">TXN-4902-8812</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter">SUCCESS</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-secondary-container flex items-center justify-center text-[8px] font-bold">SA</div>
+<span class="text-xs text-on-surface font-medium">Sec_Agent_04</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col font-mono text-[10px]">
+<span class="text-on-surface">12:00:00.044</span>
+<span class="text-on-surface-variant">12:15:33.910</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-on-surface-variant italic leading-tight">All endpoints scanned; 0 vulnerabilities; 12 patches recommended.</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-container/20 rounded text-primary transition-colors" title="Re-run">
+<span class="material-symbols-outlined text-lg">replay</span>
+</button>
+<button class="p-1.5 hover:bg-on-surface/10 rounded text-on-surface-variant transition-colors" title="View Logs">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-high/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Cert_Rotation_Main</span>
+<span class="text-[10px] font-mono text-on-surface-variant">TXN-4902-8810</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter">SUCCESS</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] font-bold">SY</div>
+<span class="text-xs text-on-surface font-medium">System_Automator</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col font-mono text-[10px]">
+<span class="text-on-surface">11:02:11.100</span>
+<span class="text-on-surface-variant">11:02:12.441</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-on-surface-variant italic leading-tight">SSL Certificate rotated for 14 domains. Next rotation: 2024-01-20.</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-container/20 rounded text-primary transition-colors" title="Re-run">
+<span class="material-symbols-outlined text-lg">replay</span>
+</button>
+<button class="p-1.5 hover:bg-on-surface/10 rounded text-on-surface-variant transition-colors" title="View Logs">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-6 py-4 bg-surface-container-low flex justify-between items-center border-t border-outline-variant/5">
+<div class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
+                    显示 1-25 / 共 4,829 项
+                </div>
+<div class="flex items-center gap-4">
+<button class="w-8 h-8 rounded border border-outline-variant/20 flex items-center justify-center opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<div class="flex gap-1">
+<button class="w-8 h-8 rounded bg-primary-container text-on-primary-container text-xs font-bold">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-xs font-bold transition-colors">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-xs font-bold transition-colors">3</button>
+<span class="px-2 text-on-surface-variant self-center">...</span>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-xs font-bold transition-colors">194</button>
+</div>
+<button class="w-8 h-8 rounded border border-outline-variant/20 flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Dynamic Log Preview Section -->
+<section class="mt-8">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-white">实时控制台预览 (DB_Snapshot_Global)</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-4 font-mono text-xs border-l-4 border-error overflow-hidden">
+<div class="grid grid-cols-[120px_1fr] gap-4 mb-1">
+<span class="text-primary opacity-80">[13:45:00.001]</span>
+<span class="text-on-surface-variant">INITIALIZING SNAPSHOT AGENT ON CLUSTER-04...</span>
+</div>
+<div class="grid grid-cols-[120px_1fr] gap-4 mb-1">
+<span class="text-primary opacity-80">[13:45:00.120]</span>
+<span class="text-on-surface-variant">AUTHENTICATED: USER Jane_Doe (ACCESS_LVL: 4)</span>
+</div>
+<div class="grid grid-cols-[120px_1fr] gap-4 mb-1">
+<span class="text-primary opacity-80">[13:45:00.455]</span>
+<span class="text-on-surface-variant">REQUESTING IO_FREEZE ON VOL-SSD-29...</span>
+</div>
+<div class="grid grid-cols-[120px_1fr] gap-4 mb-1">
+<span class="text-error opacity-80">[13:45:01.210]</span>
+<span class="text-error font-bold tracking-tight bg-error-container/20 px-1 uppercase">CRITICAL_ERROR: RESOURCE_BUSY - IO_FREEZE FAILED AFTER 5 RETRIES</span>
+</div>
+<div class="grid grid-cols-[120px_1fr] gap-4 mb-1">
+<span class="text-primary opacity-80">[13:45:01.215]</span>
+<span class="text-on-surface-variant opacity-40 italic">-- DUMPING CORE TO /VAR/LOG/AUTO_OPS/CRASH_TXN_8819.LOG --</span>
+</div>
+<div class="mt-4 flex items-center justify-between border-t border-outline-variant/10 pt-3">
+<div class="flex gap-4">
+<span class="text-[10px] text-on-surface-variant/50">CPU: 88%</span>
+<span class="text-[10px] text-on-surface-variant/50">RAM: 4.2GB</span>
+<span class="text-[10px] text-on-surface-variant/50">NODE: AWS-USE-01</span>
+</div>
+<button class="text-[10px] text-primary uppercase font-bold tracking-widest hover:underline">
+                        下载完整日志 (.RAW)
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB: Help/Contact -->
+<button class="fixed bottom-8 right-8 w-12 h-12 bg-surface-container-highest text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all border border-outline-variant/20 group">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="absolute right-14 bg-surface-container px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            获取技术支持
+        </span>
+</button>
+</body></html>

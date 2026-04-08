@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#dbe1ff",
+                    "inverse-surface": "#e5e2e1",
+                    "tertiary": "#ffb59d",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed-variant": "#832700",
+                    "surface-container-high": "#2a2a2a",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary-fixed": "#390c00",
+                    "secondary-container": "#2d458a",
+                    "on-surface": "#e5e2e1",
+                    "surface-bright": "#393939",
+                    "on-surface-variant": "#c3c6d8",
+                    "on-secondary": "#0e2b6f",
+                    "surface-variant": "#353534",
+                    "inverse-primary": "#0052dd",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-tertiary": "#5d1900",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-container": "#201f1f",
+                    "error": "#ffb4ab",
+                    "primary-container": "#0f62fe",
+                    "outline-variant": "#424656",
+                    "surface-container-low": "#1c1b1b",
+                    "surface-container-highest": "#353534",
+                    "secondary": "#b4c5ff",
+                    "primary": "#b4c5ff",
+                    "on-tertiary-container": "#fff1ed",
+                    "on-secondary-container": "#a0b6ff",
+                    "on-primary-container": "#f3f3ff",
+                    "on-error-container": "#ffdad6",
+                    "surface-tint": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#2a4387",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed": "#00174c",
+                    "outline": "#8c90a2",
+                    "tertiary-container": "#c84000",
+                    "background": "#131313",
+                    "inverse-on-surface": "#313030",
+                    "on-primary-fixed-variant": "#003da9",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "on-primary": "#002979",
+                    "on-background": "#e5e2e1",
+                    "on-primary-fixed": "#00174c",
+                    "surface-dim": "#131313",
+                    "surface": "#131313"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"],
+                    "mono": ["JetBrains Mono"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #424656; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-white">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col py-6 bg-[#1C1B1B] font-['Inter'] text-sm tracking-tight z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg">terminal</span>
+</div>
+<div>
+<h1 class="text-xl font-black text-white tracking-tighter leading-none">AutoOps</h1>
+<p class="text-[10px] text-on-surface-variant/50 font-mono mt-1">V2.4.0-Stable</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span>Workflows</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Monitors</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span>Log Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A] transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="px-3 pt-6 border-t border-outline-variant/10">
+<button class="w-full py-3 px-4 bg-primary-container text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+<span>Deploy New Node</span>
+</button>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-40 flex justify-between items-center px-8 bg-[#131313]/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(229,226,225,0.05)]">
+<div class="flex items-center gap-6">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8]">Orchestrated Monolith</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<nav class="flex gap-6">
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity" href="#">Cluster Status</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity" href="#">Active Nodes</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity" href="#">Traffic Matrix</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">search</span>
+</div>
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">language</span>
+<div class="relative">
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-14 min-h-screen p-8 bg-background">
+<!-- Breadcrumbs & Title Area -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<nav class="flex items-center gap-2 text-xs font-mono text-on-surface-variant/60 mb-2">
+<span>SYSTEM</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span>SECURITY</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span class="text-primary">PERMISSIONS</span>
+</nav>
+<h2 class="text-4xl font-black text-white tracking-tighter">权限与角色管理</h2>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container px-6 py-2.5 rounded-lg flex items-center gap-2 text-on-primary-container font-bold hover:shadow-[0_0_20px_rgba(15,98,254,0.3)] transition-all active:scale-95">
+<span class="material-symbols-outlined">add_moderator</span>
+<span>创建新角色</span>
+</button>
+</div>
+<div class="grid grid-cols-12 gap-6">
+<!-- Left: Roles List -->
+<section class="col-span-12 lg:col-span-3 space-y-4">
+<div class="bg-surface-container-low rounded-xl p-4 min-h-[600px] flex flex-col">
+<div class="flex items-center justify-between mb-4 px-2">
+<span class="font-bold text-sm text-on-surface-variant uppercase tracking-widest">系统角色</span>
+<span class="text-[10px] font-mono text-primary bg-primary/10 px-2 py-0.5 rounded">3 ACTIVE</span>
+</div>
+<div class="space-y-2 flex-1">
+<!-- Admin Role -->
+<div class="bg-surface-container-high p-4 rounded-lg border-l-4 border-primary cursor-pointer transition-all hover:bg-surface-container-highest">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-white text-base">超级管理员</h3>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Admin</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded text-on-surface-variant font-mono">ALL_ACCESS</span>
+</div>
+</div>
+<!-- SRE Role -->
+<div class="p-4 rounded-lg border-l-4 border-transparent hover:bg-surface-container-high transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-on-surface-variant group-hover:text-white text-base transition-colors">站点可靠性工程师</h3>
+<span class="material-symbols-outlined text-on-surface-variant/40 text-sm">engineering</span>
+</div>
+<p class="text-xs text-on-surface-variant/60">SRE</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded text-on-surface-variant/60 font-mono">INFRA_MGMT</span>
+</div>
+</div>
+<!-- Operator Role -->
+<div class="p-4 rounded-lg border-l-4 border-transparent hover:bg-surface-container-high transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-on-surface-variant group-hover:text-white text-base transition-colors">运维操作员</h3>
+<span class="material-symbols-outlined text-on-surface-variant/40 text-sm">view_day</span>
+</div>
+<p class="text-xs text-on-surface-variant/60">Operator</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded text-on-surface-variant/60 font-mono">TASK_EXEC</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant/10">
+<div class="bg-surface-container-lowest/50 p-3 rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">info</span>
+<p class="text-[10px] text-on-surface-variant leading-tight">角色权限变更将实时同步至所有在线会话。</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Center: Permission Details -->
+<section class="col-span-12 lg:col-span-6 space-y-6">
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-2xl">
+<div class="bg-surface-container-highest px-6 py-4 flex items-center justify-between border-b border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">security</span>
+</div>
+<div>
+<h3 class="font-bold text-white">权限配置: <span class="text-primary">超级管理员</span></h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-mono">RBAC Policy Matrix</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-xs font-bold text-on-surface-variant hover:text-white transition-colors">取消</button>
+<button class="px-4 py-1.5 bg-primary text-on-primary font-bold text-xs rounded hover:opacity-90 transition-all">保存变更</button>
+</div>
+</div>
+<div class="p-6 space-y-8 custom-scrollbar max-h-[600px] overflow-y-auto">
+<!-- Module: Assets -->
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg">inventory_2</span>
+<h4 class="font-bold text-sm text-white tracking-wide">资源资产管理 (Assets)</h4>
+</div>
+<div class="grid grid-cols-1 gap-3">
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="font-semibold text-sm text-on-surface">查看所有资产</div>
+<div class="text-[11px] text-on-surface-variant">允许用户在仪表盘和列表页查看所有服务器资源</div>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-3.5 h-3.5 bg-white rounded-full ml-auto shadow-md"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="font-semibold text-sm text-on-surface">创建与导入资产</div>
+<div class="text-[11px] text-on-surface-variant">手动添加新节点或通过 CMDB 同步导入</div>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-3.5 h-3.5 bg-white rounded-full ml-auto shadow-md"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="font-semibold text-sm text-on-surface">修改/删除资产</div>
+<div class="text-[11px] text-on-surface-variant text-tertiary">高风险操作：编辑节点属性或从池中移除</div>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-3.5 h-3.5 bg-white rounded-full ml-auto shadow-md"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Module: Scripts -->
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg">code</span>
+<h4 class="font-bold text-sm text-white tracking-wide">自动化脚本库 (Scripts)</h4>
+</div>
+<div class="grid grid-cols-1 gap-3">
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="font-semibold text-sm text-on-surface">脚本库读权限</div>
+<div class="text-[11px] text-on-surface-variant">浏览所有 Shell, Python, Ansible 脚本</div>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-3.5 h-3.5 bg-white rounded-full ml-auto shadow-md"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="font-semibold text-sm text-on-surface">脚本编辑与发布</div>
+<div class="text-[11px] text-on-surface-variant">在线 IDE 修改代码及版本发布</div>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-3.5 h-3.5 bg-white rounded-full ml-auto shadow-md"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Module: Tasks -->
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg">task_alt</span>
+<h4 class="font-bold text-sm text-white tracking-wide">任务调度中心 (Tasks)</h4>
+</div>
+<div class="grid grid-cols-1 gap-3">
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="font-semibold text-sm text-on-surface">即时任务下发</div>
+<div class="text-[11px] text-on-surface-variant">向指定节点下发即时执行指令</div>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-3.5 h-3.5 bg-white rounded-full ml-auto shadow-md"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div>
+<div class="font-semibold text-sm text-on-surface">定时任务编排</div>
+<div class="text-[11px] text-on-surface-variant">管理 Crontab 样式的计划任务</div>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-3.5 h-3.5 bg-white rounded-full ml-auto shadow-md"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right: Assigned Users -->
+<section class="col-span-12 lg:col-span-3 space-y-6">
+<div class="bg-surface-container-low rounded-xl p-4 flex flex-col h-full min-h-[400px]">
+<div class="flex items-center justify-between mb-6 px-2">
+<span class="font-bold text-sm text-on-surface-variant uppercase tracking-widest">已分配用户</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-on-surface-variant">group</span>
+<span class="text-[10px] font-mono text-on-surface-variant">12</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3 p-2 rounded hover:bg-surface-container transition-colors">
+<img alt="User avatar" class="w-10 h-10 rounded-full border-2 border-primary/20" data-alt="Portrait of a professional man in a modern office, clean profile shot, soft studio lighting, professional attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8ncJMOGrvi8cK4NLGg0IxExNcpxf_Ga3tmtw98HFlv9riqdWeHfBwGiIVpmNot4O7gBwuMUt_hPZJVPvji4ulGICrP7t-C2EC1-UFXaAX97ZWfJn0aDcHN93t_17s8aW1jNsYbSAgl193W8GgNOG62-oXxstHwDiv6r5ti3Pgsmwj2inOFYjbXLqT4FN6F5GxuosTo-X9RstUxvDUwAKX5xOvLnUWJf-pW4d6cWccXBQMYntp7uD_P9XoYFNKil1kb_mMbasw82xa"/>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-bold text-white truncate">Zhang Wei (张伟)</div>
+<div class="text-[10px] text-on-surface-variant font-mono truncate">Lead SRE</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40 hover:text-error transition-colors cursor-pointer text-lg">logout</span>
+</div>
+<div class="flex items-center gap-3 p-2 rounded hover:bg-surface-container transition-colors">
+<img alt="User avatar" class="w-10 h-10 rounded-full border-2 border-primary/20" data-alt="Business woman portrait, confident look, professional office setting with bokeh background, soft afternoon light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYVKEkT0CsBc3Y45z51zvRsZYR6otovzRlUSCwcywhf6vUSf69pMHcc1QFiYEJelJb3yqkUVcdavaY494nvrVXC-2ooT7gwBDlJC-Z-S4jU-ap9i1Fdak-NfWd6df0uJwptXkTgyV27EKEagdH4uNSoUOwIJ3q9KF3gttJOI79J3tv0VOJM6EzOLgBQXoPRuB8ac3PHvwReTIl70d6smsLQVm3_Lkop_CJ5qkOQi8GiwYrvAik0mCkDbPYsX1egKL1j7JsTi5_S8sT"/>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-bold text-white truncate">Chen Li (陈丽)</div>
+<div class="text-[10px] text-on-surface-variant font-mono truncate">DevOps Architect</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40 hover:text-error transition-colors cursor-pointer text-lg">logout</span>
+</div>
+<div class="flex items-center gap-3 p-2 rounded hover:bg-surface-container transition-colors">
+<img alt="User avatar" class="w-10 h-10 rounded-full border-2 border-primary/20" data-alt="Middle-aged man with glasses, professional portrait, tech company environment, soft key lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_tenp5fFqJavLzlOEB4qVFze6PFLHTKoiWVTIsadG9wfYF_5QkOG0-8TOfCB_CVB42TgPHIZGpD6xGy9VNGILCiTYaZXj7tESqAtcGshCkbOAv9W5ihWiePFTuMV8m5aquXJnsZ8Nt7tX9Lsujyh5cASu7841w52-AVXhRFWYdgrMcL6eO1Yw2S72cXuXc2kUbCFzIokGV2XyS_HP6n3aE5k6PDStOfn1rBVfZ9KK6qdGa4ms5jtv1XS1pnDdoNk22Kt9oh6QhoYQ"/>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-bold text-white truncate">Wang Feng (王峰)</div>
+<div class="text-[10px] text-on-surface-variant font-mono truncate">Cloud Sec Ops</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40 hover:text-error transition-colors cursor-pointer text-lg">logout</span>
+</div>
+<!-- Add User to Role CTA -->
+<div class="pt-4 mt-2 border-t border-outline-variant/10">
+<button class="w-full flex items-center justify-center gap-2 py-2 border-2 border-dashed border-outline-variant/30 rounded-lg text-on-surface-variant hover:border-primary/50 hover:text-primary transition-all text-xs font-bold">
+<span class="material-symbols-outlined text-sm">person_add</span>
+<span>添加用户到此角色</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Role Activity Logs (Technical Aesthetic) -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10">
+<div class="text-[10px] font-mono text-primary uppercase tracking-[0.2em] mb-4">Role Audit Log</div>
+<div class="space-y-4 font-mono text-[10px] text-on-surface-variant/80">
+<div class="flex gap-2">
+<span class="text-primary-fixed-dim shrink-0">14:20:01</span>
+<span>POLICY_UPDATE [Admin]: Modified Scripts.Edit</span>
+</div>
+<div class="flex gap-2">
+<span class="text-primary-fixed-dim shrink-0">13:45:12</span>
+<span>USER_ASSIGNED [ZhangWei] -&gt; Admin</span>
+</div>
+<div class="flex gap-2">
+<span class="text-primary-fixed-dim shrink-0">10:12:44</span>
+<span class="text-tertiary">WARN: Role [Operator] escalation attempted</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

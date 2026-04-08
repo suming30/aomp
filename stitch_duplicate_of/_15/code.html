@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #131313; color: #e5e2e1; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- SideNavBar Integration -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1C1B1B] flex flex-col py-6 font-['Inter'] text-sm tracking-tight z-50">
+<div class="px-6 mb-10 flex flex-col gap-1">
+<span class="text-xl font-black text-white tracking-tighter">AutoOps</span>
+<span class="text-[10px] uppercase tracking-widest text-[#C3C6D8] opacity-50">V2.4.0-Stable</span>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </div>
+<div class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="inventory_2">inventory_2</span>
+                Assets
+            </div>
+<div class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="account_tree">account_tree</span>
+                Workflows
+            </div>
+<div class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="analytics">analytics</span>
+                Monitors
+            </div>
+<div class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="terminal">terminal</span>
+                Log Center
+            </div>
+<!-- Active State: Settings -->
+<div class="flex items-center px-6 py-3 text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A] transition-colors cursor-pointer">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="settings">settings</span>
+                Settings
+            </div>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-lg scale-95 active:opacity-80 transition-transform">
+                Deploy New Node
+            </button>
+</div>
+</aside>
+<!-- TopNavBar Integration -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 flex justify-between items-center px-8 bg-[#131313]/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(229,226,225,0.05)]">
+<div class="flex items-center space-x-6">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity cursor-pointer">Cluster Status</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity cursor-pointer">Active Nodes</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity cursor-pointer">Traffic Matrix</span>
+</div>
+<div class="flex items-center space-x-5">
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer active:scale-95 transition-all" data-icon="language">language</span>
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer active:scale-95 transition-all" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover" data-alt="professional headshot of a system administrator with neutral background and sharp lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi4f4EEjnLwzRwR24Po2camzI1p04IXE3wn9viVekF9q8rn5pbjSeLyugLnZSBK5IQPImGmPvC_vi4exdtY6JHnIzHtxDbUi2cLi12PH0EXBJvEgCbYtVN-G8uv-GBy9Aqcov-_DnhcXL4fsURJBgCTLpmLgj3SCsc149AkiJSn-euOIjCf7sG-4FSWreHN-r-V6DYrqOcnpG8BobOEo-sovqoWGIta6XB-BHe6lZ7lEbYe2tojCErhfN654DKNUV7PM7ek0fjBsvY"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 pt-14 h-screen overflow-y-auto no-scrollbar bg-background">
+<div class="max-w-4xl mx-auto px-10 py-12">
+<div class="mb-12">
+<h1 class="text-3xl font-extrabold tracking-tight mb-2">个人设置</h1>
+<p class="text-on-surface-variant text-sm">管理您的账户偏好、安全设置和通知选项。</p>
+</div>
+<div class="space-y-12 pb-20">
+<!-- Profile Section -->
+<section>
+<h2 class="text-xs uppercase tracking-widest text-primary font-bold mb-6">个人资料</h2>
+<div class="bg-surface-container rounded-xl p-8 flex items-center space-x-8">
+<div class="relative group">
+<div class="w-24 h-24 rounded-full overflow-hidden border-2 border-primary-container/30">
+<img class="w-full h-full object-cover" data-alt="close up profile photo of a tech professional in a dark studio setting with cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA69-jEWqcZuGt8Y6QNQIHawABsDJEHuw5LVx2H7cRCfbnT9Ja3bMCTgoj9rsaOy-6C0nfcdhjzi6UccfpmYFoHselUT1jhh4lhIEmccDLP__NIco_LF0uxOHPCRDobnamRki2bB_hliE0scwU4jXJfHvhsRrue9LPZlm2pF_oQzqrQOl6hKiExgvkaj7aNJo8yyWOYW1FVf1tNwe9GEjV7XGFWlpK6qXLmul4ZccBPN4Dhnq-WizcbmgMleeHdcamREsKoLk37dxOF"/>
+</div>
+<button class="absolute bottom-0 right-0 p-2 bg-primary text-on-primary rounded-full shadow-lg scale-90 hover:scale-100 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-wider text-on-surface-variant">用户名</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg text-sm px-4 py-3 focus:ring-1 focus:ring-primary text-on-surface" type="text" value="Admin_Nexus_01"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-wider text-on-surface-variant">电子邮箱</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg text-sm px-4 py-3 focus:ring-1 focus:ring-primary text-on-surface" type="email" value="ops-lead@monolith.tech"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Appearance & Locale (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Theme Settings -->
+<div class="bg-surface-container rounded-xl p-6">
+<h2 class="text-xs uppercase tracking-widest text-primary font-bold mb-6">外观主题</h2>
+<div class="flex space-x-4">
+<button class="flex-1 group">
+<div class="aspect-video bg-surface-container-highest rounded-lg mb-2 border-2 border-primary overflow-hidden relative">
+<div class="absolute inset-0 bg-background/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="dark_mode">dark_mode</span>
+</div>
+</div>
+<span class="text-xs font-medium text-on-surface">深色模式</span>
+</button>
+<button class="flex-1 group opacity-40 hover:opacity-100 transition-opacity">
+<div class="aspect-video bg-slate-100 rounded-lg mb-2 border border-outline-variant/20 overflow-hidden relative">
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-600" data-icon="light_mode">light_mode</span>
+</div>
+</div>
+<span class="text-xs font-medium text-on-surface-variant">浅色模式</span>
+</button>
+</div>
+</div>
+<!-- Language Settings -->
+<div class="bg-surface-container rounded-xl p-6">
+<h2 class="text-xs uppercase tracking-widest text-primary font-bold mb-6">语言设置</h2>
+<div class="space-y-3">
+<label class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg cursor-pointer border border-primary/20">
+<div class="flex items-center">
+<span class="text-sm font-medium">简体中文 (Chinese)</span>
+</div>
+<div class="w-4 h-4 rounded-full border-4 border-primary bg-on-primary"></div>
+</label>
+<label class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+<div class="flex items-center">
+<span class="text-sm font-medium">English (United States)</span>
+</div>
+<div class="w-4 h-4 rounded-full border border-outline-variant"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Security Section -->
+<section>
+<h2 class="text-xs uppercase tracking-widest text-primary font-bold mb-6">安全与密码</h2>
+<div class="bg-surface-container rounded-xl p-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+<div class="space-y-4">
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-wider text-on-surface-variant">当前密码</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg text-sm px-4 py-3 focus:ring-1 focus:ring-primary" placeholder="••••••••••••" type="password"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-wider text-on-surface-variant">新密码</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg text-sm px-4 py-3 focus:ring-1 focus:ring-primary" placeholder="输入新密码" type="password"/>
+</div>
+</div>
+<div class="flex flex-col justify-end">
+<div class="bg-surface-container-low p-6 rounded-lg">
+<div class="flex justify-between items-center mb-3">
+<span class="text-xs font-bold">密码强度: <span class="text-primary">高</span></span>
+<span class="text-[10px] text-on-surface-variant">85/100</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden flex space-x-1">
+<div class="h-full w-1/3 bg-primary rounded-full"></div>
+<div class="h-full w-1/3 bg-primary rounded-full"></div>
+<div class="h-full w-1/5 bg-primary/40 rounded-full"></div>
+</div>
+<p class="mt-4 text-[11px] text-on-surface-variant leading-relaxed">
+                                        包含大写字母、数字和特殊字符。建议每 90 天更换一次密码。
+                                    </p>
+</div>
+</div>
+</div>
+<button class="px-6 py-2.5 bg-surface-container-highest text-white text-xs font-bold rounded-lg hover:bg-surface-bright transition-colors">
+                            更新安全凭据
+                        </button>
+</div>
+</section>
+<!-- Notification Preferences -->
+<section>
+<h2 class="text-xs uppercase tracking-widest text-primary font-bold mb-6">通知偏好</h2>
+<div class="bg-surface-container rounded-xl overflow-hidden">
+<div class="divide-y divide-outline-variant/10">
+<div class="p-6 flex items-center justify-between hover:bg-surface-container-high/50 transition-colors">
+<div>
+<h4 class="text-sm font-semibold mb-1">关键系统警报</h4>
+<p class="text-xs text-on-surface-variant">节点故障或性能跌破阈值时立即通知。</p>
+</div>
+<div class="w-12 h-6 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full ml-auto"></div>
+</div>
+</div>
+<div class="p-6 flex items-center justify-between hover:bg-surface-container-high/50 transition-colors">
+<div>
+<h4 class="text-sm font-semibold mb-1">部署成功报告</h4>
+<p class="text-xs text-on-surface-variant">当新的自动化流程完成部署时发送摘要。</p>
+</div>
+<div class="w-12 h-6 bg-primary-container rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full ml-auto"></div>
+</div>
+</div>
+<div class="p-6 flex items-center justify-between hover:bg-surface-container-high/50 transition-colors">
+<div>
+<h4 class="text-sm font-semibold mb-1">每周审计摘要</h4>
+<p class="text-xs text-on-surface-variant">包含系统运行时间、错误率和资源消耗的报告。</p>
+</div>
+<div class="w-12 h-6 bg-surface-container-highest rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-outline-variant rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Actions -->
+<div class="flex items-center justify-end space-x-4 pt-6 border-t border-outline-variant/10">
+<button class="px-8 py-3 text-sm font-medium text-on-surface-variant hover:text-white transition-colors">取消修改</button>
+<button class="px-10 py-3 bg-gradient-to-r from-primary to-primary-container text-white text-sm font-bold rounded-lg shadow-xl shadow-primary-container/20">保存所有更改</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

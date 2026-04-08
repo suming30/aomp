@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            width: 1em;
+            height: 1em;
+        }
+        .syntax-keyword { color: #b4c5ff; }
+        .syntax-string { color: #ffb59d; }
+        .syntax-comment { color: #8c90a2; font-style: italic; }
+        .syntax-number { color: #a0b6ff; }
+        .syntax-function { color: #f3f3ff; font-weight: 500; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body overflow-hidden">
+<!-- SideNavBar (Authority: JSON Implementation) -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col h-full py-6 bg-[#1C1B1B] no-border font-['Inter'] text-sm tracking-tight z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div>
+<div class="text-xl font-black text-white tracking-tighter">AutoOps</div>
+<div class="text-[10px] text-[#C3C6D8] opacity-50 uppercase tracking-widest">V2.4.0-Stable</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Active Tab: Workflows (Contextual for Script Editor) -->
+<div class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-[#2A2A2A] text-white font-bold border-r-2 border-[#0F62FE]">
+<span class="material-symbols-outlined">account_tree</span>
+<span>Workflows</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-[#2A2A2A] text-[#C3C6D8] opacity-70">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-[#2A2A2A] text-[#C3C6D8] opacity-70">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Assets</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-[#2A2A2A] text-[#C3C6D8] opacity-70">
+<span class="material-symbols-outlined">analytics</span>
+<span>Monitors</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-[#2A2A2A] text-[#C3C6D8] opacity-70">
+<span class="material-symbols-outlined">terminal</span>
+<span>Log Center</span>
+</div>
+</nav>
+<div class="px-4 mt-auto">
+<div class="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-[#2A2A2A] text-[#C3C6D8] opacity-70 mb-4">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+<button class="w-full py-3 bg-primary-container text-on-primary-container rounded font-bold text-xs uppercase tracking-widest active:scale-95 transition-transform">
+                Deploy New Node
+            </button>
+</div>
+</aside>
+<!-- Main Workspace Container -->
+<main class="ml-64 flex flex-col h-screen">
+<!-- TopNavBar (Authority: JSON Implementation) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-8 shadow-[0_4px_30px_rgba(229,226,225,0.05)]">
+<div class="flex items-center gap-8">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8]">Orchestrated Monolith</span>
+<nav class="flex gap-6">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">Cluster Status</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#0F62FE] border-b border-[#0F62FE] pb-1 cursor-pointer">Active Nodes</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] cursor-pointer hover:text-white transition-opacity">Traffic Matrix</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined text-[#C3C6D8] absolute left-2 top-1/2 -translate-y-1/2 text-sm">search</span>
+<input class="bg-surface-container-low border-none rounded py-1 pl-8 pr-4 text-[10px] tracking-widest focus:ring-1 focus:ring-primary w-48 text-on-surface" placeholder="SEARCH SYSTEM..." type="text"/>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer hover:text-white transition-all active:scale-95">language</span>
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer hover:text-white transition-all active:scale-95">notifications</span>
+<span class="material-symbols-outlined text-[#C3C6D8] cursor-pointer hover:text-white transition-all active:scale-95">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Editor Application Layer -->
+<div class="mt-14 flex flex-1 overflow-hidden">
+<!-- Code Editor Section -->
+<section class="flex-1 flex flex-col bg-surface border-r border-outline-variant/15">
+<!-- Editor Sub-header -->
+<div class="h-12 flex items-center justify-between px-6 bg-surface-container-low">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">description</span>
+<span class="text-sm font-semibold tracking-tight">backup_automation_node.sh</span>
+</div>
+<div class="px-2 py-0.5 rounded bg-surface-container-high text-[10px] font-mono text-on-surface-variant">v2.1.0</div>
+<div class="flex items-center gap-1.5 opacity-60">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="text-[10px] uppercase tracking-widest">草稿已保存</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant hover:text-white transition-colors">取消</button>
+<button class="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider bg-surface-container-highest text-white rounded hover:bg-surface-bright transition-colors">保存</button>
+<button class="px-5 py-1.5 text-[11px] font-bold uppercase tracking-wider bg-gradient-to-r from-primary to-primary-container text-white rounded shadow-[0_0_20px_rgba(15,98,254,0.3)] active:scale-95 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">play_arrow</span>
+                            部署运行
+                        </button>
+</div>
+</div>
+<!-- Main Code Canvas -->
+<div class="flex-1 relative overflow-auto font-mono text-[13px] leading-relaxed p-6 bg-surface-container-lowest">
+<div class="absolute left-0 top-0 w-12 h-full bg-surface-container-low/30 border-r border-outline-variant/10 flex flex-col items-center py-6 text-outline/40 select-none">
+<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+</div>
+<div class="pl-10 space-y-1">
+<div><span class="syntax-comment">#!/bin/bash</span></div>
+<div><span class="syntax-comment"># 系统自动化备份脚本 v2.1.0</span></div>
+<div> </div>
+<div><span class="syntax-keyword">function</span> <span class="syntax-function">init_backup</span>() {</div>
+<div class="pl-6"><span class="syntax-keyword">local</span> BACKUP_DIR=<span class="syntax-string">"/var/ops/backups/$(date +%Y%m%d)"</span></div>
+<div class="pl-6"><span class="syntax-keyword">if</span> [ ! -d <span class="syntax-string">"$BACKUP_DIR"</span> ]; <span class="syntax-keyword">then</span></div>
+<div class="pl-12">mkdir -p <span class="syntax-string">"$BACKUP_DIR"</span></div>
+<div class="pl-12">echo <span class="syntax-string">"目录已创建: $BACKUP_DIR"</span></div>
+<div class="pl-6"><span class="syntax-keyword">fi</span></div>
+<div class="pl-6"><span class="syntax-function">execute_sync</span> <span class="syntax-string">"primary_cluster"</span> <span class="syntax-number">8080</span></div>
+<div>}</div>
+<div> </div>
+<div><span class="syntax-keyword">export</span> CLUSTER_SECRET=<span class="syntax-string">"AES256_ENC_9921"</span></div>
+<div><span class="syntax-function">init_backup</span></div>
+<div class="flex items-center gap-2 bg-primary/10 -ml-10 pl-10 border-l-2 border-primary">
+<span><span class="syntax-function">verify_integrity</span> --hash=sha256 --target=<span class="syntax-string">"$BACKUP_DIR"</span></span>
+<span class="w-1 h-4 bg-primary animate-pulse"></span>
+</div>
+</div>
+</div>
+<!-- Bottom Log Console -->
+<div class="h-40 bg-surface-container-lowest border-t border-outline-variant/15 flex flex-col">
+<div class="h-8 flex items-center px-6 gap-6 bg-surface-container-low border-b border-outline-variant/10">
+<span class="text-[10px] font-bold tracking-widest text-primary border-b-2 border-primary h-full flex items-center">终端输出</span>
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant opacity-50 h-full flex items-center cursor-pointer hover:opacity-100">问题 (0)</span>
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant opacity-50 h-full flex items-center cursor-pointer hover:opacity-100">调试控制台</span>
+</div>
+<div class="flex-1 p-4 font-mono text-[11px] overflow-auto space-y-1">
+<div class="flex gap-4">
+<span class="text-primary opacity-60">[14:22:01]</span>
+<span class="text-on-surface-variant">连接至集群节点 'node-04-asia'...</span>
+</div>
+<div class="flex gap-4">
+<span class="text-primary opacity-60">[14:22:02]</span>
+<span class="text-on-primary-container/80">状态: 成功。正在初始化环境。</span>
+</div>
+<div class="flex gap-4">
+<span class="text-primary opacity-60">[14:22:05]</span>
+<span class="text-on-surface-variant">发现 12 个待处理任务。开始备份序列。</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Sidebar Panel -->
+<aside class="w-80 bg-surface-container-low flex flex-col">
+<!-- Tab Switching -->
+<div class="h-12 flex border-b border-outline-variant/15">
+<button class="flex-1 text-[11px] font-bold tracking-widest uppercase text-white border-b-2 border-primary bg-surface-container">全局变量</button>
+<button class="flex-1 text-[11px] font-bold tracking-widest uppercase text-on-surface-variant opacity-50 hover:opacity-100 transition-opacity">历史版本</button>
+</div>
+<!-- Variables List -->
+<div class="flex-1 overflow-auto p-4 space-y-4">
+<div class="group">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">系统变量 (4)</span>
+<span class="material-symbols-outlined text-sm text-primary cursor-pointer">add</span>
+</div>
+<div class="space-y-2">
+<div class="p-3 rounded bg-surface-container-high border border-outline-variant/10 hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[11px] font-mono text-primary">ENDPOINT_URL</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant">lock</span>
+</div>
+<div class="text-[11px] font-mono text-on-surface-variant truncate">https://api.internal.autoops.io/v1</div>
+</div>
+<div class="p-3 rounded bg-surface-container-high border border-outline-variant/10 hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[11px] font-mono text-primary">RETENTION_DAYS</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant">edit</span>
+</div>
+<div class="text-[11px] font-mono text-on-surface-variant">30</div>
+</div>
+<div class="p-3 rounded bg-surface-container-high border border-outline-variant/10 hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[11px] font-mono text-primary">AUTH_TOKEN</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant">visibility_off</span>
+</div>
+<div class="text-[11px] font-mono text-on-surface-variant italic opacity-40">••••••••••••••••</div>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/10">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-3">资产关联</div>
+<div class="relative rounded-lg overflow-hidden h-32 mb-3">
+<img class="w-full h-full object-cover opacity-60" data-alt="abstract architectural schematic of data nodes interconnected by neon lines in a dark digital space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB99NnAJ4wKDtehkgdJsRuY3Rtyo4UJM2-_yCbG8vXlukheuQ8jKrxtl0sqTt86wY3qbBwp812-WnQx1Ms0fm_kjVgKVtHKl_yzJBsidxhJLFo_WOfQZooJQMRa22ozHA6Eh2TTDda2xdGbxZ76mEyq2HHniCFKA3PDsOjxEjMFxWEPWvhXyZ_Xy19ZzCQMNATBPCyUvJGHxdcIde0sba0eaMuCsSgwpMxDDmYbUYcH8r9djGUke8Mf-Ai-xhvrrqjBKJIuEtxxA6e"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+<div class="absolute bottom-2 left-3 right-3 flex justify-between items-end">
+<div>
+<div class="text-[10px] font-bold text-white">CN-SOUTH-CLUSTER</div>
+<div class="text-[9px] text-primary">运行中 • 142 节点</div>
+</div>
+<span class="material-symbols-outlined text-sm text-white">open_in_new</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Quick Info -->
+<div class="p-4 bg-surface-container-highest/30 border-t border-outline-variant/15 text-[10px] text-on-surface-variant space-y-1">
+<div class="flex justify-between">
+<span>最后修改</span>
+<span>14:12 (由 管理员)</span>
+</div>
+<div class="flex justify-between">
+<span>字符数</span>
+<span>1,244 chars</span>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Contextual Utility Layer (Floating) -->
+<div class="fixed bottom-6 right-6 flex flex-col gap-3">
+<button class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/20 flex items-center justify-center text-on-surface-variant shadow-xl hover:bg-surface-bright active:scale-90 transition-all">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/20 flex items-center justify-center text-on-surface-variant shadow-xl hover:bg-surface-bright active:scale-90 transition-all">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+</div>
+</body></html>

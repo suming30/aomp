@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #131313; color: #e5e2e1; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #424656; border-radius: 10px; }
+        .glass { background: rgba(32, 31, 31, 0.8); backdrop-filter: blur(20px); }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- SideNavBar Integration -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col h-full py-6 bg-[#1C1B1B] no-border font-['Inter'] text-sm tracking-tight z-[60]">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-black text-white tracking-tighter">AutoOps</h1>
+<p class="text-[10px] text-[#C3C6D8] opacity-50 uppercase tracking-widest mt-1">V2.4.0-Stable</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="px-3">
+<a class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors scale-95 active:opacity-80 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors scale-95 active:opacity-80 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span>Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-white font-bold border-r-2 border-[#0F62FE] hover:bg-[#2A2A2A] transition-colors scale-95 active:opacity-80 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span>Workflows</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors scale-95 active:opacity-80 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Monitors</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors scale-95 active:opacity-80 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span>Log Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors scale-95 active:opacity-80 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full py-3 bg-primary-container text-on-primary-container rounded-lg font-bold text-xs uppercase tracking-widest active:scale-95 transition-all">
+                Deploy New Node
+            </button>
+</div>
+</aside>
+<!-- TopNavBar Integration -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 flex justify-between items-center px-8 bg-[#131313]/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(229,226,225,0.05)] no-border">
+<div class="flex items-center gap-8">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8]">Orchestrated Monolith</span>
+<div class="flex gap-6">
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity cursor-pointer active:scale-95 transition-all" href="#">Cluster Status</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#0F62FE] border-b border-[#0F62FE] pb-1 cursor-pointer active:scale-95 transition-all" href="#">Active Nodes</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity cursor-pointer active:scale-95 transition-all" href="#">Traffic Matrix</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<button class="flex items-center gap-2 text-[#C3C6D8] hover:text-white transition-opacity text-[10px] font-bold tracking-widest uppercase">
+<span class="material-symbols-outlined text-sm" data-icon="language">language</span>
+                    ZH-CN
+                </button>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<span class="material-symbols-outlined text-[#C3C6D8] hover:text-white cursor-pointer active:scale-95 transition-all" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-[#C3C6D8] hover:text-white cursor-pointer active:scale-95 transition-all" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-14 h-screen overflow-y-auto bg-surface custom-scrollbar">
+<div class="max-w-6xl mx-auto p-10">
+<!-- Header Section -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-2">
+<span class="text-primary text-xs font-bold tracking-[0.2em] uppercase">Operations Center</span>
+<div class="h-[1px] w-8 bg-primary/40"></div>
+</div>
+<h2 class="text-4xl font-extrabold text-white tracking-tight">系统巡检配置</h2>
+<p class="text-on-surface-variant mt-2 max-w-2xl">配置自动化巡检策略，实时评估集群健康度并生成详细诊断报告。所有任务将在分布式节点中异步执行。</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- 1. Host Selection -->
+<section class="col-span-12 lg:col-span-7 bg-surface-container-low rounded-xl p-6 border-l-4 border-primary/20">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="dns">dns</span>
+<h3 class="text-lg font-bold text-white tracking-tight">主机选择</h3>
+</div>
+<span class="text-[10px] font-mono text-on-surface-variant bg-surface-container px-2 py-1 rounded">244 NODES ACTIVE</span>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-2">节点组 / 标签</label>
+<div class="grid grid-cols-3 gap-3">
+<button class="p-4 bg-surface-container border border-outline-variant/10 rounded-lg text-left hover:bg-surface-container-high transition-all group">
+<p class="text-xs font-bold text-white mb-1 group-hover:text-primary transition-colors">Production_Cluster_01</p>
+<p class="text-[10px] font-mono text-on-surface-variant">128 Hosts · Region: AP-East</p>
+</button>
+<button class="p-4 bg-primary-container/10 border border-primary/30 rounded-lg text-left ring-1 ring-primary/20">
+<p class="text-xs font-bold text-primary mb-1">Staging_Environment</p>
+<p class="text-[10px] font-mono text-primary/70">64 Hosts · Region: US-West</p>
+</button>
+<button class="p-4 bg-surface-container border border-outline-variant/10 rounded-lg text-left hover:bg-surface-container-high transition-all group">
+<p class="text-xs font-bold text-white mb-1 group-hover:text-primary transition-colors">Edge_Nodes_Global</p>
+<p class="text-[10px] font-mono text-on-surface-variant">52 Hosts · Multi-Region</p>
+</button>
+</div>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none text-xs font-mono py-3 px-4 rounded-lg focus:ring-1 focus:ring-primary/50 text-on-surface" placeholder="输入特定主机名或IP地址..." type="text"/>
+<span class="absolute right-4 top-3 text-[10px] text-on-surface-variant font-bold">FUZZY SEARCH</span>
+</div>
+</div>
+</section>
+<!-- 3. Execution Settings -->
+<section class="col-span-12 lg:col-span-5 bg-surface-container rounded-xl p-6">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="bolt">bolt</span>
+<h3 class="text-lg font-bold text-white tracking-tight">执行设置</h3>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">并行度 (Concurrency)</label>
+<span class="text-xs font-mono text-primary">50 Nodes/sec</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-full appearance-none accent-primary cursor-pointer" type="range"/>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">超时限制 (Timeout)</label>
+<span class="text-xs font-mono text-on-surface-variant">300s</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="py-2 bg-surface-container-high text-[10px] font-bold rounded hover:bg-primary/20 transition-colors">60S</button>
+<button class="py-2 bg-surface-container-high text-[10px] font-bold rounded hover:bg-primary/20 transition-colors">120S</button>
+<button class="py-2 bg-primary-container text-[10px] font-bold rounded">300S</button>
+<button class="py-2 bg-surface-container-high text-[10px] font-bold rounded hover:bg-primary/20 transition-colors">MAX</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Inspection Items -->
+<section class="col-span-12 lg:col-span-8 bg-surface-container-high rounded-xl p-8">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="fact_check">fact_check</span>
+<h3 class="text-lg font-bold text-white tracking-tight">巡检项目清单</h3>
+</div>
+<button class="text-[10px] font-bold text-primary hover:underline uppercase tracking-widest">全选所有核心项</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Item -->
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg border-l-2 border-primary group cursor-pointer">
+<div class="w-5 h-5 bg-primary-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-xs text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-white">CPU 负载与核心温度</p>
+<p class="text-[10px] text-on-surface-variant">检查用户态、系统态及IO等待时间</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30" data-icon="memory">memory</span>
+</div>
+<!-- Item -->
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg border-l-2 border-primary group cursor-pointer">
+<div class="w-5 h-5 bg-primary-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-xs text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-white">内存利用率与交换区</p>
+<p class="text-[10px] text-on-surface-variant">监控 OOM 事件及 Buffer/Cache 状态</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30" data-icon="database">database</span>
+</div>
+<!-- Item -->
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg border-l-2 border-primary group cursor-pointer">
+<div class="w-5 h-5 bg-primary-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-xs text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-white">磁盘 I/O 与容量挂载</p>
+<p class="text-[10px] text-on-surface-variant">验证 Inode 使用情况及物理损耗</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30" data-icon="storage">storage</span>
+</div>
+<!-- Item -->
+<div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg border-l-2 border-secondary/50 group cursor-pointer">
+<div class="w-5 h-5 bg-secondary-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-xs text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-white">关键系统服务状态</p>
+<p class="text-[10px] text-on-surface-variant">Systemd, Docker, Kubelet 运行监测</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30" data-icon="settings_input_component">settings_input_component</span>
+</div>
+<!-- Custom Item -->
+<div class="col-span-1 md:col-span-2 flex items-center gap-4 p-4 bg-surface-container-lowest border border-dashed border-outline-variant/30 rounded-lg hover:border-primary/50 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="add">add</span>
+<span class="text-xs font-bold text-on-surface-variant">添加自定义 Python/Shell 巡检脚本...</span>
+</div>
+</div>
+</section>
+<!-- 4. Notification & Final CTA -->
+<section class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<div class="bg-surface-container rounded-xl p-6 flex-1">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications_active">notifications_active</span>
+<h3 class="text-lg font-bold text-white tracking-tight">通知与回调</h3>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-surface-container-high rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center bg-blue-500/10 rounded">
+<img alt="Webhook" class="w-5" data-alt="minimalist flat icon of a webhook connection symbol with blue and purple tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmEX8aqo7jkMABCezLkXajUJlSW_xYyNCaDe8FackR8s6r43d8IQ-g-TvZujt31oL_lAmIZ0qMHNCtSPmKpaZB4sbo6W33qvN4q4r1XSBgAE_MmyuHOx3q2O59MjnIZMN5QpIEDCWIDaa9Ei2AojvowMBiY7i7_T6npYe0tU0yC-YrZfLDy_Y1-F8OpsuFoGCWuWDYLD6i6ddHh_koM6ya0CWeeaKQoDe_t6Ubp1s2_d7wXjBeU4HJrljmFvbkjKTZxt9LpCf-_lRW"/>
+</div>
+<span class="text-xs font-bold">Slack / Webhook</span>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative">
+<div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-high rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center bg-green-500/10 rounded">
+<span class="material-symbols-outlined text-green-500 text-sm" data-icon="mail">mail</span>
+</div>
+<span class="text-xs font-bold">管理员邮件通知</span>
+</div>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full relative">
+<div class="absolute left-1 top-1 w-3 h-3 bg-on-surface-variant rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full py-6 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-black text-xl tracking-tight shadow-[0_20px_40px_rgba(15,98,254,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined text-3xl" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                        立即开始系统巡检
+                    </button>
+<div class="p-4 bg-surface-container-lowest/50 rounded-lg flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="info">info</span>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">
+<span class="font-bold text-white">注意：</span> 当前巡检模式为“全量深度扫描”，预计执行时间约 180 秒。巡检期间可能会产生瞬时 IO 波动。
+                        </p>
+</div>
+</section>
+</div>
+<!-- Visual Decorative Element -->
+<div class="mt-12 h-64 rounded-2xl overflow-hidden relative group">
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent z-10"></div>
+<img alt="Datacenter Servers" class="w-full h-full object-cover grayscale opacity-30 group-hover:scale-105 transition-transform duration-1000" data-alt="abstract view of dark datacenter server racks with glowing blue and white status lights in a high-tech environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCr1EmhkbLisHvFZpCh3uTal7jXdjGj_CrcXBiYtnuJYSdIoty0QFP05kIr4uXS61Sh9ekQ6VkWj4AC1QPYahkdWw99CycVQscJNFvF8kNrhSH4j5tKR3Pg_ZqmkOlsJsP-5PlwB8AiZIzzCl_gofuhS-1sTBZYyZBB5meB8KAplrJwddI8v4YwoFitXevw96KllG_55KcICPy6jF_6fBsynB9IT9PGBLFbzENzJS5o5tpzwfBK-CqOzfnZYJaLElAIRYLeIiCoYMPO"/>
+<div class="absolute bottom-6 left-8 z-20">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+<span class="font-mono text-xs text-white">NODE_REALTIME_STREAM_LIVE</span>
+</div>
+<div class="flex gap-2">
+<div class="w-1 bg-primary/20 h-8"></div>
+<div class="w-1 bg-primary/40 h-8"></div>
+<div class="w-1 bg-primary/60 h-8"></div>
+<div class="w-1 bg-primary h-8"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

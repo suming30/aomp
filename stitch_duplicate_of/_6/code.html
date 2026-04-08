@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AutoOps - 脚本仓库</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffb59d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary-container": "#2d458a",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c3c6d8",
+                        "on-secondary": "#0e2b6f",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#0052dd",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#5d1900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container": "#201f1f",
+                        "error": "#ffb4ab",
+                        "primary-container": "#0f62fe",
+                        "outline-variant": "#424656",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#b4c5ff",
+                        "primary": "#b4c5ff",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-secondary-container": "#a0b6ff",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#00174c",
+                        "outline": "#8c90a2",
+                        "tertiary-container": "#c84000",
+                        "background": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed-variant": "#003da9",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#002979",
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed": "#00174c",
+                        "surface-dim": "#131313",
+                        "surface": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-effect {
+            background: rgba(32, 31, 31, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .lithographic-glow {
+            background: linear-gradient(135deg, #b4c5ff 0%, #0f62fe 100%);
+        }
+        .ghost-border {
+            outline: 1px solid rgba(66, 70, 86, 0.15);
+        }
+    </style>
+</head>
+<body class="flex overflow-hidden">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1C1B1B] flex flex-col py-6 font-['Inter'] text-sm tracking-tight z-[60]">
+<div class="px-6 mb-8 flex flex-col gap-1">
+<span class="text-xl font-black text-white tracking-tighter">AutoOps</span>
+<span class="text-[10px] uppercase tracking-widest text-[#C3C6D8] opacity-50">V2.4.0-Stable</span>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span>Assets</span>
+</a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">account_tree</span>
+<span>Workflows</span>
+</a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span>Monitors</span>
+</a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">terminal</span>
+<span>Log Center</span>
+</a>
+<a class="flex items-center px-6 py-3 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full lithographic-glow text-on-primary-container font-bold py-3 rounded-lg scale-95 active:opacity-80 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                Deploy New Node
+            </button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 ml-64 min-h-screen relative flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-8 shadow-[0_4px_30px_rgba(229,226,225,0.05)]">
+<div class="flex gap-8">
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity" href="#">Cluster Status</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#0F62FE] border-b border-[#0F62FE] pb-1 cursor-pointer active:scale-95 transition-all" href="#">Active Nodes</a>
+<a class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white transition-opacity" href="#">Traffic Matrix</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant/10">
+<span class="material-symbols-outlined text-sm text-primary mr-2">language</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">ZH-CN</span>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<section class="mt-14 p-8 flex-1 overflow-y-auto">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h1 class="text-3xl font-extrabold tracking-tighter text-white mb-2">脚本仓库 <span class="text-primary text-sm font-mono ml-2 opacity-50">/var/ops/scripts</span></h1>
+<p class="text-on-surface-variant text-sm">管理及分发全集群运维自动化脚本</p>
+</div>
+<button class="bg-primary-container text-white px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                    创建脚本
+                </button>
+</div>
+<div class="grid grid-cols-12 gap-6">
+<!-- Left Content: Table & Filters -->
+<div class="col-span-9 space-y-6">
+<!-- Search & Quick Filters -->
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-4 ghost-border">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container border-none rounded-lg py-2.5 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary placeholder:text-outline/50" placeholder="搜索脚本名称、作者或标签..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-container-high rounded-lg text-xs font-bold border border-outline-variant/20">全部类型</button>
+<button class="px-4 py-2 bg-surface-container-high rounded-lg text-xs font-bold border border-outline-variant/20">仅限私有</button>
+</div>
+</div>
+<!-- Script Table -->
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-2xl">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-highest">
+<tr>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">脚本名称</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">版本</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">作者</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">类型</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">权限</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">状态</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-right">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-high/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">code</span>
+</div>
+<div>
+<div class="text-sm font-bold text-white">nginx_hot_reload.sh</div>
+<div class="text-[10px] text-on-surface-variant font-mono">Last run: 2h ago</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-primary">v2.1.4</td>
+<td class="px-6 py-4 text-xs">Admin_Zhang</td>
+<td class="px-6 py-4">
+<span class="text-[10px] px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-mono">SHELL</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1 text-[10px] font-bold text-tertiary">
+<span class="material-symbols-outlined text-xs">lock</span> 私有
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded bg-secondary-container text-on-secondary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                            就绪
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-high/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm">terminal</span>
+</div>
+<div>
+<div class="text-sm font-bold text-white">db_health_check.py</div>
+<div class="text-[10px] text-on-surface-variant font-mono">Last run: 1d ago</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-primary">v1.0.0</td>
+<td class="px-6 py-4 text-xs">Dev_Li</td>
+<td class="px-6 py-4">
+<span class="text-[10px] px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-mono">PYTHON</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1 text-[10px] font-bold text-on-surface-variant">
+<span class="material-symbols-outlined text-xs">public</span> 公开
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded bg-secondary-container text-on-secondary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                            就绪
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-high/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-error-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-sm">warning</span>
+</div>
+<div>
+<div class="text-sm font-bold text-white">cleanup_logs.sh</div>
+<div class="text-[10px] text-on-surface-variant font-mono">Failed 5m ago</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-primary">v3.2.0-beta</td>
+<td class="px-6 py-4 text-xs">Sys_Admin</td>
+<td class="px-6 py-4">
+<span class="text-[10px] px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-mono">SHELL</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1 text-[10px] font-bold text-on-surface-variant">
+<span class="material-symbols-outlined text-xs">public</span> 公开
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded bg-error-container text-on-error-container">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                            异常
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">more_vert</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Content: Tags & Metadata -->
+<div class="col-span-3 space-y-6">
+<!-- Tag Cloud Card -->
+<div class="bg-surface-container-high p-6 rounded-xl ghost-border">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">热门标签</h3>
+<span class="material-symbols-outlined text-xs text-primary cursor-pointer">filter_alt</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container text-[10px] font-bold text-primary rounded-full cursor-pointer hover:bg-primary/20 transition-colors">Inspection</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-bold text-primary rounded-full cursor-pointer hover:bg-primary/20 transition-colors">Deployment</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-bold text-on-surface-variant rounded-full cursor-pointer hover:bg-white/10 transition-colors">Security</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-bold text-on-surface-variant rounded-full cursor-pointer hover:bg-white/10 transition-colors">Monitoring</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-bold text-on-surface-variant rounded-full cursor-pointer hover:bg-white/10 transition-colors">Database</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-bold text-on-surface-variant rounded-full cursor-pointer hover:bg-white/10 transition-colors">LogRotate</span>
+<span class="px-3 py-1 bg-surface-container text-[10px] font-bold text-on-surface-variant rounded-full cursor-pointer hover:bg-white/10 transition-colors">K8s</span>
+</div>
+</div>
+<!-- Statistics Card -->
+<div class="bg-surface-container-high p-6 rounded-xl ghost-border overflow-hidden relative">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-6">仓库概览</h3>
+<div class="space-y-4 relative z-10">
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">总脚本数量</span>
+<span class="text-lg font-mono font-bold text-white">128</span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%]"></div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-2">
+<div>
+<div class="text-[10px] text-on-surface-variant uppercase">Shell</div>
+<div class="text-sm font-bold">84</div>
+</div>
+<div>
+<div class="text-[10px] text-on-surface-variant uppercase">Python</div>
+<div class="text-sm font-bold">44</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Feed -->
+<div class="bg-surface-container-high p-6 rounded-xl ghost-border">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">最近更新</h3>
+<div class="space-y-4">
+<div class="flex gap-3 items-start">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+<div>
+<p class="text-xs text-white">Admin_Zhang 更新了 <span class="text-primary">nginx_reload</span></p>
+<p class="text-[10px] text-on-surface-variant">15 mins ago</p>
+</div>
+</div>
+<div class="flex gap-3 items-start">
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant mt-1.5"></div>
+<div>
+<p class="text-xs text-white">Dev_Li 创建了 <span class="text-primary">db_health_check</span></p>
+<p class="text-[10px] text-on-surface-variant">3 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Info Bar -->
+<footer class="h-10 bg-surface-container-lowest flex items-center px-8 border-t border-outline-variant/10">
+<div class="flex items-center gap-4 text-[10px] font-mono text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary"></span> API Connected</span>
+<span>Latency: 14ms</span>
+<span class="opacity-30">|</span>
+<span>Cluster: Production-AZ-01</span>
+</div>
+</footer>
+</main>
+</body></html>

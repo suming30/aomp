@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#dbe1ff",
+                    "inverse-surface": "#e5e2e1",
+                    "tertiary": "#ffb59d",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed-variant": "#832700",
+                    "surface-container-high": "#2a2a2a",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary-fixed": "#390c00",
+                    "secondary-container": "#2d458a",
+                    "on-surface": "#e5e2e1",
+                    "surface-bright": "#393939",
+                    "on-surface-variant": "#c3c6d8",
+                    "on-secondary": "#0e2b6f",
+                    "surface-variant": "#353534",
+                    "inverse-primary": "#0052dd",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-tertiary": "#5d1900",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-container": "#201f1f",
+                    "error": "#ffb4ab",
+                    "primary-container": "#0f62fe",
+                    "outline-variant": "#424656",
+                    "surface-container-low": "#1c1b1b",
+                    "surface-container-highest": "#353534",
+                    "secondary": "#b4c5ff",
+                    "primary": "#b4c5ff",
+                    "on-tertiary-container": "#fff1ed",
+                    "on-secondary-container": "#a0b6ff",
+                    "on-primary-container": "#f3f3ff",
+                    "on-error-container": "#ffdad6",
+                    "surface-tint": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#2a4387",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-fixed": "#00174c",
+                    "outline": "#8c90a2",
+                    "tertiary-container": "#c84000",
+                    "background": "#131313",
+                    "inverse-on-surface": "#313030",
+                    "on-primary-fixed-variant": "#003da9",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "on-primary": "#002979",
+                    "on-background": "#e5e2e1",
+                    "on-primary-fixed": "#00174c",
+                    "surface-dim": "#131313",
+                    "surface": "#131313"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"],
+                    "mono": ["JetBrains Mono"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #131313; color: #e5e2e1; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #424656; }
+    </style>
+</head>
+<body class="font-body selection:bg-primary selection:text-on-primary">
+<!-- Predicted Component: SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col py-6 bg-[#1C1B1B] z-50 font-['Inter'] text-sm tracking-tight">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-8 h-8 bg-gradient-to-br from-primary to-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<div class="text-xl font-black text-white tracking-tighter uppercase">AutoOps</div>
+<div class="text-[10px] text-[#C3C6D8] opacity-50 tracking-widest uppercase">V2.4.0-Stable</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="px-4 py-2 flex items-center gap-4 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="px-4 py-2 flex items-center gap-4 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Assets</span>
+</div>
+<!-- Active State: Workflows (closest to Task Execution) -->
+<div class="px-4 py-2 flex items-center gap-4 text-white font-bold border-r-2 border-[#0F62FE] bg-[#2A2A2A]/50 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+<span>Workflows</span>
+</div>
+<div class="px-4 py-2 flex items-center gap-4 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined">analytics</span>
+<span>Monitors</span>
+</div>
+<div class="px-4 py-2 flex items-center gap-4 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined">terminal</span>
+<span>Log Center</span>
+</div>
+<div class="px-4 py-2 flex items-center gap-4 text-[#C3C6D8] opacity-70 hover:bg-[#2A2A2A] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>Deploy New Node</span>
+</button>
+</div>
+</aside>
+<!-- Predicted Component: TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-14 z-50 bg-[#131313]/80 backdrop-blur-xl flex justify-between items-center px-8 shadow-[0_4px_30px_rgba(229,226,225,0.05)]">
+<div class="flex items-center gap-8">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8]">Orchestrated Monolith</span>
+<div class="flex gap-6">
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white cursor-pointer active:scale-95 transition-all">Cluster Status</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#0F62FE] border-b border-[#0F62FE] pb-1 cursor-pointer">Active Nodes</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[10px] text-[#C3C6D8] hover:text-white cursor-pointer active:scale-95 transition-all">Traffic Matrix</span>
+</div>
+</div>
+<div class="flex items-center gap-5 text-[#C3C6D8]">
+<div class="bg-[#1C1B1B] px-3 py-1.5 rounded flex items-center gap-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-[10px] w-48 uppercase tracking-widest" placeholder="搜索资源或日志..." type="text"/>
+</div>
+<span class="material-symbols-outlined hover:text-white cursor-pointer transition-opacity">language</span>
+<span class="material-symbols-outlined hover:text-white cursor-pointer transition-opacity">notifications</span>
+<span class="material-symbols-outlined hover:text-white cursor-pointer transition-opacity">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-14 min-h-screen p-8 space-y-6 overflow-hidden">
+<!-- Task Overview Section -->
+<section class="bg-surface-container-low p-8 rounded-xl shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-4 flex-1">
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase tracking-tighter">RUNNING</span>
+<h1 class="text-3xl font-black tracking-tight text-white">多节点自动化部署序列: PRODUCTION_V3</h1>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold text-on-surface-variant">
+<span class="uppercase tracking-widest">执行进度 - 65%</span>
+<span class="font-mono">EST. 04:22 REMAINING</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container w-[65%]" style="box-shadow: 0 0 10px rgba(15, 98, 254, 0.5);"></div>
+</div>
+</div>
+</div>
+<div class="flex gap-4 items-center">
+<div class="flex flex-col items-center px-6 border-r border-outline-variant/20">
+<span class="text-2xl font-black text-white">42</span>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant">成功节点</span>
+</div>
+<div class="flex flex-col items-center px-6 border-r border-outline-variant/20">
+<span class="text-2xl font-black text-error">02</span>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant">异常警报</span>
+</div>
+<div class="flex flex-col items-center px-6">
+<span class="text-2xl font-black text-primary">18</span>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant">排队中</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Terminal Controls -->
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    实时任务日志流
+                </h3>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest text-white text-xs font-bold rounded flex items-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">pause</span>
+                    暂停执行
+                </button>
+<button class="px-4 py-2 bg-error-container hover:bg-on-error text-on-error-container text-xs font-bold rounded flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-error-container/20">
+<span class="material-symbols-outlined text-sm">cancel</span>
+                    终止任务
+                </button>
+<button class="px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest text-white text-xs font-bold rounded flex items-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                    复制日志
+                </button>
+</div>
+</div>
+<!-- Terminal Area -->
+<div class="bg-surface-container-lowest rounded-xl p-1 shadow-inner relative group h-[calc(100vh-28rem)] min-h-[400px]">
+<div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
+<div class="h-full w-full overflow-y-auto font-mono text-sm leading-relaxed p-6 space-y-1">
+<!-- Log Entry -->
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:12:01</span>
+<span class="text-[#0F62FE] shrink-0 font-bold">[SYSTEM]</span>
+<span class="text-on-surface">正在初始化部署管道...</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:12:05</span>
+<span class="text-secondary shrink-0">192.168.1.1</span>
+<span class="text-on-surface-variant">-&gt; 连接握手成功 (SSH-RSA 4096)</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:12:08</span>
+<span class="text-secondary shrink-0">192.168.1.1</span>
+<span class="text-on-primary-container px-1 bg-primary-container/20 rounded">SUCCESS</span>
+<span class="text-on-surface">配置文件同步完成: /etc/nginx/conf.d/main.conf</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:12:12</span>
+<span class="text-secondary shrink-0">192.168.1.2</span>
+<span class="text-tertiary shrink-0">WARNING</span>
+<span class="text-tertiary">磁盘空间预警: 节点可用容量 &lt; 15%</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:12:15</span>
+<span class="text-secondary shrink-0">192.168.1.2</span>
+<span class="text-on-primary-container px-1 bg-primary-container/20 rounded">SUCCESS</span>
+<span class="text-on-surface">服务状态检查: NGINX (Running)</span>
+</div>
+<div class="flex gap-4 group/line pt-2">
+<span class="text-outline shrink-0 select-none w-12">09:12:22</span>
+<span class="text-on-error-container px-1 bg-error-container/40 rounded">FAILURE</span>
+<span class="text-error">192.168.1.10: 无法解析域名. Check DNS resolution at upstream.</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:12:30</span>
+<span class="text-[#0F62FE] shrink-0 font-bold">[WORKFLOW]</span>
+<span class="text-on-surface">触发回滚机制: 节点 192.168.1.10 已从负载均衡池移除.</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:13:02</span>
+<span class="text-secondary shrink-0">10.0.0.45</span>
+<span class="text-on-surface-variant">正在应用 Kubernetes Manifests...</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:13:05</span>
+<span class="text-secondary shrink-0">10.0.0.45</span>
+<span class="text-on-primary-container px-1 bg-primary-container/20 rounded">SUCCESS</span>
+<span class="text-on-surface">Deployment "api-gateway" 扩容至 3 副本.</span>
+</div>
+<div class="flex gap-4 group/line">
+<span class="text-outline shrink-0 select-none w-12">09:13:10</span>
+<span class="text-secondary shrink-0">10.0.0.46</span>
+<span class="text-on-surface-variant italic opacity-50">正在拉取镜像: registry.ops.local/core-app:latest...</span>
+</div>
+<div class="flex gap-4 group/line animate-pulse">
+<span class="text-outline shrink-0 select-none w-12">09:13:12</span>
+<span class="text-primary shrink-0 font-bold">&gt;</span>
+<span class="text-primary">正在监听来自边缘节点的信号流...</span>
+<span class="w-1.5 h-4 bg-primary inline-block"></span>
+</div>
+</div>
+<!-- Terminal Overlay Subtle Gradient -->
+<div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-surface-container-lowest to-transparent pointer-events-none"></div>
+</div>
+<!-- System Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container p-4 rounded-lg flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">memory</span>
+</div>
+<div>
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">系统 CPU 负载</div>
+<div class="text-lg font-bold text-white">24.5%</div>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">network_check</span>
+</div>
+<div>
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">出口流量 (IO)</div>
+<div class="text-lg font-bold text-white">1.2 GB/s</div>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">dns</span>
+</div>
+<div>
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">数据库链接</div>
+<div class="text-lg font-bold text-white">Active</div>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex items-center gap-4 border border-primary/20">
+<div class="w-10 h-10 rounded bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<div class="text-[10px] uppercase tracking-widest text-primary">安全隧道</div>
+<div class="text-lg font-bold text-white">加密开启</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

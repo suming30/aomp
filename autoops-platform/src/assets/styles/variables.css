@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+:root {
+  --bg-base: #0D0D0D;
+  --bg-surface: #131313;
+  --bg-surface-low: #1C1B1B;
+  --bg-surface-container: #201F1F;
+  --bg-surface-high: #2A2A2A;
+  --bg-surface-highest: #353534;
+  --bg-surface-lowest: #0E0E0E;
+  --bg-bright: #393939;
+
+  --primary: #B4C5FF;
+  --primary-container: #0F62FE;
+  --on-primary: #002979;
+  --on-primary-container: #F3F3FF;
+  --primary-fixed: #DBE1FF;
+  --primary-fixed-dim: #B4C5FF;
+
+  --secondary: #B4C5FF;
+  --secondary-container: #2D458A;
+  --on-secondary: #0E2B6F;
+  --on-secondary-container: #A0B6FF;
+
+  --tertiary: #FFB59D;
+  --tertiary-container: #C84000;
+  --on-tertiary: #5D1900;
+  --on-tertiary-container: #FFF1ED;
+
+  --error: #FFB4AB;
+  --error-container: #93000A;
+  --on-error: #690005;
+  --on-error-container: #FFDAD6;
+
+  --outline: #8C90A2;
+  --outline-variant: #424656;
+
+  --on-surface: #E5E2E1;
+  --on-surface-variant: #C3C6D8;
+  --on-background: #E5E2E1;
+  --inverse-surface: #E5E2E1;
+  --inverse-on-surface: #313030;
+  --surface-tint: #B4C5FF;
+
+  --surface-dim: #131313;
+  --surface: #131313;
+  --background: #131313;
+
+  --font-headline: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+
+  --sidebar-width: 256px;
+  --topbar-height: 56px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-base);
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  height: 100%;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.font-mono { font-family: var(--font-mono); }
+.font-headline { font-family: var(--font-headline); }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+
+.glass-card {
+  background: rgba(32, 31, 31, 0.8);
+  backdrop-filter: blur(20px);
+}
+
+.litho-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
+}
+
+.ghost-border {
+  outline: 1px solid rgba(66, 70, 86, 0.15);
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

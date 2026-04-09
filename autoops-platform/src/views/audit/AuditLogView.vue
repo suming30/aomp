@@ -10,7 +10,7 @@
           <span class="material-symbols-outlined">filter_list</span>
           {{ t('audit.advancedFilter') }}
         </button>
-        <button class="action-btn primary">
+        <button class="action-btn primary litho-gradient">
           <span class="material-symbols-outlined">download</span>
           {{ t('audit.exportAuditReport') }}
         </button>
@@ -134,16 +134,6 @@ const auditData = [
 .page-subtitle { font-size: 12px; color: var(--on-surface-variant); margin-top: 4px; }
 
 .header-actions { display: flex; gap: 8px; }
-
-.action-btn {
-  padding: 8px 16px; border-radius: 8px; border: none;
-  font-family: var(--font-label);
-  font-size: 10px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  cursor: pointer; display: flex; align-items: center; gap: 5px;
-}
-.action-btn.secondary { background: var(--bg-surface-high); color: #fff; border: 1px solid rgba(66, 70, 86, 0.1); }
-.action-btn.primary { background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%); color: white; }
 
 .filter-bar {
   display: flex;

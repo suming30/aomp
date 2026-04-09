@@ -14,7 +14,7 @@
           <span class="material-symbols-outlined">stop_circle</span>
           {{ t('tasks.stop') }}
         </button>
-        <button class="action-btn primary">
+        <button class="action-btn primary litho-gradient">
           <span class="material-symbols-outlined">download</span>
           {{ t('tasks.exportLog') }}
         </button>
@@ -137,19 +137,6 @@ const logLines = [
 .page-subtitle { font-size: 11px; color: var(--on-surface-variant); margin-top: 4px; }
 
 .header-actions { display: flex; gap: 8px; }
-
-.action-btn {
-  padding: 8px 16px; border-radius: 8px; border: none;
-  font-family: var(--font-label);
-  font-size: 10px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  cursor: pointer; display: flex; align-items: center; gap: 5px;
-  transition: all 0.2s;
-}
-.action-btn.primary { background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%); color: #fff; }
-.action-btn.primary:hover { opacity: 0.9; }
-.action-btn.warning { background: rgba(255, 184, 0, 0.1); color: #FFB800; border: 1px solid rgba(255, 184, 0, 0.2); }
-.action-btn.danger { background: rgba(147, 0, 10, 0.1); color: var(--error); border: 1px solid rgba(255, 180, 171, 0.15); }
 
 .progress-bar-wrap {
   background: var(--bg-surface-container-low);

@@ -20,10 +20,7 @@
       </div>
     </div>
 
-    <div class="tab-actions">
-      <button class="tab-action-btn" @click="closeOtherTabs()" title="Close Others">
-        <span class="material-symbols-outlined" style="font-size: 15px;">more_horiz</span>
-      </button>
+    <div class="tab-actions" v-if="hasClosableTabs">
       <button class="tab-action-btn" @click="closeAllTabs()" title="Close All">
         <span class="material-symbols-outlined" style="font-size: 15px;">close_all</span>
       </button>
@@ -37,6 +34,7 @@ import { useTabs } from '../../composables/useTabs.js'
 const {
   tabs,
   activePath,
+  hasClosableTabs,
   closeTab,
   closeOtherTabs,
   closeAllTabs,
@@ -154,8 +152,8 @@ const {
 }
 
 .tab-action-btn {
-  width: 28px;
   height: 28px;
+  padding: 0 12px;
   border-radius: 6px;
   border: none;
   background: var(--bg-surface-high);
@@ -164,7 +162,13 @@ const {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   transition: all 0.15s ease;
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .tab-action-btn:hover {

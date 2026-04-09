@@ -16,7 +16,7 @@
           <span class="material-symbols-outlined">save</span>
           {{ t('scripts.save') }}
         </button>
-        <button class="editor-btn accent litho-gradient" @click="handleDeploy">
+        <button class="action-btn primary litho-gradient" @click="handleDeploy">
           <span class="material-symbols-outlined">rocket_launch</span>
           {{ t('scripts.deployRun') }}
         </button>
@@ -278,11 +278,6 @@ function handleDeploy() {}
   border: 1px solid rgba(66, 70, 86, 0.1);
 }
 .editor-btn.primary:hover { background: var(--bg-bright); }
-.editor-btn.accent {
-  color: var(--on-primary-container);
-  box-shadow: 0 4px 15px rgba(15, 98, 254, 0.25);
-}
-.editor-btn.accent:hover { filter: brightness(1.1); }
 
 .editor-body {
   display: flex;

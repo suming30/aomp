@@ -9,7 +9,7 @@
         <span class="running-badge"><span class="dot green"></span> {{ t('assetDetail.running') }}</span>
       </div>
       <div class="header-actions">
-        <button class="action-btn"><span class="material-symbols-outlined">edit</span>Edit Config</button>
+        <button class="action-btn secondary"><span class="material-symbols-outlined">edit</span>Edit Config</button>
         <button class="action-btn danger"><span class="material-symbols-outlined">restart_alt</span>Restart Instance</button>
       </div>
     </div>
@@ -175,27 +175,6 @@ const opsLog = [
 }
 
 .header-actions { margin-left: auto; display: flex; gap: 8px; }
-
-.action-btn {
-  padding: 8px 16px;
-  background: var(--bg-surface-high);
-  border: 1px solid rgba(66, 70, 86, 0.1);
-  border-radius: 8px;
-  color: var(--on-surface);
-  font-family: var(--font-label);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-.action-btn:hover { background: var(--bg-bright); }
-.action-btn.danger { color: var(--error); border-color: rgba(255,180,171,0.15); }
-.action-btn.danger:hover { background: rgba(147, 0, 10, 0.1); }
 
 .location-text {
   font-size: 11px;

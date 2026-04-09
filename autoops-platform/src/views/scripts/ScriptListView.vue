@@ -6,7 +6,7 @@
         <p class="page-subtitle font-mono">{{ t('scripts.path') }} — {{ t('scripts.subtitle') }}</p>
       </div> -->
       <div class="header-actions">
-        <button class="action-btn-primary" @click="$router.push('/scripts/editor/new')">
+        <button class="action-btn primary litho-gradient" @click="$router.push('/scripts/editor/new')">
           <span class="material-symbols-outlined">add</span>
           {{ t('scripts.createScript') }}
         </button>
@@ -90,38 +90,6 @@ const scriptData = [
   margin: 0 auto;
 }
 
-.page-title {
-  font-size: 30px;
-  font-weight: 900;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-}
-.page-subtitle {
-  font-size: 11px;
-  color: var(--on-surface-variant);
-  margin-top: 4px;
-}
-
-.action-btn-primary {
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%);
-  border-radius: 8px;
-  border: none;
-  color: white;
-  font-family: var(--font-label);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: opacity 0.2s;
-}
-.action-btn-primary:hover { opacity: 0.9; }
-
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -141,35 +109,7 @@ const scriptData = [
   gap: 16px;
 }
 
-.search-area {
-  display: flex;
-  align-items: center;
-  background: var(--bg-surface-low);
-  border-radius: 9999px;
-  padding: 8px 16px;
-  border: 1px solid rgba(66, 70, 86, 0.08);
-  min-width: 320px;
-}
-.search-icon { font-size: 16px; color: var(--outline); }
-.search-area input {
-  background: transparent; border: none; outline: none;
-  color: #fff; padding-left: 10px; font-size: 13px; flex: 1;
-}
-.search-area input::placeholder { color: var(--outline); }
-
 .filter-group { display: flex; gap: 12px; align-items: center; }
-
-.filter-select {
-  background: var(--bg-surface-low);
-  border: 1px solid rgba(66, 70, 86, 0.08);
-  border-radius: 8px;
-  padding: 8px 14px;
-  color: #fff;
-  font-size: 12px;
-  outline: none;
-  cursor: pointer;
-}
-.filter-select option { background: var(--bg-surface-container); }
 
 .private-toggle {
   display: flex;
@@ -273,26 +213,4 @@ const scriptData = [
   transition: all 0.15s;
 }
 .card-actions:hover { background: var(--bg-surface-high); color: #fff; }
-
-.pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 24px;
-  padding-top: 16px;
-}
-.page-info { font-size: 11px; color: var(--on-surface-variant); }
-.page-nav { display: flex; gap: 4px; }
-.page-btn {
-  padding: 6px 12px;
-  background: transparent;
-  border: 1px solid rgba(66, 70, 86, 0.1);
-  border-radius: 6px;
-  color: var(--on-surface-variant);
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.page-btn:hover:not(:disabled) { background: var(--bg-surface-high); color: #fff; }
-.page-btn.active { background: var(--primary-container); color: white; border-color: transparent; }
 </style>

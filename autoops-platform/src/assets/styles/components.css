@@ -6,7 +6,6 @@
    Button Styles
    ---------------------------------------- */
 
-/* Primary Gradient Button - 统一使用 litho-gradient 类 */
 .action-btn {
   padding: 9px 20px;
   border-radius: 8px;
@@ -20,7 +19,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
 }
 
 .action-btn.primary {
@@ -32,7 +31,36 @@
   opacity: 0.9;
 }
 
-/* litho-gradient 背景类 - 使用与主机列表按钮相同的颜色 */
+.action-btn.secondary {
+  background: var(--bg-surface-high);
+  color: #fff;
+  border: 1px solid rgba(66, 70, 86, 0.1);
+}
+
+.action-btn.secondary:hover {
+  background: var(--bg-bright);
+}
+
+.action-btn.warning {
+  background: rgba(255, 184, 0, 0.1);
+  color: #FFB800;
+  border: 1px solid rgba(255, 184, 0, 0.2);
+}
+
+.action-btn.warning:hover {
+  background: rgba(255, 184, 0, 0.18);
+}
+
+.action-btn.danger {
+  background: rgba(147, 0, 10, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(255, 180, 171, 0.15);
+}
+
+.action-btn.danger:hover {
+  background: rgba(147, 0, 10, 0.18);
+}
+
 .litho-gradient {
   background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%);
 }
@@ -41,49 +69,56 @@
   opacity: 0.9;
 }
 
-/* Secondary Button */
-.btn-secondary,
-.action-btn.secondary {
-  padding: 10px 20px;
-  background: var(--bg-surface-high);
-  border-radius: 8px;
-  border: 1px solid rgba(66, 70, 86, 0.1);
-  color: #fff;
-  font-family: var(--font-label);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.2s;
-}
-
-.btn-secondary:hover,
-.action-btn.secondary:hover {
-  background: var(--bg-bright);
-}
-
-/* Small Button Variant */
 .btn-sm {
   padding: 8px 16px;
   font-size: 10px;
+}
+
+.btn-cancel {
+  padding: 10px 24px;
+  background: transparent;
+  border: 1px solid var(--outline-variant);
+  border-radius: 8px;
+  color: var(--on-surface-variant);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-confirm {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.btn-submit {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 /* ----------------------------------------
    Page Layout Styles
    ---------------------------------------- */
 
-/* Standard Page Container */
 .page-container {
   padding: 32px;
   max-width: 1600px;
   margin: 0 auto;
 }
 
-/* Page Header */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -95,7 +130,6 @@
   gap: 8px;
 }
 
-/* Page Title (commented out by default) */
 .page-title {
   font-size: 30px;
   font-weight: 900;
@@ -188,6 +222,190 @@
 }
 
 /* ----------------------------------------
+   Toolbar Styles
+   ---------------------------------------- */
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  gap: 16px;
+}
+
+.search-area {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface-low);
+  border-radius: 9999px;
+  padding: 8px 16px;
+  border: 1px solid rgba(66, 70, 86, 0.08);
+  min-width: 300px;
+}
+
+.search-area .search-icon {
+  font-size: 16px;
+  color: var(--outline);
+}
+
+.search-area input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  padding-left: 10px;
+  font-size: 13px;
+  flex: 1;
+}
+
+.search-area input::placeholder {
+  color: var(--outline);
+}
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.filter-select {
+  background: var(--bg-surface-low);
+  border: 1px solid rgba(66, 70, 86, 0.08);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: #fff;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.filter-select option {
+  background: var(--bg-surface-container);
+}
+
+.filter-btn {
+  padding: 8px 14px;
+  background: var(--bg-surface-low);
+  border: 1px solid rgba(66, 70, 86, 0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--on-surface-variant);
+  transition: background 0.2s;
+}
+
+.filter-btn:hover {
+  background: var(--bg-surface-high);
+}
+
+/* ----------------------------------------
+   Pagination Styles
+   ---------------------------------------- */
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 12px 0;
+}
+
+.page-info {
+  font-size: 11px;
+  color: var(--on-surface-variant);
+}
+
+.page-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid rgba(66, 70, 86, 0.1);
+  border-radius: 6px;
+  color: var(--on-surface-variant);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: var(--bg-surface-high);
+  color: #fff;
+}
+
+.page-btn.active {
+  background: var(--primary-container);
+  color: white;
+  border-color: transparent;
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ----------------------------------------
+   Status Tag Styles
+   ---------------------------------------- */
+
+.status-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.status-tag.success {
+  background: rgba(15, 98, 254, 0.12);
+  color: var(--primary-container);
+}
+
+.status-tag.warn {
+  background: rgba(255, 184, 0, 0.12);
+  color: #FFB800;
+}
+
+.status-tag.error {
+  background: rgba(147, 0, 10, 0.15);
+  color: var(--error);
+}
+
+.status-tag.running {
+  background: rgba(57, 153, 174, 0.12);
+  color: #3999AE;
+}
+
+/* ----------------------------------------
+   Status Dot Styles
+   ---------------------------------------- */
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.dot-running {
+  background: var(--primary-container);
+}
+
+.dot-highload {
+  background: #FFB800;
+}
+
+.dot-offline {
+  background: var(--error);
+}
+
+/* ----------------------------------------
    Dialog Styles
    ---------------------------------------- */
 
@@ -229,13 +447,56 @@
   margin-top: 24px;
 }
 
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--bg-surface-high);
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 180, 171, 0.15);
+  color: var(--error);
+}
+
+/* ----------------------------------------
+   Icon Button Styles
+   ---------------------------------------- */
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.icon-btn:hover {
+  background: var(--bg-surface-high);
+  color: #fff;
+}
+
+.icon-btn.danger:hover {
+  background: rgba(255, 180, 171, 0.15);
+  color: var(--error);
+}
+
 /* ----------------------------------------
    Utility Classes
    ---------------------------------------- */
-
-.litho-gradient {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
-}
 
 .text-primary { color: var(--primary-container); }
 .text-success { color: #4ade80; }
@@ -245,3 +506,5 @@
 
 .font-mono { font-family: var(--font-mono); }
 .font-bold { font-weight: 700; }
+
+.id-cell { color: var(--primary); font-weight: 600; }

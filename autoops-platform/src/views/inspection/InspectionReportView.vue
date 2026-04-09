@@ -10,7 +10,7 @@
           <span class="material-symbols-outlined">share</span>
           {{ t('inspection.shareReport') }}
         </button>
-        <button class="action-btn primary">
+        <button class="action-btn primary litho-gradient">
           <span class="material-symbols-outlined">picture_as_pdf</span>
           {{ t('inspection.exportPdf') }}
         </button>
@@ -125,18 +125,6 @@ const reportData = [
 .page-subtitle { font-size: 11px; color: var(--on-surface-variant); margin-top: 4px; }
 
 .header-actions { display: flex; gap: 8px; }
-
-.action-btn {
-  padding: 8px 16px; border-radius: 8px; border: none;
-  font-family: var(--font-label);
-  font-size: 10px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  cursor: pointer; display: flex; align-items: center; gap: 5px;
-}
-.action-btn.secondary { background: var(--bg-surface-high); color: #fff; border: 1px solid rgba(66, 70, 86, 0.1); }
-.action-btn.secondary:hover { background: var(--bg-bright); }
-.action-btn.primary { background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%); color: white; }
-.action-btn.primary:hover { opacity: 0.9; }
 
 .health-score-section {
   border-radius: 16px;

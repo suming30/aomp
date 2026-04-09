@@ -68,11 +68,11 @@
               </div>
             </div>
             <div class="dropdown-divider"></div>
-            <router-link to="/settings" class="dropdown-item" @click.native="showUserMenu = false">
+            <router-link to="/settings" class="dropdown-item" @click.stop="showUserMenu = false">
               <span class="material-symbols-outlined dropdown-item-icon">settings</span>
               {{ t('topbar.personalSettings') }}
             </router-link>
-            <a href="#" class="dropdown-item logout" @click.prevent="handleLogout">
+            <a href="#" class="dropdown-item logout" @click.stop.prevent="handleLogout">
               <span class="material-symbols-outlined dropdown-item-icon">logout</span>
               {{ t('topbar.logout') }}
             </a>

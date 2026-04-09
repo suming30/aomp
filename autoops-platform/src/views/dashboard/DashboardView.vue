@@ -2,7 +2,7 @@
   <div class="dashboard-page">
     <div class="page-header">
       <div class="header-actions">
-        <button class="action-btn-secondary">
+        <button class="action-btn secondary">
           <span class="material-symbols-outlined">refresh</span>
           {{ t('dashboard.refreshFreq') }}
         </button>
@@ -194,43 +194,6 @@ const opsLogData = [
   display: flex;
   gap: 8px;
 }
-
-.action-btn-secondary {
-  padding: 8px 16px;
-  background: var(--bg-surface-high);
-  border-radius: 8px;
-  border: 1px solid rgba(66, 70, 86, 0.1);
-  color: var(--on-surface);
-  font-family: var(--font-label);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.2s;
-}
-
-.action-btn-secondary:hover { background: var(--bg-bright); }
-
-.action-btn-primary {
-  padding: 8px 16px;
-  background: var(--primary-container);
-  border-radius: 8px;
-  border: none;
-  color: white;
-  font-family: var(--font-label);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.action-btn-primary:hover { opacity: 0.9; }
 
 .bento-row-1 {
   display: grid;

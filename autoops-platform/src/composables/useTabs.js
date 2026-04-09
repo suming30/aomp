@@ -34,6 +34,8 @@ export function useTabs() {
 
   const activePath = computed(() => route.path)
 
+  const hasClosableTabs = computed(() => tabs.value.some(t => t.closable))
+
   function getTabTitle(r) {
     const titleKey = r.meta?.title
     if (titleKey && titleKeyMap[titleKey]) {
@@ -96,6 +98,7 @@ export function useTabs() {
   return {
     tabs,
     activePath,
+    hasClosableTabs,
     addTab,
     closeTab,
     closeOtherTabs,

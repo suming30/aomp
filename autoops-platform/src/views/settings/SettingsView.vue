@@ -6,7 +6,7 @@
         <p class="page-subtitle">{{ t('settings.subtitle') }}</p>
       </div> -->
       <div class="header-actions">
-        <button class="save-btn litho-gradient" @click="handleSave">
+        <button class="action-btn primary litho-gradient" @click="handleSave">
           <span class="material-symbols-outlined">save</span>
           {{ t('settings.saveChanges') }}
         </button>
@@ -229,22 +229,6 @@ function handleSave() {}
 
 .header-actions { display: flex; gap: 8px; }
 .page-title {
-  font-size: 24px; font-weight: 900; color: #fff;
-  letter-spacing: -0.02em;
-}
-.page-subtitle { font-size: 11.5px; color: var(--on-surface-variant); margin-top: 3px; }
-
-.save-btn {
-  display: flex; align-items: center; gap: 6px;
-  padding: 9px 24px; border-radius: 8px; border: none;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
-  color: #fff; font-family: var(--font-label); font-size: 11px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
-  box-shadow: 0 4px 15px rgba(15,98,254,0.25);
-}
-.save-btn .material-symbols-outlined { font-size: 16px !important; }
-
-/* Grid Layout */
 .settings-grid {
   display: grid;
   grid-template-columns: 240px 1fr;

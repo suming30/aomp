@@ -1,14 +1,16 @@
 <template>
   <div class="role-manage-page">
     <div class="page-header">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('roleManage.title') }}</h1>
         <p class="page-subtitle">{{ t('roleManage.subtitle') }}</p>
+      </div> -->
+      <div class="header-actions">
+        <button class="action-btn primary litho-gradient" @click="showCreateDialog = true">
+          <span class="material-symbols-outlined">add</span>
+          {{ t('roleManage.createRole') }}
+        </button>
       </div>
-      <button class="action-btn primary litho-gradient" @click="showCreateDialog = true">
-        <span class="material-symbols-outlined">add</span>
-        {{ t('roleManage.createRole') }}
-      </button>
     </div>
 
     <!-- Role Cards Grid -->
@@ -188,7 +190,13 @@ function getPermLabel(idx) { return ['', 'Read Only', 'Read + Write', 'Full Exec
 </script>
 
 <style scoped>
-.role-manage-page { padding: 28px; max-width: 1400px; margin: 0 auto; }
+.role-manage-page { padding: 32px; max-width: 1600px; margin: 0 auto; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .page-title { font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
 .page-subtitle { font-size: 12px; color: var(--on-surface-variant); margin-top: 4px; }

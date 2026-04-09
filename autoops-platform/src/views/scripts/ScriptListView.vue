@@ -1,14 +1,16 @@
 <template>
   <div class="scripts-page">
     <div class="page-header">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('scripts.title') }}</h1>
         <p class="page-subtitle font-mono">{{ t('scripts.path') }} — {{ t('scripts.subtitle') }}</p>
+      </div> -->
+      <div class="header-actions">
+        <button class="action-btn-primary" @click="$router.push('/scripts/editor/new')">
+          <span class="material-symbols-outlined">add</span>
+          {{ t('scripts.createScript') }}
+        </button>
       </div>
-      <button class="action-btn-primary" @click="$router.push('/scripts/editor/new')">
-        <span class="material-symbols-outlined">add</span>
-        {{ t('scripts.createScript') }}
-      </button>
     </div>
 
     <div class="toolbar">
@@ -84,7 +86,7 @@ const scriptData = [
 <style scoped>
 .scripts-page {
   padding: 32px;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -103,7 +105,7 @@ const scriptData = [
 
 .action-btn-primary {
   padding: 10px 20px;
-  background: var(--primary-container);
+  background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%);
   border-radius: 8px;
   border: none;
   color: white;
@@ -119,6 +121,17 @@ const scriptData = [
   transition: opacity 0.2s;
 }
 .action-btn-primary:hover { opacity: 0.9; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
 
 .toolbar {
   display: flex;

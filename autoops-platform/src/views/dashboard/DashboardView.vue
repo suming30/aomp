@@ -1,16 +1,12 @@
 <template>
   <div class="dashboard-page">
     <div class="page-header">
-      <div>
-        <h1 class="page-title">{{ t('dashboard.title') }}</h1>
-        <p class="page-subtitle font-mono">{{ t('dashboard.syncInfo') }}</p>
-      </div>
       <div class="header-actions">
         <button class="action-btn-secondary">
           <span class="material-symbols-outlined">refresh</span>
           {{ t('dashboard.refreshFreq') }}
         </button>
-        <button class="action-btn-primary">{{ t('dashboard.exportReport') }}</button>
+        <button class="action-btn primary litho-gradient">{{ t('dashboard.exportReport') }}</button>
       </div>
     </div>
 

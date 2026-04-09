@@ -156,7 +156,7 @@ const recordData = [
 }
 .action-btn.secondary { background: var(--bg-surface-high); color: #fff; border: 1px solid rgba(66, 70, 86, 0.1); }
 .action-btn.secondary:hover { background: var(--bg-bright); }
-.action-btn.primary { background: var(--primary-container); color: white; }
+.action-btn.primary { background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%); color: white; }
 .action-btn.primary:hover { opacity: 0.9; }
 .action-btn.warning { background: rgba(255, 184, 0, 0.1); color: #FFB800; border: 1px solid rgba(255, 184, 0, 0.2); }
 

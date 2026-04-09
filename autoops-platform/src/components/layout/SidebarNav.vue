@@ -5,7 +5,7 @@
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">deployed_code</span>
       </div>
       <div>
-        <h1 class="logo-title">AutoOps</h1>
+        <h1 class="logo-title">AOMP</h1>
         <p class="logo-version">{{ t('common.version') }}</p>
       </div>
     </div>

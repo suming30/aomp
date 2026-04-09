@@ -6,6 +6,7 @@ import router from './router'
 import i18n from './i18n/i18n'
 import App from './App.vue'
 import './assets/styles/variables.css'
+import './assets/styles/components.css'
 
 const app = createApp(App)
 

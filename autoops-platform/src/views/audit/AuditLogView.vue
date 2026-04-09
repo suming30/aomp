@@ -1,10 +1,10 @@
 <template>
   <div class="audit-page">
     <div class="page-header">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('audit.title') }}</h1>
         <p class="page-subtitle">{{ t('audit.subtitle') }}</p>
-      </div>
+      </div> -->
       <div class="header-actions">
         <button class="action-btn secondary">
           <span class="material-symbols-outlined">filter_list</span>
@@ -117,8 +117,14 @@ const auditData = [
 <style scoped>
 .audit-page {
   padding: 32px;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .page-title {
@@ -137,7 +143,7 @@ const auditData = [
   cursor: pointer; display: flex; align-items: center; gap: 5px;
 }
 .action-btn.secondary { background: var(--bg-surface-high); color: #fff; border: 1px solid rgba(66, 70, 86, 0.1); }
-.action-btn.primary { background: var(--primary-container); color: white; }
+.action-btn.primary { background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%); color: white; }
 
 .filter-bar {
   display: flex;

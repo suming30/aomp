@@ -1,14 +1,16 @@
 <template>
   <div class="settings-page">
     <div class="page-header-row">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('settings.title') }}</h1>
         <p class="page-subtitle">{{ t('settings.subtitle') }}</p>
+      </div> -->
+      <div class="header-actions">
+        <button class="save-btn litho-gradient" @click="handleSave">
+          <span class="material-symbols-outlined">save</span>
+          {{ t('settings.saveChanges') }}
+        </button>
       </div>
-      <button class="save-btn litho-gradient" @click="handleSave">
-        <span class="material-symbols-outlined">save</span>
-        {{ t('settings.saveChanges') }}
-      </button>
     </div>
 
     <div class="settings-grid">
@@ -215,8 +217,8 @@ function handleSave() {}
 
 <style scoped>
 .settings-page {
-  padding: 24px 32px;
-  max-width: 1440px;
+  padding: 32px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -224,6 +226,8 @@ function handleSave() {}
   display: flex; justify-content: space-between; align-items: center;
   margin-bottom: 24px;
 }
+
+.header-actions { display: flex; gap: 8px; }
 .page-title {
   font-size: 24px; font-weight: 900; color: #fff;
   letter-spacing: -0.02em;

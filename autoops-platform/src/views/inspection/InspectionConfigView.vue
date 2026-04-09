@@ -1,10 +1,10 @@
 <template>
   <div class="inspection-config-page">
     <div class="page-header">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('inspection.configTitle') }}</h1>
         <p class="page-subtitle">{{ t('inspection.configSubtitle') }}</p>
-      </div>
+      </div> -->
       <div class="header-actions">
         <button class="action-btn secondary">
           <span class="material-symbols-outlined">save</span>Save Draft
@@ -171,8 +171,14 @@ const hostList = ref([
 <style scoped>
 .inspection-config-page {
   padding: 32px;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .page-title {
@@ -195,7 +201,7 @@ const hostList = ref([
   border: 1px solid rgba(66, 70, 86, 0.1);
 }
 .action-btn.secondary:hover { background: var(--bg-bright); }
-.action-btn.primary { color: var(--on-primary-container); box-shadow: 0 4px 15px rgba(15, 98, 254, 0.25); }
+.action-btn.primary { background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%); color: #fff; box-shadow: 0 4px 15px rgba(15, 98, 254, 0.25); }
 
 .config-layout {
   display: grid;

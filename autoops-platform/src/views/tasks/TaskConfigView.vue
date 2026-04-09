@@ -1,10 +1,10 @@
 <template>
   <div class="task-config-page">
     <div class="page-header">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('tasks.configTitle') }}</h1>
         <p class="page-subtitle">{{ t('tasks.configSubtitle') }}</p>
-      </div>
+      </div> -->
       <div class="header-actions">
         <button class="action-btn secondary">
           <span class="material-symbols-outlined">save</span>
@@ -166,8 +166,14 @@ const selectedHosts = ['192.168.1.100', '192.168.1.101', '192.168.1.102']
 <style scoped>
 .task-config-page {
   padding: 32px;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .page-title {
@@ -191,7 +197,8 @@ const selectedHosts = ['192.168.1.100', '192.168.1.101', '192.168.1.102']
 }
 .action-btn.secondary:hover { background: var(--bg-bright); }
 .action-btn.primary {
-  color: var(--on-primary-container);
+  background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%);
+  color: #fff;
   box-shadow: 0 4px 15px rgba(15, 98, 254, 0.25);
 }
 

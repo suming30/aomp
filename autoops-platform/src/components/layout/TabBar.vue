@@ -154,13 +154,27 @@ const {
 }
 
 .tab-action-btn {
-  width: 26px; height: 26px;
-  border-radius: 5px; border: none;
-  background: transparent; color: var(--on-surface-variant);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: var(--bg-surface-high);
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
 }
+
 .tab-action-btn:hover {
-  background: var(--bg-surface-high); color: #fff;
+  background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(15, 98, 254, 0.25);
+}
+
+.tab-action-btn .material-symbols-outlined {
+  font-size: 16px !important;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
 }
 </style>

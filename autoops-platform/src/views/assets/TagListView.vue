@@ -1,14 +1,16 @@
 <template>
   <div class="tag-manage-page">
     <div class="page-header">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('tagManage.title') }}</h1>
         <p class="page-subtitle">{{ t('tagManage.subtitle') }}</p>
+      </div> -->
+      <div class="header-actions">
+        <button class="action-btn primary litho-gradient" @click="showCreateDialog = true">
+          <span class="material-symbols-outlined">add</span>
+          {{ t('tagManage.createTag') }}
+        </button>
       </div>
-      <button class="action-btn primary litho-gradient" @click="showCreateDialog = true">
-        <span class="material-symbols-outlined">add</span>
-        {{ t('tagManage.createTag') }}
-      </button>
     </div>
 
     <!-- Stats -->
@@ -112,7 +114,16 @@ function handleDelete(tag) {}
 </script>
 
 <style scoped>
-.tag-manage-page { padding: 28px; max-width: 1400px; margin: 0 auto; }
+.tag-manage-page { padding: 32px; max-width: 1600px; margin: 0 auto; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions { display: flex; gap: 8px; }
+
 .page-title { font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
 .page-subtitle { font-size: 12px; color: var(--on-surface-variant); margin-top: 4px; }
 

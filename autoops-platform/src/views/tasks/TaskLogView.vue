@@ -146,8 +146,8 @@ const logLines = [
   cursor: pointer; display: flex; align-items: center; gap: 5px;
   transition: all 0.2s;
 }
-.action-btn.primary { background: var(--bg-surface-high); color: #fff; border: 1px solid rgba(66, 70, 86, 0.1); }
-.action-btn.primary:hover { background: var(--bg-bright); }
+.action-btn.primary { background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%); color: #fff; }
+.action-btn.primary:hover { opacity: 0.9; }
 .action-btn.warning { background: rgba(255, 184, 0, 0.1); color: #FFB800; border: 1px solid rgba(255, 184, 0, 0.2); }
 .action-btn.danger { background: rgba(147, 0, 10, 0.1); color: var(--error); border: 1px solid rgba(255, 180, 171, 0.15); }
 

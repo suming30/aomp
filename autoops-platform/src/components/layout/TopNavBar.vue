@@ -68,7 +68,7 @@
               </div>
             </div>
             <div class="dropdown-divider"></div>
-            <router-link to="/settings" class="dropdown-item" @click="showUserMenu = false">
+            <router-link to="/settings" class="dropdown-item" @click.native="showUserMenu = false">
               <span class="material-symbols-outlined dropdown-item-icon">settings</span>
               {{ t('topbar.personalSettings') }}
             </router-link>

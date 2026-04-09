@@ -133,9 +133,9 @@ const codeContent = '#!/bin/bash\n' +
 'DEPLOY_TIMEOUT="${DEPLOY_TIMEOUT:-300}"\n' +
 '\n' +
 '# --- Logging ---\n' +
-'log_info()  { echo "[INFO]  $(date \\'+%Y-%m-%d %H:%M:%S\\') $*"; }\n' +
-'log_error() { echo "[ERROR] $(date \\'+%Y-%m-%d %H:%M:%S\\') $*" >&2; }\n' +
-'log_warn()  { echo "[WARN]  $(date \\'+%Y-%m-%d %H:%M:%S\\') $*"; }\n' +
+'log_info()  { echo "[INFO]  $(date +%Y-%m-%d-%H:%M:%S) $*"; }\n' +
+'log_error() { echo "[ERROR] $(date +%Y-%m-%d-%H:%M:%S) $*" >&2; }\n' +
+'log_warn()  { echo "[WARN]  $(date +%Y-%m-%d-%H:%M:%S) $*"; }\n' +
 '\n' +
 '# --- Pre-flight Checks ---\n' +
 'preflight_check() {\n' +

@@ -1,10 +1,10 @@
 <template>
   <div class="group-manage-page">
     <div class="page-header">
-      <div>
+      <!-- <div>
         <h1 class="page-title">{{ t('groupManage.title') }}</h1>
         <p class="page-subtitle">{{ t('groupManage.subtitle') }}</p>
-      </div>
+      </div> -->
       <div class="header-actions">
         <button class="action-btn secondary">
           <span class="material-symbols-outlined">refresh</span>
@@ -144,7 +144,14 @@ const groups = [
 </script>
 
 <style scoped>
-.group-manage-page { padding: 28px; max-width: 1400px; margin: 0 auto; }
+.group-manage-page { padding: 32px; max-width: 1600px; margin: 0 auto; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .page-title { font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
 .page-subtitle { font-size: 12px; color: var(--on-surface-variant); margin-top: 4px; }
 

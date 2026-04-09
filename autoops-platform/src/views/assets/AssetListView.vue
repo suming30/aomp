@@ -6,9 +6,9 @@
         <p class="page-subtitle">{{ t('assets.subtitle') }}</p>
       </div> -->
       <div class="header-actions">
-        <button class="action-btn-primary" @click="showAddDialog = true">
+        <button class="action-btn primary litho-gradient" @click="showAddDialog = true">
           <span class="material-symbols-outlined">add</span>
-          {{ t('assets.addHost') }}
+           {{ t('assets.addHost') }}
         </button>
       </div>
     </div>
@@ -178,7 +178,7 @@ const hostData = [
 
 .action-btn-primary {
   padding: 10px 20px;
-  background: var(--primary-container);
+  background: linear-gradient(135deg, #0F62FE 0%, #4589FF 100%);
   border-radius: 8px;
   border: none;
   color: white;

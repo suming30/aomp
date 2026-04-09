@@ -21,8 +21,11 @@
     </div>
 
     <div class="tab-actions" v-if="hasClosableTabs">
+      <button class="tab-action-btn" @click="closeOtherTabs()" title="Close Others">
+        <span class="material-symbols-outlined">more_horiz</span>
+      </button>
       <button class="tab-action-btn" @click="closeAllTabs()" title="Close All">
-        <span class="material-symbols-outlined" style="font-size: 15px;">close_all</span>
+        <span class="material-symbols-outlined">close</span>
       </button>
     </div>
   </div>

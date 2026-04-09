@@ -228,7 +228,7 @@ function handleSave() {}
 }
 
 .header-actions { display: flex; gap: 8px; }
-.page-title {
+
 .settings-grid {
   display: grid;
   grid-template-columns: 240px 1fr;

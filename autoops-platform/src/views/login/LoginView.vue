@@ -106,12 +106,16 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { ElMessage, ElLoading } from 'element-plus'
+import { useUserStore } from '../../stores/user'
 
 const { t, locale } = useI18n()
 const router = useRouter()
+const userStore = useUserStore()
 
 const showLang = ref(false)
 const showPassword = ref(false)
+const loading = ref(false)
 const form = reactive({ username: '', password: '', remember: false })
 
 function toggleLangMenu() {
@@ -124,9 +128,29 @@ function switchLang(lang) {
   showLang.value = false
 }
 
-function handleLogin() {
-  localStorage.setItem('autoops_auth', 'true')
-  router.push('/dashboard')
+async function handleLogin() {
+  if (!form.username || !form.password) {
+    ElMessage.warning(locale.value === 'zh' ? '请输入用户名和密码' : 'Please enter username and password')
+    return
+  }
+  
+  loading.value = true
+  const loadingInstance = ElLoading.service({ 
+    lock: true, 
+    text: locale.value === 'zh' ? '登录中...' : 'Logging in...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+  
+  try {
+    await userStore.login(form.username, form.password)
+    ElMessage.success(locale.value === 'zh' ? '登录成功' : 'Login successful')
+    router.push('/dashboard')
+  } catch (error) {
+    console.error('Login failed:', error)
+  } finally {
+    loading.value = false
+    loadingInstance.close()
+  }
 }
 </script>
 

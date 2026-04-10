@@ -1,117 +1,218 @@
 <template>
   <div class="audit-page">
     <div class="page-header">
-      <!-- <div>
-        <h1 class="page-title">{{ t('audit.title') }}</h1>
-        <p class="page-subtitle">{{ t('audit.subtitle') }}</p>
-      </div> -->
       <div class="header-actions">
-        <button class="action-btn secondary">
+        <button class="action-btn secondary" @click="handleSearch">
           <span class="material-symbols-outlined">filter_list</span>
-          {{ t('audit.advancedFilter') }}
+          {{ locale === 'zh' ? '高级筛选' : t('audit.advancedFilter') }}
         </button>
-        <button class="action-btn primary litho-gradient">
+        <button class="action-btn primary litho-gradient" @click="handleExport">
           <span class="material-symbols-outlined">download</span>
-          {{ t('audit.exportAuditReport') }}
+          {{ locale === 'zh' ? '导出审计报告' : t('audit.exportAuditReport') }}
         </button>
       </div>
     </div>
 
-    <!-- Filter Bar -->
     <div class="filter-bar">
       <div class="filter-group">
-        <select class="filter-select">
-          <option>All Operations</option>
-          <option>Login / Logout</option>
-          <option>Config Change</option>
-          <option>Script Execution</option>
-          <option>User Management</option>
+        <select class="filter-select" v-model="queryParams.module">
+          <option v-for="opt in moduleOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
-        <select class="filter-select">
-          <option>All Results</option>
-          <option>Success</option>
-          <option>Failed</option>
-          <option>Denied</option>
+        <select class="filter-select" v-model="queryParams.level">
+          <option v-for="opt in levelOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
-        <input type="date" value="2024-05-17" class="date-input" />
+        <input type="date" v-model="queryParams.startTime" class="date-input" />
         <span class="range-sep">—</span>
-        <input type="date" value="2024-05-24" class="date-input" />
+        <input type="date" v-model="queryParams.endTime" class="date-input" />
       </div>
       <div class="search-area">
         <span class="material-symbols-outlined search-icon">search</span>
-        <input placeholder="Search by operator or resource..." />
+        <input v-model="queryParams.username" :placeholder="locale === 'zh' ? '搜索操作人或资源...' : 'Search by operator or resource...'" @keyup.enter="handleSearch" />
       </div>
     </div>
 
-    <!-- Audit Table -->
-    <div class="table-section glass-card">
+    <div class="table-section glass-card" v-loading="loading">
       <table class="audit-table">
         <thead>
           <tr>
-            <th>{{ t('audit.operator') }}</th>
-            <th>{{ t('audit.operationType') }}</th>
-            <th>{{ t('audit.targetResource') }}</th>
-            <th>{{ t('audit.timestamp') }}</th>
-            <th>{{ t('audit.result') }}</th>
-            <th>{{ t('audit.sourceIp') }}</th>
-            <th>{{ t('audit.details') }}</th>
+            <th>{{ locale === 'zh' ? '操作人' : t('audit.operator') }}</th>
+            <th>{{ locale === 'zh' ? '操作类型' : t('audit.operationType') }}</th>
+            <th>{{ locale === 'zh' ? '目标资源' : t('audit.targetResource') }}</th>
+            <th>{{ locale === 'zh' ? '时间戳' : t('audit.timestamp') }}</th>
+            <th>{{ locale === 'zh' ? '结果' : t('audit.result') }}</th>
+            <th>{{ locale === 'zh' ? '来源IP' : t('audit.sourceIp') }}</th>
+            <th>{{ locale === 'zh' ? '详情' : t('audit.details') }}</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, idx) in auditData" :key="idx">
+          <tr v-for="(row, idx) in tableData" :key="idx">
             <td>
               <div class="operator-cell">
-                <img :src="row.avatar" class="op-avatar" />
-                <span>{{ row.operator }}</span>
+                <img :src="`https://ui-avatars.com/api/?name=${row.username || 'SYS'}&background=333&color=fff`" class="op-avatar" />
+                <span>{{ row.username || 'system' }}</span>
               </div>
             </td>
-            <td><span :class="['op-type', row.opClass]">{{ row.operation }}</span></td>
-            <td class="font-mono text-muted">{{ row.resource }}</td>
-            <td class="font-mono text-muted">{{ row.time }}</td>
-            <td><span :class="['result-tag', row.resultClass]">{{ row.result }}</span></td>
-            <td class="font-mono text-muted">{{ row.ip }}</td>
-            <td><a href="#" class="detail-link">View →</a></td>
+            <td><span :class="['op-type', getModuleClass(row.module)]">{{ row.action || row.module }}</span></td>
+            <td class="font-mono text-muted">{{ row.resource || '-' }}</td>
+            <td class="font-mono text-muted">{{ row.createdAt || row.time }}</td>
+            <td><span :class="['result-tag', getResultClass(row.result)]">{{ row.result || 'SUCCESS' }}</span></td>
+            <td class="font-mono text-muted">{{ row.ip || '-' }}</td>
+            <td><a href="#" class="detail-link">{{ locale === 'zh' ? '查看' : 'View' }} →</a></td>
+          </tr>
+          <tr v-if="tableData.length === 0 && !loading">
+            <td colspan="7" class="no-data">{{ locale === 'zh' ? '暂无审计日志数据' : 'No audit log data' }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Pagination -->
     <div class="pagination">
-      <span class="page-info font-mono">Showing 1-15 of 48,291 records</span>
+      <span class="page-info font-mono">{{ locale === 'zh' ? `显示 ${(queryParams.pageNum - 1) * queryParams.pageSize + 1}-${Math.min(queryParams.pageNum * queryParams.pageSize, total)} 条，共 ${total} 条` : `Showing ${(queryParams.pageNum - 1) * queryParams.pageSize + 1}-${Math.min(queryParams.pageNum * queryParams.pageSize, total)} of ${total} records` }}</span>
       <div class="page-nav">
-        <button class="page-btn" disabled>← Prev</button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-        <button class="page-btn">...</button>
-        <button class="page-btn">3220</button>
-        <button class="page-btn">Next →</button>
+        <button class="page-btn" :disabled="queryParams.pageNum <= 1" @click="handlePageChange(queryParams.pageNum - 1)">← {{ locale === 'zh' ? '上一页' : 'Prev' }}</button>
+        <button v-for="p in Math.min(5, Math.ceil(total / queryParams.pageSize))" :key="p" class="page-btn" :class="{ active: p === queryParams.pageNum }" @click="handlePageChange(p)">{{ p }}</button>
+        <button class="page-btn" :disabled="queryParams.pageNum >= Math.ceil(total / queryParams.pageSize)" @click="handlePageChange(queryParams.pageNum + 1)">{{ locale === 'zh' ? '下一页' : 'Next' }} →</button>
       </div>
     </div>
 
-    <!-- Security Notice -->
     <div class="security-notice glass-card">
       <span class="material-symbols-outlined notice-icon">shield</span>
       <div>
-        <h4>Compliance Information</h4>
-        <p class="font-mono notice-text">All audit logs are encrypted at rest (AES-256) and retained for 365 days per SOX compliance. Tamper-evident logging enabled via blockchain hash chain.</p>
+        <h4>{{ locale === 'zh' ? '合规信息' : 'Compliance Information' }}</h4>
+        <p class="font-mono notice-text">{{ locale === 'zh' ? '所有审计日志使用 AES-256 加密存储，根据 SOX 合规要求保留 365 天。启用区块链哈希链实现防篡改日志记录。' : 'All audit logs are encrypted at rest (AES-256) and retained for 365 days per SOX compliance. Tamper-evident logging enabled via blockchain hash chain.' }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { getAuditLogList, exportAuditLogs } from '../../api/audit'
+import { ElMessage } from 'element-plus'
 
-const auditData = [
-  { operator: 'zhang_san', avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAc0vS318_7OXcTC2YSdOa7Eq1rsXwYBC_afOGAzgIbZHM6oovFaso4CW94bOfOdQ3XjCbno95XgRapqkLDNgEiuivbWtb5vdKaBza78J1RjOrgpVua3KQZh-yTYvU1Krn3GcrkpqIIfbclkcd79GZKp062J18c-y16-SF16pkVLjMcCS_6H4uZDz5iMntpDUyJeYSq6Q2ARBVMeIgbucEkoBIBZthw4_lMoK86BDSwuCJbBsaAQHtQs3xQeJvk12EjUv_Su4rIbJW7', operation: 'LOGIN', opClass: 'op-auth', resource: '/login', time: '2024-05-24 14:20:01', result: 'SUCCESS', resultClass: 'res-success', ip: '10.0.5.42' },
-  { operator: 'li_si', avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdJ9It8bcAmloKGW8_QVDC-w-Qpxe8JEt6DXVTqYIiyoEIQYJTtGzMpz-qGaR4mj0IG_0Qmo_t3mLoC_4XOcGqi66iMRBjiG15aDjpOdxgmMA7XcIiCSvIFvhhTTHiyJ3YV2-ZJnLUJYzUViTNeRPZnFYbfDhswhmpIcKWUaeKsC9em6C1xRbtrzqZZJkE2PwvjYqGPLtF9oSNMkIgJJtUDKR4Ep95ZIn8GRIqo_2O1CpPPtcgvARY8xotAmEiPY7AZTWzu2zRqa4c', operation: 'CONFIG_UPDATE', opClass: 'op-config', resource: 'HOST-2024-001', time: '2024-05-24 14:32:05', result: 'SUCCESS', resultClass: 'res-success', ip: '10.0.5.43' },
-  { operator: 'wang_wu', avatar: 'https://ui-avatars.com/api/?name=WW&background=333&color=fff', operation: 'SCRIPT_EXEC', opClass: 'op-exec', resource: 'deploy_k8s_node.sh', time: '2024-05-24 14:32:10', result: 'SUCCESS', resultClass: 'res-success', ip: '10.0.5.44' },
-  { operator: 'system', avatar: 'https://ui-avatars.com/api/?name=SYS&background=333&color=fff', operation: 'AUTO_DEPLOY', opClass: 'op-auto', resource: 'cert_renewal.sh', time: '2024-05-24 02:00:00', result: 'SUCCESS', resultClass: 'res-success', ip: '127.0.0.1' },
-  { operator: 'unknown', avatar: 'https://ui-avatars.com/api/?name=??&background=333&color=fff', operation: 'ACCESS_DENIED', opClass: 'op-deny', resource: '/admin/settings', time: '2024-05-23 23:45:12', result: 'DENIED', resultClass: 'res-error', ip: '203.0.113.50' }
-]
+const { t, locale } = useI18n()
+
+const loading = ref(false)
+const tableData = ref([])
+const total = ref(0)
+
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 20,
+  module: '',
+  action: '',
+  level: '',
+  username: '',
+  startTime: '',
+  endTime: ''
+})
+
+const dateRange = ref([])
+
+async function fetchAuditLogs() {
+  loading.value = true
+  try {
+    const params = { ...queryParams }
+    if (dateRange.value && dateRange.value.length === 2) {
+      params.startTime = dateRange.value[0]
+      params.endTime = dateRange.value[1]
+    }
+    const res = await getAuditLogList(params)
+    tableData.value = res.data.records || []
+    total.value = res.data.total || 0
+  } catch (error) {
+    console.error('Failed to fetch audit logs:', error)
+    ElMessage.error(locale.value === 'zh' ? '获取审计日志失败' : 'Failed to fetch audit logs')
+  } finally {
+    loading.value = false
+  }
+}
+
+async function handleExport() {
+  try {
+    const params = {
+      module: queryParams.module,
+      level: queryParams.level,
+      startTime: queryParams.startTime,
+      endTime: queryParams.endTime
+    }
+    const res = await exportAuditLogs(params)
+    const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `audit_logs_${new Date().toISOString().split('T')[0]}.xlsx`
+    link.click()
+    window.URL.revokeObjectURL(url)
+    ElMessage.success(locale.value === 'zh' ? '导出成功' : 'Export successful')
+  } catch (error) {
+    console.error('Failed to export audit logs:', error)
+    ElMessage.error(locale.value === 'zh' ? '导出失败' : 'Export failed')
+  }
+}
+
+function handleSearch() {
+  queryParams.pageNum = 1
+  fetchAuditLogs()
+}
+
+function handlePageChange(page) {
+  queryParams.pageNum = page
+  fetchAuditLogs()
+}
+
+function handleSizeChange(size) {
+  queryParams.pageSize = size
+  queryParams.pageNum = 1
+  fetchAuditLogs()
+}
+
+function getModuleClass(module) {
+  const map = {
+    'auth': 'op-auth',
+    'login': 'op-auth',
+    'config': 'op-config',
+    'script': 'op-exec',
+    'task': 'op-exec',
+    'user': 'op-config',
+    'auto': 'op-auto',
+    'security': 'op-deny'
+  }
+  return map[module?.toLowerCase()] || 'op-auth'
+}
+
+function getResultClass(result) {
+  const map = {
+    'SUCCESS': 'res-success',
+    'success': 'res-success',
+    'FAILED': 'res-error',
+    'failed': 'res-error',
+    'DENIED': 'res-error',
+    'denied': 'res-error'
+  }
+  return map[result] || 'res-success'
+}
+
+const moduleOptions = computed(() => [
+  { value: '', label: locale.value === 'zh' ? '全部模块' : 'All Modules' },
+  { value: 'auth', label: locale.value === 'zh' ? '认证登录' : 'Auth/Login' },
+  { value: 'config', label: locale.value === 'zh' ? '配置变更' : 'Config Change' },
+  { value: 'script', label: locale.value === 'zh' ? '脚本执行' : 'Script Execution' },
+  { value: 'task', label: locale.value === 'zh' ? '任务管理' : 'Task Management' },
+  { value: 'user', label: locale.value === 'zh' ? '用户管理' : 'User Management' }
+])
+
+const levelOptions = computed(() => [
+  { value: '', label: locale.value === 'zh' ? '全部结果' : 'All Results' },
+  { value: 'SUCCESS', label: locale.value === 'zh' ? '成功' : 'Success' },
+  { value: 'FAILED', label: locale.value === 'zh' ? '失败' : 'Failed' },
+  { value: 'DENIED', label: locale.value === 'zh' ? '拒绝' : 'Denied' }
+])
+
+onMounted(() => {
+  fetchAuditLogs()
+})
 </script>
 
 <style scoped>
@@ -310,5 +411,10 @@ const auditData = [
   font-size: 10.5px;
   color: var(--on-surface-variant);
   line-height: 1.6;
+}
+
+.no-data {
+  text-align: center; padding: 40px;
+  color: var(--on-surface-variant); font-size: 14px;
 }
 </style>

@@ -31,7 +31,7 @@ export default {
     },
     login: {
       title: 'AutoOps Platform',
-      subtitle: '企业级自动化运维控制台',
+      subtitle: '自动化运维平台',
       formTitle: '账户登录',
       username: '用户名',
       usernamePlaceholder: '请输入用户名',
@@ -377,7 +377,7 @@ export default {
     },
     login: {
       title: 'AutoOps Platform',
-      subtitle: 'Enterprise Automation Operations Console',
+      subtitle: 'Automation Operations Platform',
       formTitle: 'Account Login',
       username: 'Username',
       usernamePlaceholder: 'Enter your username',

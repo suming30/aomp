@@ -30,28 +30,25 @@
       <div class="filter-left">
         <div class="search-box">
           <span class="material-symbols-outlined">search</span>
-          <input :placeholder="t('userManage.searchPlaceholder')" v-model="searchKey" />
+          <input :placeholder="t('userManage.searchPlaceholder')" v-model="searchKey" @keyup.enter="handleSearch" />
         </div>
         <select class="filter-select" v-model="filterRole">
           <option value="">{{ t('userManage.allRoles') }}</option>
-          <option value="admin">超级管理员</option>
-          <option value="sre">高级运维</option>
-          <option value="ops">普通运维</option>
-          <option value="dev">开发人员</option>
+          <option v-for="role in roles" :key="role.id" :value="role.code">{{ role.name }}</option>
         </select>
         <select class="filter-select" v-model="filterStatus">
           <option value="">{{ t('userManage.allStatus') }}</option>
-          <option value="active">已激活</option>
-          <option value="disabled">已禁用</option>
+          <option value="active">{{ t('common.active') }}</option>
+          <option value="disabled">{{ t('common.disabled') }}</option>
         </select>
       </div>
       <div class="filter-right">
-        <span class="result-count font-mono">{{ users.length }} {{ t('userManage.totalUsers') }}</span>
+        <span class="result-count font-mono">{{ pagination.total }} {{ t('userManage.totalUsers') }}</span>
       </div>
     </div>
 
     <!-- Data Table -->
-    <div class="table-container glass-card">
+    <div class="table-container glass-card" v-loading="loading">
       <table class="data-table">
         <thead>
           <tr>
@@ -66,21 +63,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(u, idx) in users" :key="idx">
+          <tr v-for="u in users" :key="u.id">
             <td><input type="checkbox" /></td>
             <td>
               <div class="user-cell">
-                <img :src="u.avatar" class="user-avatar" />
+                <img :src="`https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || u.username)}&background=0F62FE&color=fff`" class="user-avatar" />
                 <div class="user-info">
-                  <span class="user-name">{{ u.name }}</span>
+                  <span class="user-name">{{ u.displayName || u.username }}</span>
                   <span class="user-id font-mono">@{{ u.username }}</span>
                 </div>
               </div>
             </td>
             <td class="text-muted">{{ u.email }}</td>
-            <td><span :class="['role-badge', 'role-' + u.roleType]">{{ u.role }}</span></td>
-            <td>{{ u.dept }}</td>
-            <td class="font-mono text-muted text-sm">{{ u.lastLogin }}</td>
+            <td><span :class="['role-badge', 'role-' + (u.roleCode || 'default')]">{{ u.roleName || '-' }}</span></td>
+            <td>{{ u.dept || '-' }}</td>
+            <td class="font-mono text-muted text-sm">{{ u.lastLoginTime || '-' }}</td>
             <td>
               <span :class="['status-dot', u.status === 'active' ? 'online' : 'offline']"></span>
               <span :class="['status-text', u.status]">{{ u.status === 'active' ? t('common.active') : t('common.disabled') }}</span>
@@ -90,24 +87,41 @@
                 <button class="action-link primary" @click="openEditDialog(u)">
                   <span class="material-symbols-outlined">edit</span> {{ t('common.edit') }}
                 </button>
+                <button class="action-link warning" @click="handleToggleStatus(u)">
+                  <span class="material-symbols-outlined">{{ u.status === 'active' ? 'lock' : 'lock_open' }}</span>
+                  {{ u.status === 'active' ? (locale === 'zh' ? '禁用' : 'Disable') : (locale === 'zh' ? '启用' : 'Enable') }}
+                </button>
+                <button class="action-link info" @click="handleResetPassword(u)">
+                  <span class="material-symbols-outlined">key</span> {{ locale === 'zh' ? '重置密码' : 'Reset Pwd' }}
+                </button>
                 <button class="action-link danger" @click="handleDelete(u)">
                   <span class="material-symbols-outlined">delete</span> {{ t('common.delete') }}
                 </button>
               </div>
             </td>
           </tr>
+          <tr v-if="users.length === 0 && !loading">
+            <td colspan="8" style="text-align: center; padding: 40px; color: var(--on-surface-variant);">
+              {{ locale === 'zh' ? '暂无数据' : 'No data' }}
+            </td>
+          </tr>
         </tbody>
       </table>
 
       <!-- Pagination -->
-      <div class="pagination">
-        <span class="page-info font-mono">1-10 / 24 {{ t('common.total') }}</span>
+      <div class="pagination" v-if="pagination.total > 0">
+        <span class="page-info font-mono">{{ (pagination.pageNum - 1) * pagination.pageSize + 1 }}-{{ Math.min(pagination.pageNum * pagination.pageSize, pagination.total) }} / {{ pagination.total }} {{ t('common.total') }}</span>
         <div class="page-controls">
-          <button class="page-btn" disabled>&lt;</button>
-          <button class="page-btn active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn">&gt;</button>
+          <button class="page-btn" :disabled="pagination.pageNum <= 1" @click="handlePageChange(pagination.pageNum - 1)">&lt;</button>
+          <button 
+            v-for="p in Math.ceil(pagination.total / pagination.pageSize)" 
+            :key="p" 
+            v-show="Math.abs(p - pagination.pageNum) <= 2 || p === 1 || p === Math.ceil(pagination.total / pagination.pageSize)"
+            class="page-btn" 
+            :class="{ active: p === pagination.pageNum }"
+            @click="handlePageChange(p)"
+          >{{ p }}</button>
+          <button class="page-btn" :disabled="pagination.pageNum >= Math.ceil(pagination.total / pagination.pageSize)" @click="handlePageChange(pagination.pageNum + 1)">&gt;</button>
         </div>
       </div>
     </div>
@@ -122,43 +136,41 @@
         <div class="dialog-body">
           <div class="form-grid-2">
             <div class="form-field">
-              <label>{{ t('userManage.formUsername') }}</label>
-              <input type="text" placeholder="zhang_san" />
+              <label>{{ t('userManage.formUsername') }} *</label>
+              <input type="text" v-model="formData.username" :disabled="showEditDialog" placeholder="zhang_san" />
             </div>
             <div class="form-field">
               <label>{{ t('userManage.formDisplayName') }}</label>
-              <input type="text" placeholder="张三" />
+              <input type="text" v-model="formData.displayName" placeholder="张三" />
             </div>
             <div class="form-field">
-              <label>{{ t('userManage.formEmail') }}</label>
-              <input type="email" placeholder="xxx@autoops.io" />
+              <label>{{ t('userManage.formEmail') }} *</label>
+              <input type="email" v-model="formData.email" placeholder="xxx@autoops.io" />
             </div>
             <div class="form-field">
               <label>{{ t('userManage.formRole') }}</label>
-              <select>
-                <option>普通运维</option>
-                <option>高级运维</option>
-                <option>管理员</option>
-                <option>开发人员</option>
+              <select v-model="formData.roleId">
+                <option :value="null">{{ locale === 'zh' ? '请选择角色' : 'Select Role' }}</option>
+                <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
               </select>
             </div>
             <div class="form-field">
               <label>{{ t('userManage.formDept') }}</label>
-              <input type="text" placeholder="运维部" />
+              <input type="text" v-model="formData.dept" placeholder="运维部" />
             </div>
             <div class="form-field">
               <label>{{ t('userManage.formPhone') }}</label>
-              <input type="text" placeholder="+86 138****8888" />
+              <input type="text" v-model="formData.phone" placeholder="+86 138****8888" />
             </div>
           </div>
           <div class="form-field full">
             <label>{{ t('userManage.formRemark') }}</label>
-            <textarea rows="3" placeholder=""></textarea>
+            <textarea rows="3" v-model="formData.remark" placeholder=""></textarea>
           </div>
         </div>
         <div class="dialog-footer">
           <button class="btn-cancel" @click="closeDialogs">{{ t('common.cancel') }}</button>
-          <button class="btn-confirm litho-gradient">{{ t('common.confirm') }}</button>
+          <button class="btn-confirm litho-gradient" @click="handleSubmit">{{ t('common.confirm') }}</button>
         </div>
       </div>
     </div>
@@ -166,39 +178,197 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getUserList, createUser, updateUser, updateUserStatus, resetUserPassword } from '../../api/user'
+import { getRoleList } from '../../api/role'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+
+const loading = ref(false)
 const searchKey = ref('')
 const filterRole = ref('')
 const filterStatus = ref('')
 const showAddDialog = ref(false)
 const showEditDialog = ref(false)
+const editingUser = ref(null)
 
-const stats = [
-  { value: '24', label: t('userManage.statTotal') },
-  { value: '20', label: t('userManage.statActive') },
-  { value: '4', label: t('userManage.statDisabled') }
-]
+const pagination = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  total: 0
+})
 
-const users = [
-  { name: '张三', username: 'zhang_san', email: 'zhang_san@autoops.io', role: '管理员', roleType: 'admin', dept: '平台组', lastLogin: '2026-04-08 14:20', status: 'active', avatar: 'https://ui-avatars.com/api/?name=ZS&background=0F62FE&color=fff' },
-  { name: '李四', username: 'li_si', email: 'li_si@autoops.io', role: '高级运维', roleType: 'sre', dept: 'SRE团队', lastLogin: '2026-04-08 13:45', status: 'active', avatar: 'https://ui-avatars.com/api/?name=LS&background=0F62FE&color=fff' },
-  { name: '王五', username: 'wang_wu', email: 'wang_wu@autoops.io', role: '开发人员', roleType: 'dev', dept: '研发团队', lastLogin: '2026-04-07 09:12', status: 'active', avatar: 'https://ui-avatars.com/api/?name=WW&background=333&color=fff' },
-  { name: '赵六', username: 'zhao_liu', email: 'zhao_liu@autoops.io', role: '高级运维', roleType: 'sre', dept: 'SRE团队', lastLogin: '2026-04-08 11:30', status: 'active', avatar: 'https://ui-avatars.com/api/?name=ZL&background=333&color=fff' },
-  { name: '孙七', username: 'sun_qi', email: 'sun_qi@autoops.io', role: '普通运维', roleType: 'ops', dept: '测试团队', lastLogin: '2026-04-06 16:00', status: 'disabled', avatar: 'https://ui-avatars.com/api/?name=SQ&background=555&color=fff' },
-  { name: '周八', username: 'zhou_ba', email: 'zhou_ba@autoops.io', role: '开发人员', roleType: 'dev', dept: '研发团队', lastLogin: '2026-04-05 10:22', status: 'active', avatar: 'https://ui-avatars.com/api/?name=ZB&background=333&color=fff' },
-  { name: '吴九', username: 'wu_jiu', email: 'wu_jiu@autoops.io', role: '普通运维', roleType: 'ops', dept: '运维组', lastLogin: '2026-04-08 08:15', status: 'active', avatar: 'https://ui-avatars.com/api/?name=WJ&background=333&color=fff' },
-  { name: '郑十', username: 'zheng_shi', email: 'zheng_shi@autoops.io', role: '管理员', roleType: 'admin', dept: '安全组', lastLogin: '2026-04-08 15:30', status: 'active', avatar: 'https://ui-avatars.com/api/?name=ZS&background=C84000&color=fff' }
-]
+const users = ref([])
+const roles = ref([])
+
+const stats = computed(() => [
+  { value: pagination.total, label: t('userManage.statTotal') },
+  { value: users.value.filter(u => u.status === 'active').length, label: t('userManage.statActive') },
+  { value: users.value.filter(u => u.status === 'disabled').length, label: t('userManage.statDisabled') }
+])
+
+const formData = reactive({
+  username: '',
+  displayName: '',
+  email: '',
+  roleId: null,
+  dept: '',
+  phone: '',
+  remark: ''
+})
+
+async function fetchUsers() {
+  loading.value = true
+  try {
+    const res = await getUserList({
+      pageNum: pagination.pageNum,
+      pageSize: pagination.pageSize,
+      account: searchKey.value,
+      status: filterStatus.value,
+      roleCode: filterRole.value
+    })
+    users.value = res.data.records || []
+    pagination.total = res.data.total || 0
+  } catch (error) {
+    console.error('Failed to fetch users:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function fetchRoles() {
+  try {
+    const res = await getRoleList({ pageNum: 1, pageSize: 100 })
+    roles.value = res.data.records || []
+  } catch (error) {
+    console.error('Failed to fetch roles:', error)
+  }
+}
+
+function handleSearch() {
+  pagination.pageNum = 1
+  fetchUsers()
+}
+
+function handlePageChange(page) {
+  pagination.pageNum = page
+  fetchUsers()
+}
 
 function closeDialogs() {
   showAddDialog.value = false
   showEditDialog.value = false
+  editingUser.value = null
+  resetForm()
 }
-function openEditDialog(u) { showEditDialog.value = true; showAddDialog.value = false }
-function handleDelete(u) {}
+
+function resetForm() {
+  formData.username = ''
+  formData.displayName = ''
+  formData.email = ''
+  formData.roleId = null
+  formData.dept = ''
+  formData.phone = ''
+  formData.remark = ''
+}
+
+function openEditDialog(user) {
+  editingUser.value = user
+  formData.username = user.username
+  formData.displayName = user.displayName || user.username
+  formData.email = user.email
+  formData.roleId = user.roleId
+  formData.dept = user.dept
+  formData.phone = user.phone
+  formData.remark = user.remark || ''
+  showEditDialog.value = true
+  showAddDialog.value = false
+}
+
+async function handleSubmit() {
+  if (!formData.username || !formData.email) {
+    ElMessage.warning(locale.value === 'zh' ? '请填写必填项' : 'Please fill required fields')
+    return
+  }
+  
+  try {
+    if (showEditDialog.value && editingUser.value) {
+      await updateUser(editingUser.value.id, formData)
+      ElMessage.success(locale.value === 'zh' ? '更新成功' : 'Updated successfully')
+    } else {
+      await createUser(formData)
+      ElMessage.success(locale.value === 'zh' ? '创建成功' : 'Created successfully')
+    }
+    closeDialogs()
+    fetchUsers()
+  } catch (error) {
+    console.error('Failed to save user:', error)
+  }
+}
+
+async function handleDelete(user) {
+  try {
+    await ElMessageBox.confirm(
+      locale.value === 'zh' ? `确定要删除用户 ${user.username} 吗？` : `Are you sure to delete user ${user.username}?`,
+      locale.value === 'zh' ? '确认删除' : 'Confirm Delete',
+      { type: 'warning' }
+    )
+    await updateUserStatus(user.id, 'deleted')
+    ElMessage.success(locale.value === 'zh' ? '删除成功' : 'Deleted successfully')
+    fetchUsers()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to delete user:', error)
+    }
+  }
+}
+
+async function handleToggleStatus(user) {
+  const newStatus = user.status === 'active' ? 'disabled' : 'active'
+  const action = newStatus === 'disabled' ? '禁用' : '启用'
+  try {
+    await ElMessageBox.confirm(
+      locale.value === 'zh' ? `确定要${action}用户 ${user.username} 吗？` : `Are you sure to ${newStatus === 'disabled' ? 'disable' : 'enable'} user ${user.username}?`,
+      locale.value === 'zh' ? '确认操作' : 'Confirm',
+      { type: 'warning' }
+    )
+    await updateUserStatus(user.id, newStatus)
+    ElMessage.success(locale.value === 'zh' ? `${action}成功` : `Successfully ${newStatus === 'disabled' ? 'disabled' : 'enabled'}`)
+    fetchUsers()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to update status:', error)
+    }
+  }
+}
+
+async function handleResetPassword(user) {
+  try {
+    await ElMessageBox.confirm(
+      locale.value === 'zh' ? `确定要重置用户 ${user.username} 的密码吗？` : `Are you sure to reset password for ${user.username}?`,
+      locale.value === 'zh' ? '确认重置' : 'Confirm Reset',
+      { type: 'warning' }
+    )
+    await resetUserPassword(user.id)
+    ElMessage.success(locale.value === 'zh' ? '密码已重置为默认密码' : 'Password has been reset to default')
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to reset password:', error)
+    }
+  }
+}
+
+watch([filterRole, filterStatus], () => {
+  pagination.pageNum = 1
+  fetchUsers()
+})
+
+onMounted(() => {
+  fetchUsers()
+  fetchRoles()
+})
 </script>
 
 <style scoped>
@@ -299,6 +469,10 @@ function handleDelete(u) {}
 .action-link .material-symbols-outlined { font-size: 14px !important; }
 .action-link.primary { color: var(--primary-container); }
 .action-link.primary:hover { background: rgba(15,98,254,0.08); }
+.action-link.warning { color: #FFB800; }
+.action-link.warning:hover { background: rgba(255,184,0,0.08); }
+.action-link.info { color: #00D4FF; }
+.action-link.info:hover { background: rgba(0,212,255,0.08); }
 .action-link.danger { color: var(--error); }
 .action-link.danger:hover { background: rgba(255,180,171,0.08); }
 

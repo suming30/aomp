@@ -36,21 +36,44 @@
         </div>
       </div>
 
-      <span class="topbar-icon notification-icon">
-        <span class="material-symbols-outlined">notifications</span>
-        <span class="notification-dot"></span>
-      </span>
+      <div class="notification-wrapper" @click.stop="toggleNotificationMenu">
+        <span class="topbar-icon notification-icon">
+          <span class="material-symbols-outlined">notifications</span>
+          <span v-if="unreadCount > 0" class="notification-dot">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+        </span>
+        
+        <transition name="dropdown-fade">
+          <div v-if="showNotificationMenu" class="notification-dropdown">
+            <div class="notification-header">
+              <span>{{ locale === 'zh' ? '通知' : 'Notifications' }}</span>
+              <a href="#" class="mark-all-read" @click.prevent="handleMarkAllRead">{{ locale === 'zh' ? '全部已读' : 'Mark all read' }}</a>
+            </div>
+            <div class="notification-list" v-loading="notificationLoading">
+              <div v-for="item in notifications" :key="item.id" class="notification-item" :class="{ unread: !item.isRead }" @click="handleNotificationClick(item)">
+                <span :class="['notification-type', item.type]">{{ item.type }}</span>
+                <div class="notification-content">
+                  <div class="notification-title">{{ item.title }}</div>
+                  <div class="notification-time">{{ formatTime(item.createdAt) }}</div>
+                </div>
+              </div>
+              <div v-if="notifications.length === 0 && !notificationLoading" class="no-notification">
+                {{ locale === 'zh' ? '暂无通知' : 'No notifications' }}
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
 
       <!-- Avatar Dropdown -->
       <div class="avatar-wrapper" @click.stop="toggleUserMenu">
         <img
-          src="https://ui-avatars.com/api/?name=Admin&background=0F62FE&color=fff&size=64"
+          :src="`https://ui-avatars.com/api/?name=${encodeURIComponent(userDisplayName)}&background=0F62FE&color=fff&size=64`"
           class="avatar-img"
           alt="User Avatar"
         />
         <div class="avatar-info">
-          <span class="avatar-name">zhang_san</span>
-          <span class="avatar-role font-mono">{{ t('topbar.roleAdmin') }}</span>
+          <span class="avatar-name">{{ userDisplayName }}</span>
+          <span class="avatar-role font-mono">{{ userRoles.length > 0 ? userRoles[0] : t('topbar.roleAdmin') }}</span>
         </div>
         <span class="material-symbols-outlined avatar-arrow">expand_more</span>
 
@@ -58,13 +81,13 @@
           <div v-if="showUserMenu" class="user-dropdown">
             <div class="dropdown-header">
               <img
-                src="https://ui-avatars.com/api/?name=Admin&background=0F62FE&color=fff&size=128"
+                :src="`https://ui-avatars.com/api/?name=${encodeURIComponent(userDisplayName)}&background=0F62FE&color=fff&size=128`"
                 class="dropdown-avatar"
                 alt="Avatar"
               />
               <div class="dropdown-user-info">
-                <span class="dropdown-username">zhang_san</span>
-                <span class="dropdown-email">zhang_san@autoops.io</span>
+                <span class="dropdown-username">{{ userDisplayName }}</span>
+                <span class="dropdown-email">{{ userEmail }}</span>
               </div>
             </div>
             <div class="dropdown-divider"></div>
@@ -87,12 +110,19 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '../../stores/user'
+import { getNotificationList, markNotificationRead, markAllNotificationsRead, getUnreadCount } from '../../api/notification'
 
 const { t, locale } = useI18n()
 const router = useRouter()
+const userStore = useUserStore()
 
 const showLangMenu = ref(false)
 const showUserMenu = ref(false)
+const showNotificationMenu = ref(false)
+const notificationLoading = ref(false)
+const notifications = ref([])
+const unreadCount = ref(0)
 
 const currentBreadcrumb = computed(() => {
   return 'AutoOps Platform'
@@ -102,14 +132,30 @@ const currentLangLabel = computed(() => {
   return locale.value === 'zh' ? 'ZH-CN' : 'EN-US'
 })
 
+const currentUser = computed(() => userStore.state.user || {})
+const userDisplayName = computed(() => currentUser.value.displayName || currentUser.value.username || 'User')
+const userEmail = computed(() => currentUser.value.email || 'user@autoops.io')
+const userRoles = computed(() => currentUser.value.roles || [])
+
 function toggleLangMenu() {
   showLangMenu.value = !showLangMenu.value
   showUserMenu.value = false
+  showNotificationMenu.value = false
 }
 
 function toggleUserMenu() {
   showUserMenu.value = !showUserMenu.value
   showLangMenu.value = false
+  showNotificationMenu.value = false
+}
+
+function toggleNotificationMenu() {
+  showNotificationMenu.value = !showNotificationMenu.value
+  showLangMenu.value = false
+  showUserMenu.value = false
+  if (showNotificationMenu.value) {
+    fetchNotifications()
+  }
 }
 
 function switchLang(lang) {
@@ -118,20 +164,87 @@ function switchLang(lang) {
   showLangMenu.value = false
 }
 
-function handleLogout() {
-  localStorage.removeItem('autoops_auth')
-  router.push('/login')
+async function handleLogout() {
+  showUserMenu.value = false
+  await userStore.logout()
+}
+
+async function fetchNotifications() {
+  notificationLoading.value = true
+  try {
+    const res = await getNotificationList({ pageNum: 1, pageSize: 10 })
+    notifications.value = res.data.records || []
+  } catch (error) {
+    console.error('Failed to fetch notifications:', error)
+  } finally {
+    notificationLoading.value = false
+  }
+}
+
+async function fetchUnreadCount() {
+  try {
+    const res = await getUnreadCount()
+    unreadCount.value = res.data || 0
+  } catch (error) {
+    console.error('Failed to fetch unread count:', error)
+  }
+}
+
+async function handleNotificationClick(item) {
+  if (!item.isRead) {
+    try {
+      await markNotificationRead(item.id)
+      item.isRead = true
+      unreadCount.value = Math.max(0, unreadCount.value - 1)
+    } catch (error) {
+      console.error('Failed to mark notification read:', error)
+    }
+  }
+  if (item.link) {
+    router.push(item.link)
+    showNotificationMenu.value = false
+  }
+}
+
+async function handleMarkAllRead() {
+  try {
+    await markAllNotificationsRead()
+    notifications.value.forEach(n => n.isRead = true)
+    unreadCount.value = 0
+  } catch (error) {
+    console.error('Failed to mark all read:', error)
+  }
+}
+
+function formatTime(time) {
+  if (!time) return ''
+  const date = new Date(time)
+  const now = new Date()
+  const diff = now - date
+  const minutes = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+  
+  if (minutes < 1) return locale.value === 'zh' ? '刚刚' : 'Just now'
+  if (minutes < 60) return locale.value === 'zh' ? `${minutes}分钟前` : `${minutes}m ago`
+  if (hours < 24) return locale.value === 'zh' ? `${hours}小时前` : `${hours}h ago`
+  return locale.value === 'zh' ? `${days}天前` : `${days}d ago`
 }
 
 function handleClickOutside(e) {
   const target = e.target
-  if (!target.closest('.lang-switcher') && !target.closest('.avatar-wrapper')) {
+  if (!target.closest('.lang-switcher') && !target.closest('.avatar-wrapper') && !target.closest('.notification-wrapper')) {
     showLangMenu.value = false
     showUserMenu.value = false
+    showNotificationMenu.value = false
   }
 }
 
-onMounted(() => document.addEventListener('click', handleClickOutside))
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+  fetchUnreadCount()
+  setInterval(fetchUnreadCount, 60000)
+})
 onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>
 
@@ -258,11 +371,118 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 .notification-icon .material-symbols-outlined { font-size: 22px; }
 .notification-dot {
   position: absolute;
-  top: 2px; right: 0;
-  width: 7px; height: 7px;
+  top: -2px; right: -4px;
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
   background-color: var(--error);
-  border-radius: 50%;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 0 0 2px var(--bg-base);
+}
+
+.notification-wrapper {
+  position: relative;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: -40px;
+  width: 320px;
+  background-color: var(--bg-surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(66, 70, 86, 0.1);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.mark-all-read {
+  font-size: 11px;
+  color: var(--primary-container);
+  text-decoration: none;
+}
+
+.mark-all-read:hover {
+  text-decoration: underline;
+}
+
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  border-bottom: 1px solid rgba(66, 70, 86, 0.05);
+}
+
+.notification-item:hover {
+  background-color: var(--bg-surface-high);
+}
+
+.notification-item.unread {
+  background-color: rgba(15, 98, 254, 0.04);
+}
+
+.notification-type {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  height: fit-content;
+}
+
+.notification-type.task { background: rgba(15, 98, 254, 0.12); color: var(--primary-container); }
+.notification-type.inspection { background: rgba(57, 153, 174, 0.12); color: #3999AE; }
+.notification-type.security { background: rgba(147, 0, 10, 0.12); color: var(--error); }
+.notification-type.system { background: rgba(180, 197, 255, 0.08); color: var(--primary); }
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title {
+  font-size: 12px;
+  color: var(--on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notification-time {
+  font-size: 10px;
+  color: var(--on-surface-variant);
+  margin-top: 4px;
+}
+
+.no-notification {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--on-surface-variant);
+  font-size: 13px;
 }
 
 /* ===== Avatar Dropdown ===== */

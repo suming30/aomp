@@ -14,15 +14,15 @@
     </div>
 
     <!-- Role Cards Grid -->
-    <div class="roles-grid">
-      <div v-for="(role, idx) in roles" :key="idx" :class="['role-card glass-card', { 'card-featured': role.featured }]">
+    <div class="roles-grid" v-loading="loading">
+      <div v-for="role in roles" :key="role.id" :class="['role-card glass-card', { 'card-featured': role.featured }]">
         <div class="card-top">
           <div class="role-badge-row">
             <span :class="['role-indicator', role.color]"></span>
             <h3 class="role-name">{{ role.name }}</h3>
             <span v-if="role.builtIn" class="built-in-tag font-mono">BUILT-IN</span>
           </div>
-          <p class="role-desc">{{ role.desc }}</p>
+          <p class="role-desc">{{ role.description || role.desc }}</p>
         </div>
 
         <div class="card-stats">
@@ -35,7 +35,7 @@
         <div class="perm-section">
           <div class="perm-header">
             <span class="perm-title">{{ t('roleManage.permissions') }}</span>
-            <button class="edit-perm-btn font-mono" @click="showPermEditor = true">
+            <button class="edit-perm-btn font-mono" @click="openPermEditor(role)">
               {{ t('roleManage.editPerms') }} &rarr;
             </button>
           </div>
@@ -46,16 +46,19 @@
 
         <div class="card-footer">
           <div class="member-preview">
-            <img v-for="(m, midx) in role.members" :key="midx"
+            <img v-for="(m, midx) in role.members.slice(0, 3)" :key="midx"
                  :src="m" class="member-avatar-sm" />
             <span v-if="role.memberCount > 3" class="more-count font-mono">+{{ role.memberCount - 3 }}</span>
           </div>
           <div class="card-actions">
-            <button class="icon-btn" :title="t('common.edit')"><span class="material-symbols-outlined">edit</span></button>
-            <button v-if="!role.builtIn" class="icon-btn danger" :title="t('common.delete')"><span class="material-symbols-outlined">delete</span></button>
+            <button class="icon-btn" :title="t('common.edit')" @click="openEditDialog(role)"><span class="material-symbols-outlined">edit</span></button>
+            <button v-if="!role.builtIn" class="icon-btn danger" :title="t('common.delete')" @click="handleDelete(role)"><span class="material-symbols-outlined">delete</span></button>
             <button class="icon-btn" :title="t('roleManage.duplicate')"><span class="material-symbols-outlined">content_copy</span></button>
           </div>
         </div>
+      </div>
+      <div v-if="roles.length === 0 && !loading" class="no-data">
+        {{ locale === 'zh' ? '暂无角色数据' : 'No role data' }}
       </div>
     </div>
 
@@ -93,38 +96,66 @@
     </div>
 
     <!-- Create Role Dialog -->
-    <div v-if="showCreateDialog" class="dialog-overlay" @click.self="showCreateDialog = false">
+    <div v-if="showCreateDialog" class="dialog-overlay" @click.self="closeDialog">
       <div class="dialog glass-card">
         <div class="dialog-header">
-          <h3>{{ t('roleManage.createRole') }}</h3>
-          <button class="close-btn" @click="showCreateDialog = false"><span class="material-symbols-outlined">close</span></button>
+          <h3>{{ editingRole ? t('common.edit') : t('roleManage.createRole') }}</h3>
+          <button class="close-btn" @click="closeDialog"><span class="material-symbols-outlined">close</span></button>
         </div>
         <div class="dialog-body">
           <div class="form-field">
-            <label>{{ t('roleManage.formRoleName') }}</label>
-            <input type="text" placeholder="" />
+            <label>{{ t('roleManage.formRoleName') }} *</label>
+            <input type="text" v-model="formData.name" placeholder="" />
+          </div>
+          <div class="form-field">
+            <label>{{ locale === 'zh' ? '角色编码' : 'Role Code' }} *</label>
+            <input type="text" v-model="formData.code" :disabled="!!editingRole" placeholder="" />
           </div>
           <div class="form-field">
             <label>{{ t('roleManage.formDesc') }}</label>
-            <textarea rows="3" placeholder=""></textarea>
+            <textarea rows="3" v-model="formData.description" placeholder=""></textarea>
           </div>
-          <div class="form-field">
+          <div class="form-field" v-if="!editingRole">
             <label>{{ t('roleManage.formBaseRole') }}</label>
-            <select><option>无（从零开始）</option><option>基于普通运维</option><option>基于高级运维</option></select>
+            <select v-model="formData.baseRoleId">
+              <option :value="null">{{ locale === 'zh' ? '无（从零开始）' : 'None (Start from scratch)' }}</option>
+              <option v-for="r in roles" :key="r.id" :value="r.id">{{ r.name }}</option>
+            </select>
           </div>
-          <div class="form-field full">
-            <label>{{ t('roleManage.formCopyFrom') }}</label>
-            <div class="copy-options">
-              <label v-for="r in roles.filter(r => !r.builtIn)" :key="r.name" class="copy-option">
-                <input type="radio" name="base" />
-                <span>{{ r.name }}</span>
-              </label>
+        </div>
+        <div class="dialog-footer">
+          <button class="btn-cancel" @click="closeDialog">{{ t('common.cancel') }}</button>
+          <button class="btn-confirm litho-gradient" @click="handleSubmit">{{ t('common.confirm') }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permission Editor Dialog -->
+    <div v-if="showPermEditor" class="dialog-overlay" @click.self="showPermEditor = false">
+      <div class="dialog glass-card perm-dialog">
+        <div class="dialog-header">
+          <h3>{{ locale === 'zh' ? '编辑权限' : 'Edit Permissions' }} - {{ editingRole?.name }}</h3>
+          <button class="close-btn" @click="showPermEditor = false"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="dialog-body">
+          <div class="perm-tree">
+            <div v-for="group in permissionTree" :key="group.id" class="perm-group">
+              <div class="perm-group-header">
+                <span class="material-symbols-outlined">{{ group.icon || 'folder' }}</span>
+                <span>{{ group.name }}</span>
+              </div>
+              <div class="perm-items">
+                <label v-for="perm in group.children" :key="perm.id" class="perm-item">
+                  <input type="checkbox" v-model="selectedPermissions" :value="perm.id" />
+                  <span>{{ perm.name }}</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
         <div class="dialog-footer">
-          <button class="btn-cancel" @click="showCreateDialog = false">{{ t('common.cancel') }}</button>
-          <button class="btn-confirm litho-gradient">{{ t('common.confirm') }}</button>
+          <button class="btn-cancel" @click="showPermEditor = false">{{ t('common.cancel') }}</button>
+          <button class="btn-confirm litho-gradient" @click="savePermissions">{{ t('common.confirm') }}</button>
         </div>
       </div>
     </div>
@@ -132,47 +163,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getRoleList, createRole, updateRole, deleteRole, getRolePermissions, updateRolePermissions, getPermissionTree } from '../../api/role'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const showCreateDialog = ref(false)
 const showPermEditor = ref(false)
+const loading = ref(false)
+const roles = ref([])
+const permissionTree = ref([])
+const editingRole = ref(null)
+const selectedPermissions = ref([])
 
-const roles = [
-  {
-    name: t('roleManage.roleAdmin'), desc: t('roleManage.roleAdminDesc'),
-    color: 'red', builtIn: true, featured: true,
-    stats: [{ val: '1', lbl: t('roleManage.statUsers') }, { val: 'ALL', lbl: t('roleManage.statModules') }, { val: 'FULL', lbl: t('roleManage.statLevel') }],
-    perms: [t('roleManage.permRead'), t('roleManage.permWrite'), t('roleManage.permDelete'), t('roleManage.permAdmin'), t('roleManage.permAudit')],
-    memberCount: 2, members: ['https://ui-avatars.com/api/?name=ZS&background=C84000&color=fff', 'https://ui-avatars.com/api/?name=ZS&background=0F62FE&color=fff'],
-    permissions: { assets: 4, scripts: 4, tasks: 4, inspection: 4, audit: 5, security: 5 }
-  },
-  {
-    name: t('roleManage.roleSre'), desc: t('roleManage.roleSreDesc'),
-    color: 'blue', builtIn: true, featured: false,
-    stats: [{ val: '8', lbl: t('roleManage.statUsers') }, { val: '6/6', lbl: t('roleManage.statModules') }, { val: 'HIGH', lbl: t('roleManage.statLevel') }],
-    perms: [t('roleManage.permRead'), t('roleManage.permWrite'), t('roleManage.permDeploy'), t('roleManage.permMonitor')],
-    memberCount: 8, members: ['https://ui-avatars.com/api/?name=LS&background=0F62FE&color=fff', 'https://ui-avatars.com/api/?name=ZL&background=0F62FE&color=fff', 'https://ui-avatars.com/api/?name=WJ&background=333&color=fff'],
-    permissions: { assets: 3, scripts: 4, tasks: 4, inspection: 3, audit: 2, security: 2 }
-  },
-  {
-    name: t('roleManage.roleOps'), desc: t('roleManage.roleOpsDesc'),
-    color: 'yellow', builtIn: true, featured: false,
-    stats: [{ val: '12', lbl: t('roleManage.statUsers') }, { val: '4/6', lbl: t('roleManage.statModules') }, { val: 'MID', lbl: t('roleManage.statLevel') }],
-    perms: [t('roleManage.permRead'), t('roleManage.permWrite'), t('roleManage.permExecute')],
-    memberCount: 12, members: ['https://ui-avatars.com/api/?name=SQ&background=555&color=fff', 'https://ui-avatars.com/api/?name=WJ&background=333&color=fff', 'https://ui-avatars.com/api/?name=XX&background=333&color=fff'],
-    permissions: { assets: 2, scripts: 2, tasks: 2, inspection: 2, audit: 1, security: 1 }
-  },
-  {
-    name: t('roleManage.roleDev'), desc: t('roleManage.roleDevDesc'),
-    color: 'gray', builtIn: true, featured: false,
-    stats: [{ val: '24', lbl: t('roleManage.statUsers') }, { val: '2/6', lbl: t('roleManage.statModules') }, { val: 'LOW', lbl: t('roleManage.statLevel') }],
-    perms: [t('roleManage.permRead'), t('roleManage.permView')],
-    memberCount: 24, members: ['https://ui-avatars.com/api/?name=WW&background=333&color=fff', 'https://ui-avatars.com/api/?name=ZB&background=333&color=fff', 'https://ui-avatars.com/api/?name=XX&background=555&color=fff'],
-    permissions: { assets: 1, scripts: 1, tasks: 0, inspection: 1, audit: 0, security: 0 }
-  }
-]
+const formData = reactive({
+  name: '',
+  code: '',
+  description: '',
+  baseRoleId: null
+})
 
 const modules = [
   { key: 'assets', label: t('roleManage.modAssets'), icon: 'inventory_2' },
@@ -185,8 +195,152 @@ const modules = [
 
 const permLevels = ['none', 'read', 'write', 'execute', 'admin']
 
-function getPerm(role, modKey) { return (role.permissions || {})[modKey] || 0 }
-function getPermLabel(idx) { return ['', 'Read Only', 'Read + Write', 'Full Execute', 'Admin'][idx] || '' }
+async function fetchRoles() {
+  loading.value = true
+  try {
+    const res = await getRoleList({ pageNum: 1, pageSize: 100 })
+    roles.value = (res.data.records || []).map(r => ({
+      ...r,
+      color: getRoleColor(r.code),
+      builtIn: r.builtIn === 1 || r.builtIn === true,
+      featured: r.code === 'admin',
+      stats: [
+        { val: r.userCount || 0, lbl: t('roleManage.statUsers') },
+        { val: r.moduleCount || 'ALL', lbl: t('roleManage.statModules') },
+        { val: r.level || 'MID', lbl: t('roleManage.statLevel') }
+      ],
+      perms: (r.permissionNames || []).slice(0, 5),
+      memberCount: r.userCount || 0,
+      members: [],
+      permissions: r.permissionMap || {}
+    }))
+  } catch (error) {
+    console.error('Failed to fetch roles:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function fetchPermissionTree() {
+  try {
+    const res = await getPermissionTree()
+    permissionTree.value = res.data || []
+  } catch (error) {
+    console.error('Failed to fetch permission tree:', error)
+  }
+}
+
+function getRoleColor(code) {
+  const colorMap = {
+    'admin': 'red',
+    'sre': 'blue',
+    'ops': 'yellow',
+    'dev': 'gray'
+  }
+  return colorMap[code] || 'blue'
+}
+
+function getPerm(role, modKey) {
+  return (role.permissions || {})[modKey] || 0
+}
+
+function getPermLabel(idx) {
+  return ['', 'Read Only', 'Read + Write', 'Full Execute', 'Admin'][idx] || ''
+}
+
+function openEditDialog(role) {
+  editingRole.value = role
+  formData.name = role.name
+  formData.code = role.code
+  formData.description = role.description
+  formData.baseRoleId = null
+  showCreateDialog.value = true
+}
+
+function closeDialog() {
+  showCreateDialog.value = false
+  editingRole.value = null
+  resetForm()
+}
+
+function resetForm() {
+  formData.name = ''
+  formData.code = ''
+  formData.description = ''
+  formData.baseRoleId = null
+}
+
+async function handleSubmit() {
+  if (!formData.name || !formData.code) {
+    ElMessage.warning(locale.value === 'zh' ? '请填写必填项' : 'Please fill required fields')
+    return
+  }
+  
+  try {
+    if (editingRole.value) {
+      await updateRole(editingRole.value.id, formData)
+      ElMessage.success(locale.value === 'zh' ? '更新成功' : 'Updated successfully')
+    } else {
+      await createRole(formData)
+      ElMessage.success(locale.value === 'zh' ? '创建成功' : 'Created successfully')
+    }
+    closeDialog()
+    fetchRoles()
+  } catch (error) {
+    console.error('Failed to save role:', error)
+  }
+}
+
+async function handleDelete(role) {
+  if (role.builtIn) {
+    ElMessage.warning(locale.value === 'zh' ? '内置角色不能删除' : 'Built-in roles cannot be deleted')
+    return
+  }
+  
+  try {
+    await ElMessageBox.confirm(
+      locale.value === 'zh' ? `确定要删除角色 ${role.name} 吗？` : `Are you sure to delete role ${role.name}?`,
+      locale.value === 'zh' ? '确认删除' : 'Confirm Delete',
+      { type: 'warning' }
+    )
+    await deleteRole(role.id)
+    ElMessage.success(locale.value === 'zh' ? '删除成功' : 'Deleted successfully')
+    fetchRoles()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to delete role:', error)
+    }
+  }
+}
+
+async function openPermEditor(role) {
+  editingRole.value = role
+  try {
+    const res = await getRolePermissions(role.id)
+    selectedPermissions.value = res.data || []
+    showPermEditor.value = true
+  } catch (error) {
+    console.error('Failed to fetch role permissions:', error)
+  }
+}
+
+async function savePermissions() {
+  if (!editingRole.value) return
+  
+  try {
+    await updateRolePermissions(editingRole.value.id, selectedPermissions.value)
+    ElMessage.success(locale.value === 'zh' ? '权限保存成功' : 'Permissions saved successfully')
+    showPermEditor.value = false
+    fetchRoles()
+  } catch (error) {
+    console.error('Failed to save permissions:', error)
+  }
+}
+
+onMounted(() => {
+  fetchRoles()
+  fetchPermissionTree()
+})
 </script>
 
 <style scoped>
@@ -368,5 +522,30 @@ function getPermLabel(idx) { return ['', 'Read Only', 'Read + Write', 'Full Exec
   color: var(--on-primary-container); font-size: 12px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer;
   box-shadow: 0 4px 15px rgba(15,98,254,0.25);
+}
+
+.perm-dialog { width: 640px; }
+.perm-tree { display: flex; flex-direction: column; gap: 16px; }
+.perm-group { background: var(--bg-base); border-radius: 8px; padding: 12px; }
+.perm-group-header {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; color: #fff; margin-bottom: 10px;
+  font-size: 13px;
+}
+.perm-group-header .material-symbols-outlined { font-size: 18px !important; color: var(--primary-container); }
+.perm-items { display: flex; flex-wrap: wrap; gap: 8px; }
+.perm-item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 6px;
+  background: var(--bg-surface-high); cursor: pointer;
+  font-size: 11px; color: var(--on-surface-variant);
+  transition: all 0.15s;
+}
+.perm-item:hover { background: var(--primary-container); color: #fff; }
+.perm-item input { accent-color: var(--primary-container); }
+
+.no-data {
+  grid-column: span 2; text-align: center; padding: 60px;
+  color: var(--on-surface-variant); font-size: 14px;
 }
 </style>

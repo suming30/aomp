@@ -13,15 +13,13 @@
     <div class="bento-row-1">
       <div class="metric-card card-inspection">
         <div class="card-content">
-          <p class="metric-label">{{ t('dashboard.inspectionOverview') }}</p>
+          <p class="metric-label">{{ locale === 'zh' ? '巡检概览' : t('dashboard.inspectionOverview') }}</p>
           <div class="metric-value-row">
-            <span class="metric-value">2,842</span>
-            <span class="metric-trend up">+12.4%</span>
+            <span class="metric-value">{{ formatNumber(dashboardData.inspectionTotal) }}</span>
+            <span class="metric-trend up">{{ dashboardData.inspectionWarning > 0 ? `${dashboardData.inspectionWarning} ${locale === 'zh' ? '异常' : 'Warnings'}` : (locale === 'zh' ? '正常' : 'OK') }}</span>
           </div>
           <div class="mini-bar">
-            <div class="bar-fill" style="width: 80%"></div>
-            <div class="bar-fill" style="width: 80%"></div>
-            <div class="bar-fill bar-partial" style="width: 30%"></div>
+            <div class="bar-fill" :style="{ width: `${Math.min(100, (dashboardData.hostOnline / Math.max(1, dashboardData.hostTotal)) * 100)}%` }"></div>
           </div>
         </div>
         <span class="card-bg-icon material-symbols-outlined">fact_check</span>
@@ -29,31 +27,26 @@
 
       <div class="metric-card card-tasks">
         <div class="card-content">
-          <p class="metric-label">{{ t('dashboard.pendingTasks') }}</p>
+          <p class="metric-label">{{ locale === 'zh' ? '待处理任务' : t('dashboard.pendingTasks') }}</p>
           <div class="metric-value-row">
-            <span class="metric-value">158</span>
-            <span class="status-badge active">ACTIVE</span>
+            <span class="metric-value">{{ dashboardData.taskRunning }}</span>
+            <span class="status-badge active">{{ locale === 'zh' ? '执行中' : 'ACTIVE' }}</span>
           </div>
-          <div class="task-avatars">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc0vS318_7OXcTC2YSdOa7Eq1rsXwYBC_afOGAzgIbZHM6oovFaso4CW94bOfOdQ3XjCbno95XgRapqkLDNgEiuivbWtb5vdKaBza78J1RjOrgpVua3KQZh-yTYvU1Krn3GcrkpqIIfbclkcd79GZKp062J18c-y16-SF16pkVLjMcCS_6H4uZDz5iMntpDUyJeYSq6Q2ARBVMeIgbucEkoBIBZthw4_lMoK86BDSwuCJbBsaAQHtQs3xQeJvk12EjUv_Su4rIbJW7" class="avatar-img" />
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdJ9It8bcAmloKGW8_QVDC-w-Qpxe8JEt6DXVTqYIiyoEIQYJTtGzMpz-qGaR4mj0IG_0Qmo_t3mLoC_4XOcGqi66iMRBjiG15aDjpOdxgmMA7XcIiCSvIFvhhTTHiyJ3YV2-ZJnLUJYzUViTNeRPZnFYbfDhswhmpIcKWUaeKsC9em6C1xRbtrzqZZJkE2PwvjYqGPLtF9oSNMkIgJJtUDKR4Ep95ZIn8GRIqo_2O1CpPPtcgvARY8xotAmEiPY7AZTWzu2zRqa4c" class="avatar-img" />
-            <div class="avatar-more">+3</div>
-          </div>
-          <p class="task-info">{{ t('dashboard.assignedTo', { n: 5 }) }}</p>
+          <p class="task-info">{{ locale === 'zh' ? `今日任务: ${dashboardData.taskToday}` : `Today: ${dashboardData.taskToday} tasks` }}</p>
         </div>
-        <span class="card-bg-icon material-symbols-outlined error-color">pending_actions</span>
+        <span class="card-bg-icon material-symbols-outlined">pending_actions</span>
       </div>
 
       <div class="metric-card card-exceptions">
         <div class="card-content">
-          <p class="metric-label">{{ t('dashboard.exceptionStatistics') }}</p>
+          <p class="metric-label">{{ locale === 'zh' ? '异常统计' : t('dashboard.exceptionStatistics') }}</p>
           <div class="metric-value-row">
-            <span class="metric-value error-text">04</span>
-            <span class="pulse-dot error-bg"></span>
+            <span class="metric-value" :class="{ 'error-text': dashboardData.hostOffline > 0 }">{{ formatNumber(dashboardData.hostOffline) }}</span>
+            <span v-if="dashboardData.hostOffline > 0" class="pulse-dot error-bg"></span>
           </div>
-          <p class="exception-detail font-mono">CRITICAL: 2 / WARNING: 2</p>
+          <p class="exception-detail font-mono">{{ locale === 'zh' ? `在线: ${dashboardData.hostOnline} / 离线: ${dashboardData.hostOffline}` : `Online: ${dashboardData.hostOnline} / Offline: ${dashboardData.hostOffline}` }}</p>
         </div>
-        <span class="card-bg-icon material-symbols-outlined error-color">warning</span>
+        <span class="card-bg-icon material-symbols-outlined" :class="{ 'error-color': dashboardData.hostOffline > 0 }">warning</span>
       </div>
     </div>
 
@@ -102,27 +95,30 @@
 
     <section class="ops-log-section">
       <div class="log-header">
-        <h3 class="chart-title">{{ t('dashboard.recentOperations') }}</h3>
-        <a href="#" class="view-all-link">View All →</a>
+        <h3 class="chart-title">{{ locale === 'zh' ? '最近操作' : t('dashboard.recentOperations') }}</h3>
+        <router-link to="/history" class="view-all-link">{{ locale === 'zh' ? '查看全部' : 'View All' }} →</router-link>
       </div>
-      <div class="log-table-wrap">
+      <div class="log-table-wrap" v-loading="loading">
         <table class="log-table">
           <thead>
             <tr>
-              <th>Operation</th>
-              <th>Target Node</th>
-              <th>Executor</th>
-              <th>Timestamp</th>
-              <th>Status</th>
+              <th>{{ locale === 'zh' ? '操作' : 'Operation' }}</th>
+              <th>{{ locale === 'zh' ? '目标节点' : 'Target Node' }}</th>
+              <th>{{ locale === 'zh' ? '执行者' : 'Executor' }}</th>
+              <th>{{ locale === 'zh' ? '时间戳' : 'Timestamp' }}</th>
+              <th>{{ locale === 'zh' ? '状态' : 'Status' }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, idx) in opsLogData" :key="idx">
-              <td><span class="font-mono log-op">{{ row.op }}</span></td>
-              <td class="font-mono">{{ row.node }}</td>
-              <td>{{ row.executor }}</td>
-              <td class="font-mono text-muted">{{ row.time }}</td>
-              <td><span :class="['status-tag', row.status === 'SUCCESS' ? 'success' : 'error']">{{ row.status }}</span></td>
+            <tr v-for="(row, idx) in (dashboardData.recentTasks || [])" :key="idx">
+              <td><span class="font-mono log-op">{{ row.taskName || row.op || '-' }}</span></td>
+              <td class="font-mono">{{ row.targetHost || row.node || '-' }}</td>
+              <td>{{ row.executor || row.username || '-' }}</td>
+              <td class="font-mono text-muted">{{ row.createdAt || row.time || '-' }}</td>
+              <td><span :class="['status-tag', getStatusClass(row.status)]">{{ row.status || 'SUCCESS' }}</span></td>
+            </tr>
+            <tr v-if="(dashboardData.recentTasks || []).length === 0 && !loading">
+              <td colspan="5" class="no-data">{{ locale === 'zh' ? '暂无操作记录' : 'No recent operations' }}</td>
             </tr>
           </tbody>
         </table>
@@ -132,10 +128,30 @@
 </template>
 
 <script setup>
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { getDashboard } from '../../api/dashboard'
 
-const weekData = [
+const { t, locale } = useI18n()
+
+const loading = ref(false)
+const dashboardData = ref({
+  hostTotal: 0,
+  hostOnline: 0,
+  hostOffline: 0,
+  scriptTotal: 0,
+  taskTotal: 0,
+  taskRunning: 0,
+  taskToday: 0,
+  inspectionTotal: 0,
+  inspectionWarning: 0,
+  userTotal: 0,
+  approvalPending: 0,
+  recentTasks: [],
+  recentAlerts: []
+})
+
+const weekData = ref([
   { label: 'MON', success: 70, fail: 10 },
   { label: 'TUE', success: 85, fail: 5 },
   { label: 'WED', success: 60, fail: 15 },
@@ -143,20 +159,59 @@ const weekData = [
   { label: 'FRI', success: 75, fail: 8 },
   { label: 'SAT', success: 40, fail: 5 },
   { label: 'SUN', success: 30, fail: 0 }
-]
+])
 
-const hostDistData = [
+const hostDistData = ref([
   { region: 'AP-East (Hangzhou)', count: 428, percent: 85, colorClass: 'bar-primary' },
   { region: 'US-West (Oregon)', count: 212, percent: 60, colorClass: 'bar-blue' },
   { region: 'EU-Central (Frankfurt)', count: 156, percent: 42, colorClass: 'bar-purple' }
-]
+])
 
-const opsLogData = [
-  { op: 'DEPLOY_CONFIG_V3', node: 'prod-api-srv-04', executor: 'System (Auto)', time: '2024-05-24 14:32:01', status: 'SUCCESS' },
-  { op: 'HEALTH_CHECK_BATCH', node: 'Cluster-Prod-01', executor: 'Monitor-Agent-B', time: '2024-05-24 14:30:00', status: 'SUCCESS' },
-  { op: 'CERTIFICATE_RENEWAL', node: 'edge-gateway-02', executor: 'Admin (li_wei)', time: '2024-05-24 14:15:22', status: 'SUCCESS' },
-  { op: 'DISK_SPACE_ALERT', node: 'prod-db-master-01', executor: 'AlertSystem', time: '2024-05-24 13:58:44', status: 'WARNING' }
-]
+let refreshTimer = null
+
+async function fetchDashboardData() {
+  loading.value = true
+  try {
+    const res = await getDashboard()
+    if (res.data) {
+      dashboardData.value = res.data
+    }
+  } catch (error) {
+    console.error('Failed to fetch dashboard data:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+function formatNumber(num) {
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K'
+  }
+  return num?.toString() || '0'
+}
+
+function getStatusClass(status) {
+  const map = {
+    'SUCCESS': 'success',
+    'SUCCESSFUL': 'success',
+    'FAILED': 'error',
+    'FAILURE': 'error',
+    'RUNNING': 'active',
+    'WARNING': 'warning'
+  }
+  return map[status?.toUpperCase()] || 'success'
+}
+
+onMounted(() => {
+  fetchDashboardData()
+  refreshTimer = setInterval(fetchDashboardData, 30000)
+})
+
+onUnmounted(() => {
+  if (refreshTimer) {
+    clearInterval(refreshTimer)
+  }
+})
 </script>
 
 <style scoped>
@@ -545,6 +600,11 @@ const opsLogData = [
 .status-tag.error {
   background: rgba(147, 0, 10, 0.15);
   color: var(--error);
+}
+
+.no-data {
+  text-align: center; padding: 40px;
+  color: var(--on-surface-variant); font-size: 14px;
 }
 
 @media (max-width: 1200px) {

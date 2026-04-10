@@ -6,11 +6,11 @@
         <p class="page-subtitle">{{ t('tasks.configSubtitle') }}</p>
       </div> -->
       <div class="header-actions">
-        <button class="action-btn secondary">
+        <button class="action-btn secondary" @click="handleSaveDraft" :disabled="loading">
           <span class="material-symbols-outlined">save</span>
           {{ t('tasks.saveDraft') }}
         </button>
-        <button class="action-btn primary litho-gradient" @click="$router.push('/tasks/log/EXEC-2024-001')">
+        <button class="action-btn primary litho-gradient" @click="handleStartExec" :disabled="loading">
           <span class="material-symbols-outlined">play_arrow</span>
           {{ t('tasks.startExec') }}
         </button>
@@ -38,21 +38,23 @@
 
           <div v-if="targetMode === 'group'" class="group-selector">
             <label class="field-label">{{ t('tasks.businessGroup') }}</label>
-            <select class="field-select">
-              <option>K8S-PROD-01</option>
-              <option>EDGE-GW-02</option>
-              <option>DB-CLUSTER-A</option>
+            <select class="field-select" v-model="formData.groupId">
+              <option :value="null">{{ locale === 'zh' ? '选择分组...' : 'Select group...' }}</option>
+              <option v-for="g in groups" :key="g.id" :value="g.id">{{ g.name }}</option>
             </select>
             <div class="selected-hosts">
               <div v-for="(h, idx) in selectedHosts" :key="idx" class="host-chip">
                 <span class="font-mono">{{ h }}</span>
-                <span class="chip-remove">×</span>
+                <span class="chip-remove" @click="removeHost(h)">×</span>
+              </div>
+              <div v-if="selectedHosts.length === 0" class="no-hosts-hint">
+                {{ locale === 'zh' ? '请选择目标主机' : 'Please select target hosts' }}
               </div>
             </div>
           </div>
 
           <div v-else class="manual-input-area">
-            <textarea class="manual-textarea font-mono" placeholder="Enter host IPs or IDs, one per line..."></textarea>
+            <textarea class="manual-textarea font-mono" v-model="formData.manualHosts" :placeholder="locale === 'zh' ? '输入主机IP或ID，每行一个...' : 'Enter host IPs or IDs, one per line...'"></textarea>
           </div>
         </section>
 
@@ -60,30 +62,23 @@
         <section class="config-section">
           <div class="step-header">
             <span class="step-num">2</span>
-            <h3>Select Script / Command</h3>
-            <p class="step-desc">Choose the script to execute or enter a raw command</p>
+            <h3>{{ locale === 'zh' ? '选择脚本/命令' : 'Select Script / Command' }}</h3>
+            <p class="step-desc">{{ locale === 'zh' ? '选择要执行的脚本或输入自定义命令' : 'Choose the script to execute or enter a raw command' }}</p>
           </div>
 
           <div class="script-select-row">
-            <select class="field-select wide">
-              <option>deploy_k8s_node.sh (v2.4.1)</option>
-              <option>health_check.py (v1.8.0)</option>
-              <option>cert_renewal.sh (v3.0.2)</option>
-              <option>Custom Command...</option>
+            <select class="field-select wide" v-model="formData.scriptId" @change="onScriptChange(formData.scriptId)">
+              <option :value="null">{{ locale === 'zh' ? '选择脚本...' : 'Select script...' }}</option>
+              <option v-for="s in scripts" :key="s.id" :value="s.id">{{ s.name }} (v{{ s.version || '1.0.0' }})</option>
             </select>
           </div>
 
           <div class="script-preview glass-card">
             <div class="preview-header">
               <span class="material-symbols-outlined">code</span>
-              <span>Script Preview</span>
+              <span>{{ locale === 'zh' ? '脚本预览' : 'Script Preview' }}</span>
             </div>
-            <pre class="preview-code font-mono">#!/bin/bash
-set -euo pipefail
-readonly NODE_GROUP="${NODE_GROUP:-K8S-PROD-01}"
-log_info "Deploying to node group: ${NODE_GROUP}"
-kubectl apply -f manifests/node-config.yaml
-log_info "Deployment complete."</pre>
+            <pre class="preview-code font-mono">{{ scriptContent || (locale === 'zh' ? '# 请选择脚本查看内容...' : '# Select a script to preview...') }}</pre>
           </div>
         </section>
 
@@ -91,28 +86,28 @@ log_info "Deployment complete."</pre>
         <section class="config-section">
           <div class="step-header">
             <span class="step-num">3</span>
-            <h3>Execution Parameters</h3>
-            <p class="step-desc">Configure timeout, retry policy, and environment variables</p>
+            <h3>{{ locale === 'zh' ? '执行参数' : 'Execution Parameters' }}</h3>
+            <p class="step-desc">{{ locale === 'zh' ? '配置超时时间、重试策略和环境变量' : 'Configure timeout, retry policy, and environment variables' }}</p>
           </div>
 
           <div class="params-grid">
             <div class="param-field">
-              <label>Timeout (seconds)</label>
-              <input type="number" value="300" />
+              <label>{{ locale === 'zh' ? '超时时间(秒)' : 'Timeout (seconds)' }}</label>
+              <input type="number" v-model="formData.timeout" />
             </div>
             <div class="param-field">
-              <label>Max Retries</label>
-              <input type="number" value="3" />
+              <label>{{ locale === 'zh' ? '最大重试次数' : 'Max Retries' }}</label>
+              <input type="number" v-model="formData.maxRetries" />
             </div>
             <div class="param-field">
-              <label>Concurrency</label>
-              <input type="number" value="10" />
+              <label>{{ locale === 'zh' ? '并发数' : 'Concurrency' }}</label>
+              <input type="number" v-model="formData.concurrency" />
             </div>
             <div class="param-field">
-              <label>Fail Strategy</label>
-              <select>
-                <option>Continue on Failure</option>
-                <option>Stop on First Error</option>
+              <label>{{ locale === 'zh' ? '失败策略' : 'Fail Strategy' }}</label>
+              <select v-model="formData.failStrategy">
+                <option value="continue">{{ locale === 'zh' ? '失败继续' : 'Continue on Failure' }}</option>
+                <option value="stop">{{ locale === 'zh' ? '失败停止' : 'Stop on First Error' }}</option>
               </select>
             </div>
           </div>
@@ -121,32 +116,32 @@ log_info "Deployment complete."</pre>
 
       <aside class="config-sidebar">
         <div class="sidebar-card">
-          <h4 class="sidebar-title">Execution Summary</h4>
+          <h4 class="sidebar-title">{{ locale === 'zh' ? '执行摘要' : 'Execution Summary' }}</h4>
           <div class="summary-list">
             <div class="summary-item">
-              <span class="summary-label">Target Nodes</span>
-              <span class="summary-value font-mono">12</span>
+              <span class="summary-label">{{ locale === 'zh' ? '目标主机' : 'Target Nodes' }}</span>
+              <span class="summary-value font-mono">{{ formData.hostIds.length || 0 }}</span>
             </div>
             <div class="summary-item">
-              <span class="summary-label">Script</span>
-              <span class="summary-value font-mono">deploy_k8s_node.sh</span>
+              <span class="summary-label">{{ locale === 'zh' ? '脚本' : 'Script' }}</span>
+              <span class="summary-value font-mono">{{ scripts.find(s => s.id === formData.scriptId)?.name || '-' }}</span>
             </div>
             <div class="summary-item">
-              <span class="summary-label">Timeout</span>
-              <span class="summary-value font-mono">300s</span>
+              <span class="summary-label">{{ locale === 'zh' ? '超时时间' : 'Timeout' }}</span>
+              <span class="summary-value font-mono">{{ formData.timeout }}s</span>
             </div>
             <div class="summary-item">
-              <span class="summary-label">Concurrency</span>
-              <span class="summary-value font-mono">10</span>
+              <span class="summary-label">{{ locale === 'zh' ? '并发数' : 'Concurrency' }}</span>
+              <span class="summary-value font-mono">{{ formData.concurrency }}</span>
             </div>
             <div class="summary-item">
-              <span class="summary-label">Est. Duration</span>
-              <span class="summary-value font-mono">~45s</span>
+              <span class="summary-label">{{ locale === 'zh' ? '预计时长' : 'Est. Duration' }}</span>
+              <span class="summary-value font-mono">~{{ estimatedDuration }}s</span>
             </div>
           </div>
-          <div class="risk-alert">
+          <div class="risk-alert" v-if="formData.hostIds.length > 0">
             <span class="material-symbols-outlined">warning_amber</span>
-            <span>This operation will affect 12 production nodes.</span>
+            <span>{{ locale === 'zh' ? `此操作将影响 ${formData.hostIds.length} 台生产节点。` : `This operation will affect ${formData.hostIds.length} production nodes.` }}</span>
           </div>
         </div>
       </aside>
@@ -155,12 +150,144 @@ log_info "Deployment complete."</pre>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { createTask, executeTask } from '../../api/task'
+import { getScriptList } from '../../api/script'
+import { getHostList } from '../../api/host'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const router = useRouter()
+
 const targetMode = ref('group')
-const selectedHosts = ['192.168.1.100', '192.168.1.101', '192.168.1.102']
+const selectedHosts = ref([])
+const selectedHostIds = ref([])
+const scripts = ref([])
+const groups = ref([])
+
+const formData = reactive({
+  name: '',
+  scriptId: null,
+  hostIds: [],
+  groupId: null,
+  timeout: 300,
+  maxRetries: 3,
+  concurrency: 10,
+  failStrategy: 'continue',
+  execMode: 'parallel',
+  params: {}
+})
+
+const loading = ref(false)
+const scriptContent = ref('')
+
+async function fetchScripts() {
+  try {
+    const res = await getScriptList({ pageNum: 1, pageSize: 100, status: 'active' })
+    scripts.value = res.data.records || []
+  } catch (error) {
+    console.error('Failed to fetch scripts:', error)
+  }
+}
+
+async function fetchHosts() {
+  try {
+    const res = await getHostList({ pageNum: 1, pageSize: 1000 })
+    const hosts = res.data.records || []
+    selectedHosts.value = hosts.slice(0, 12).map(h => h.ip)
+    selectedHostIds.value = hosts.slice(0, 12).map(h => h.id)
+    formData.hostIds = selectedHostIds.value
+  } catch (error) {
+    console.error('Failed to fetch hosts:', error)
+  }
+}
+
+function onScriptChange(scriptId) {
+  const script = scripts.value.find(s => s.id === scriptId)
+  if (script) {
+    scriptContent.value = script.content || '# Script content will be loaded...'
+  }
+}
+
+function removeHost(ip) {
+  const idx = selectedHosts.value.indexOf(ip)
+  if (idx > -1) {
+    selectedHosts.value.splice(idx, 1)
+    selectedHostIds.value.splice(idx, 1)
+    formData.hostIds = selectedHostIds.value
+  }
+}
+
+async function handleSaveDraft() {
+  if (!formData.name) {
+    formData.name = `Task-${Date.now()}`
+  }
+  
+  try {
+    const res = await createTask({
+      ...formData,
+      status: 'draft'
+    })
+    ElMessage.success(locale.value === 'zh' ? '草稿保存成功' : 'Draft saved successfully')
+  } catch (error) {
+    console.error('Failed to save draft:', error)
+  }
+}
+
+async function handleStartExec() {
+  if (!formData.scriptId) {
+    ElMessage.warning(locale.value === 'zh' ? '请选择脚本' : 'Please select a script')
+    return
+  }
+  
+  if (formData.hostIds.length === 0) {
+    ElMessage.warning(locale.value === 'zh' ? '请选择目标主机' : 'Please select target hosts')
+    return
+  }
+  
+  try {
+    await ElMessageBox.confirm(
+      locale.value === 'zh' 
+        ? `即将在 ${formData.hostIds.length} 台主机上执行任务，是否继续？` 
+        : `About to execute task on ${formData.hostIds.length} hosts. Continue?`,
+      locale.value === 'zh' ? '确认执行' : 'Confirm Execution',
+      { type: 'warning' }
+    )
+    
+    loading.value = true
+    let taskId = formData.id
+    
+    if (!taskId) {
+      const createRes = await createTask(formData)
+      taskId = createRes.data?.id
+    }
+    
+    if (taskId) {
+      await executeTask(taskId)
+      ElMessage.success(locale.value === 'zh' ? '任务已开始执行' : 'Task execution started')
+      router.push(`/tasks/log/${taskId}`)
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to start execution:', error)
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+const estimatedDuration = computed(() => {
+  const hostCount = formData.hostIds.length || 1
+  const batchCount = Math.ceil(hostCount / formData.concurrency)
+  return Math.ceil(batchCount * (formData.timeout / 60))
+})
+
+onMounted(() => {
+  fetchScripts()
+  fetchHosts()
+})
 </script>
 
 <style scoped>

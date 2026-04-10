@@ -5,7 +5,7 @@
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">deployed_code</span>
       </div>
       <div>
-        <h1 class="logo-title">AOMP</h1>
+        <h1 class="logo-title">AutoOps</h1>
         <p class="logo-version">{{ t('common.version') }}</p>
       </div>
     </div>
@@ -62,76 +62,103 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '../../stores/user'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 
 const expandedKeys = ref(new Set())
 
-const navItems = [
+const allNavItems = [
   {
     key: 'dashboard',
     path: '/dashboard',
     icon: 'dashboard',
-    label: 'nav.dashboard'
+    label: 'nav.dashboard',
+    permission: null
   },
   {
     key: 'assets',
     icon: 'inventory_2',
     label: 'nav.assetCenter',
+    permission: 'asset:host:list',
     children: [
-      { path: '/assets/list', label: 'nav.hostList' },
-      { path: '/assets/groups', label: 'nav.groupManage' },
-      { path: '/assets/tags', label: 'nav.tagManage' }
+      { path: '/assets/list', label: 'nav.hostList', permission: 'asset:host:list' },
+      { path: '/assets/groups', label: 'nav.groupManage', permission: 'asset:group:list' },
+      { path: '/assets/tags', label: 'nav.tagManage', permission: 'asset:tag:list' }
     ]
   },
   {
     key: 'scripts',
     icon: 'terminal',
     label: 'nav.scriptCenter',
+    permission: 'script:list',
     children: [
-      { path: '/scripts', label: 'nav.scriptRepo' }
+      { path: '/scripts', label: 'nav.scriptRepo', permission: 'script:list' }
     ]
   },
   {
     key: 'tasks',
     icon: 'play_circle',
     label: 'nav.taskExec',
+    permission: 'task:list',
     children: [
-      { path: '/tasks/config', label: 'nav.taskConfig' },
-      { path: '/history', label: 'nav.taskHistory' }
+      { path: '/tasks/config', label: 'nav.taskConfig', permission: 'task:create' },
+      { path: '/history', label: 'nav.taskHistory', permission: 'task:list' }
     ]
   },
   {
     key: 'inspection',
     icon: 'monitoring',
     label: 'nav.inspection',
+    permission: 'inspection:list',
     children: [
-      { path: '/inspection/config', label: 'nav.inspectionConfig' }
+      { path: '/inspection/config', label: 'nav.inspectionConfig', permission: 'inspection:list' }
     ]
   },
   {
     key: 'audit',
     icon: 'fact_check',
     label: 'nav.auditCenter',
+    permission: 'audit:list',
     children: [
-      { path: '/audit', label: 'nav.operationAudit' }
+      { path: '/audit', label: 'nav.operationAudit', permission: 'audit:list' }
     ]
   },
   {
     key: 'security',
     icon: 'admin_panel_settings',
     label: 'nav.securityPerm',
+    permission: 'permission:user:list',
     children: [
-      { path: '/permission/users', label: 'nav.userManage' },
-      { path: '/permission/roles', label: 'nav.roleManage' }
+      { path: '/permission/users', label: 'nav.userManage', permission: 'permission:user:list' },
+      { path: '/permission/roles', label: 'nav.roleManage', permission: 'permission:role:list' }
     ]
   }
 ]
+
+const navItems = computed(() => {
+  const permissions = userStore.permissions || []
+  const isAdmin = userStore.isAdmin
+  
+  return allNavItems.filter(item => {
+    if (isAdmin || !item.permission) return true
+    if (!permissions.includes(item.permission)) return false
+    
+    if (item.children) {
+      item.children = item.children.filter(child => {
+        return isAdmin || !child.permission || permissions.includes(child.permission)
+      })
+      return item.children.length > 0
+    }
+    return true
+  })
+})
 
 function toggleGroup(key) {
   if (expandedKeys.value.has(key)) {
@@ -153,7 +180,7 @@ function isGroupActive(item) {
 }
 
 watch(() => route.path, (newPath) => {
-  for (const item of navItems) {
+  for (const item of navItems.value) {
     if (item.children && item.children.some(c => newPath === c.path || newPath.startsWith(c.path + '/'))) {
       expandedKeys.value.add(item.key)
       expandedKeys.value = new Set(expandedKeys.value)

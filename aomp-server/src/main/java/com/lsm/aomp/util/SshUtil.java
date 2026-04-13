@@ -1,7 +1,8 @@
 package com.lsm.aomp.util;
 
-import com.github.mwiede.jsch.JSch;
-import com.github.mwiede.jsch.Session;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +41,7 @@ public class SshUtil {
 
     public String executeCommand(String host, int port, String user, String password, String key, String keyPassphrase, String command, int timeout) {
         Session session = null;
-        com.github.mwiede.jsch.ChannelExec channel = null;
+        ChannelExec channel = null;
         try {
             JSch jsch = new JSch();
             if (key != null && !key.isEmpty()) {
@@ -58,7 +59,7 @@ public class SshUtil {
             session.setTimeout(timeout);
             session.connect(timeout);
 
-            channel = (com.github.mwiede.jsch.ChannelExec) session.openChannel("exec");
+            channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.connect(timeout);
 

@@ -10,6 +10,8 @@ import com.lsm.aomp.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {

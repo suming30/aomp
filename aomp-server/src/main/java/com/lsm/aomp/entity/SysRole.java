@@ -17,7 +17,6 @@ public class SysRole {
     private String roleType;
     private String dataScope;
     private String status;
-    private Integer sortOrder;
     @TableLogic
     private Integer deleted;
     private String createBy;

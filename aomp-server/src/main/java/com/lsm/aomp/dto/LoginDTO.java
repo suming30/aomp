@@ -8,7 +8,7 @@ import lombok.Data;
 public class LoginDTO {
 
     @NotBlank(message = "账号不能为空")
-    private String account;
+    private String username;
 
     @NotBlank(message = "密码不能为空")
     private String password;

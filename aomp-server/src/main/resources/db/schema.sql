@@ -514,6 +514,7 @@ INSERT INTO `sys_permission` (`id`, `parent_id`, `permission_name`, `permission_
 (14, 10, '脚本删除', 'script:delete', 'button', NULL, 4),
 (15, 10, '脚本审核', 'script:audit', 'button', NULL, 5),
 (16, 0, '任务执行', 'task', 'menu', '/tasks', 4),
+(161, 16, '任务列表', 'task:list', 'menu', '/tasks/list', 0),
 (17, 16, '创建任务', 'task:create', 'button', NULL, 1),
 (18, 16, '任务执行', 'task:execute', 'button', NULL, 2),
 (19, 16, '任务暂停', 'task:pause', 'button', NULL, 3),

@@ -1,8 +1,6 @@
 package com.lsm.aomp.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.lsm.aomp.common.BusinessException;
 import com.lsm.aomp.common.Result;
 import com.lsm.aomp.common.ResultCode;
 import com.lsm.aomp.dto.LoginDTO;
@@ -10,20 +8,24 @@ import com.lsm.aomp.entity.*;
 import com.lsm.aomp.mapper.*;
 import com.lsm.aomp.service.AuthService;
 import com.lsm.aomp.util.JwtUtil;
-import com.lsm.aomp.util.UserContext;
 import com.lsm.aomp.vo.LoginVO;
 import com.lsm.aomp.vo.RoleInfoVO;
 import com.lsm.aomp.vo.UserInfoVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -45,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Result<LoginVO> login(LoginDTO dto, String ip) {
         SysUser user = sysUserMapper.selectOne(
-                new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserAccount, dto.getAccount()));
+                new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserAccount, dto.getUsername()));
         if (user == null) {
             return Result.error(ResultCode.USER_LOGIN_FAILED);
         }
@@ -124,11 +126,23 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private List<String> getUserPermissions(Long userId) {
+        SysUser user = sysUserMapper.selectById(userId);
+        boolean isAdmin = "admin".equals(user.getUserAccount());
+        
         List<SysUserRole> userRoles = sysUserRoleMapper.selectList(
                 new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
-        if (userRoles.isEmpty()) {
+        if (userRoles.isEmpty() && !isAdmin) {
             return Collections.emptyList();
         }
+        
+        if (isAdmin) {
+            List<SysPermission> allPerms = sysPermissionMapper.selectList(
+                    new LambdaQueryWrapper<SysPermission>().eq(SysPermission::getVisible, true));
+            return allPerms.stream()
+                    .map(SysPermission::getPermissionCode)
+                    .collect(Collectors.toList());
+        }
+        
         List<Long> roleIds = userRoles.stream().map(SysUserRole::getRoleId).collect(Collectors.toList());
 
         List<SysRole> roles = sysRoleMapper.selectBatchIds(roleIds);

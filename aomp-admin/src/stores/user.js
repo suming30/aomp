@@ -87,6 +87,12 @@ function hasRole(role) {
   return state.roles.includes(role)
 }
 
+const isAdmin = () => {
+  if (!state.user) return false
+  const roles = state.roles || []
+  return roles.includes('admin') || state.user.userAccount === 'admin'
+}
+
 function initFromStorage() {
   const savedUser = localStorage.getItem('autoops_user')
   if (savedUser) {
@@ -110,6 +116,7 @@ export const useUserStore = () => {
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,
-    hasRole
+    hasRole,
+    isAdmin
   }
 }

@@ -159,7 +159,16 @@ import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getHostList, getHostById, createHost, updateHost, deleteHost, checkHostConnectivity, batchCheckHostConnectivity, exportHosts } from '../../api/host'
+import {
+  getHostList,
+  getHostById,
+  createHost,
+  updateHost,
+  deleteHost,
+  checkHostConnectivity,
+  exportHosts,
+  batchCheckConnectivity
+} from '../../api/host'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -323,7 +332,7 @@ async function handleBatchCheck() {
   }
   
   try {
-    await batchCheckHostConnectivity(selectedIds.value)
+    await batchCheckConnectivity(selectedIds.value)
     ElMessage.success(locale.value === 'zh' ? '批量连通性测试已发起' : 'Batch connectivity check initiated')
     setTimeout(fetchHosts, 2000)
   } catch (error) {

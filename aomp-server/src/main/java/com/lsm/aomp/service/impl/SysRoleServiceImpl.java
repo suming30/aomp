@@ -54,7 +54,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public Result<List<RoleInfoVO>> listAll() {
         List<SysRole> roles = sysRoleMapper.selectList(
-                new LambdaQueryWrapper<SysRole>().eq(SysRole::getStatus, "enabled").orderByAsc(SysRole::getSortOrder));
+                new LambdaQueryWrapper<SysRole>().eq(SysRole::getStatus, "enabled").orderByAsc(SysRole::getId));
         List<RoleInfoVO> voList = roles.stream().map(this::convertToVO).collect(Collectors.toList());
         return Result.success(voList);
     }

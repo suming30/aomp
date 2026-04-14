@@ -73,7 +73,7 @@
         />
         <div class="avatar-info">
           <span class="avatar-name">{{ userDisplayName }}</span>
-          <span class="avatar-role font-mono">{{ userRoles.length > 0 ? userRoles[0] : t('topbar.roleAdmin') }}</span>
+          <span class="avatar-role font-mono">{{ userRoles.length > 0 ? userRoles[0].roleName : t('topbar.roleAdmin') }}</span>
         </div>
         <span class="material-symbols-outlined avatar-arrow">expand_more</span>
 

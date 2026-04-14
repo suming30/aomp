@@ -144,15 +144,15 @@ const allNavItems = [
 
 const navItems = computed(() => {
   const permissions = userStore.permissions || []
-  const isAdmin = userStore.isAdmin
+  const adminCheck = userStore.isAdmin ? userStore.isAdmin() : false
   
   return allNavItems.filter(item => {
-    if (isAdmin || !item.permission) return true
+    if (adminCheck || !item.permission) return true
     if (!permissions.includes(item.permission)) return false
     
     if (item.children) {
       item.children = item.children.filter(child => {
-        return isAdmin || !child.permission || permissions.includes(child.permission)
+        return adminCheck || !child.permission || permissions.includes(child.permission)
       })
       return item.children.length > 0
     }

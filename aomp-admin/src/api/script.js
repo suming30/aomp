@@ -73,3 +73,18 @@ export function submitScriptAudit(id) {
     method: 'post'
   })
 }
+
+export function publishScript(id) {
+  return request({
+    url: `/scripts/${id}/publish`,
+    method: 'post'
+  })
+}
+
+export function copyScript(id, newName) {
+  return request({
+    url: `/scripts/${id}/copy`,
+    method: 'post',
+    data: { name: newName }
+  })
+}

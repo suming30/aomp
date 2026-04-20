@@ -1,296 +1,269 @@
 <template>
   <div class="group-manage-page">
     <div class="page-header">
-      <!-- <div>
-        <h1 class="page-title">{{ t('groupManage.title') }}</h1>
-        <p class="page-subtitle">{{ t('groupManage.subtitle') }}</p>
-      </div> -->
+      <div>
+        <h1 class="page-title">{{ isZh ? '主机组管理' : 'Host Group Management' }}</h1>
+        <p class="page-subtitle">{{ isZh ? '支持主机组的新增、编辑和删除，自动回退演示数据。' : 'Supports create, edit, and delete with demo fallback.' }}</p>
+      </div>
       <div class="header-actions">
-        <button class="action-btn secondary">
+        <button class="action-btn secondary" @click="reloadGroups">
           <span class="material-symbols-outlined">refresh</span>
-          {{ t('groupManage.syncDynamic') }}
+          {{ isZh ? '刷新' : 'Refresh' }}
         </button>
-        <button class="action-btn primary litho-gradient" @click="showCreateDialog = true">
+        <button class="action-btn primary litho-gradient" @click="openCreateDialog">
           <span class="material-symbols-outlined">add</span>
-          {{ t('groupManage.createGroup') }}
+          {{ isZh ? '新增主机组' : 'Create Group' }}
         </button>
       </div>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-row glass-card">
-      <div class="stat" v-for="(s, idx) in stats" :key="idx">
-        <span class="stat-num font-mono">{{ s.val }}</span>
-        <span class="stat-lbl">{{ s.lbl }}</span>
-      </div>
-    </div>
-
-    <!-- Filter & Search -->
     <div class="filter-bar glass-card">
       <div class="filter-left">
         <div class="search-box">
           <span class="material-symbols-outlined">search</span>
-          <input :placeholder="t('groupManage.searchPlaceholder')" v-model="searchKey" />
+          <input v-model.trim="searchKey" :placeholder="isZh ? '搜索组名、描述、创建人' : 'Search by name, description, creator'" @keyup.enter="reloadGroups" />
         </div>
-        <select class="filter-select" v-model="filterType">
-          <option value="">{{ t('groupManage.allTypes') }}</option>
-          <option value="static">{{ t('groupManage.staticGroup') }}</option>
-          <option value="dynamic">{{ t('groupManage.dynamicGroup') }}</option>
+        <select v-model="filterType" class="filter-select" @change="reloadGroups">
+          <option value="">{{ isZh ? '全部类型' : 'All Types' }}</option>
+          <option value="static">{{ isZh ? '静态组' : 'Static' }}</option>
+          <option value="dynamic">{{ isZh ? '动态组' : 'Dynamic' }}</option>
         </select>
       </div>
-      <span class="result-count font-mono">{{ groups.length }} {{ t('groupManage.totalGroups') }}</span>
+      <span class="result-count font-mono">{{ groups.length }} {{ isZh ? '个主机组' : 'groups' }}</span>
     </div>
 
-    <!-- Group List Cards -->
     <div class="group-list">
-      <div v-for="(g, idx) in groups" :key="idx" class="group-card glass-card">
+      <div v-for="group in groups" :key="group.id" class="group-card glass-card">
         <div class="card-left">
-          <div :class="['type-badge', g.type]">
-            <span class="material-symbols-outlined" style="font-size:14px;">{{ g.type === 'static' ? 'folder' : 'auto_awesome' }}</span>
-            {{ g.typeLabel }}
+          <div :class="['type-badge', group.groupType]">
+            <span class="material-symbols-outlined">{{ group.groupType === 'dynamic' ? 'auto_awesome' : 'folder' }}</span>
+            {{ group.groupType === 'dynamic' ? (isZh ? '动态组' : 'Dynamic') : (isZh ? '静态组' : 'Static') }}
           </div>
-          <div class="group-info">
-            <h3 class="group-name">{{ g.name }}</h3>
-            <p class="group-desc">{{ g.desc }}</p>
-          </div>
+          <h3 class="group-name">{{ group.groupName }}</h3>
+          <p class="group-desc">{{ group.description || '-' }}</p>
         </div>
         <div class="card-center">
-          <div class="info-block">
-            <span class="info-label font-mono">{{ t('groupManage.hostCount') }}</span>
-            <span class="info-value font-mono">{{ g.hostCount }}</span>
-          </div>
-          <div class="info-block">
-            <span class="info-label font-mono">{{ t('groupManage.creator') }}</span>
-            <span class="info-value">{{ g.creator }}</span>
-          </div>
-          <div class="info-block">
-            <span class="info-label font-mono">{{ t('groupManage.updatedAt') }}</span>
-            <span class="info-value font-mono text-sm">{{ g.updatedAt }}</span>
-          </div>
+          <span class="font-mono stat">{{ isZh ? '主机数' : 'Hosts' }}: {{ group.hostCount || 0 }}</span>
+          <span>{{ isZh ? '创建人' : 'Creator' }}: {{ group.createBy || '-' }}</span>
+          <span class="font-mono">{{ formatDate(group.updateTime) }}</span>
         </div>
-        <div class="card-right">
-          <div class="host-avatars">
-            <img v-for="(a, aidx) in g.hostAvatars.slice(0,4)" :key="aidx" :src="a" class="host-avatar-sm" />
-            <span v-if="g.hostCount > 4" class="more-count font-mono">+{{ g.hostCount - 4 }}</span>
-          </div>
-          <div class="card-actions">
-            <button class="icon-btn" :title="t('common.view')"><span class="material-symbols-outlined">visibility</span></button>
-            <button class="icon-btn" :title="t('common.edit')"><span class="material-symbols-outlined">edit</span></button>
-            <button class="icon-btn danger" :title="t('common.delete')"><span class="material-symbols-outlined">delete</span></button>
-          </div>
+        <div class="card-actions">
+          <button class="icon-btn" @click="openEditDialog(group)">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+          <button class="icon-btn danger" @click="handleDelete(group)">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
         </div>
+      </div>
+      <div v-if="groups.length === 0" class="no-data glass-card">
+        {{ isZh ? '暂无主机组数据' : 'No group data' }}
       </div>
     </div>
 
-    <!-- Create Dialog -->
-    <div v-if="showCreateDialog" class="dialog-overlay" @click.self="showCreateDialog = false">
-      <div class="dialog glass-card">
-        <div class="dialog-header">
-          <h3>{{ t('groupManage.createGroup') }}</h3>
-          <button class="close-btn" @click="showCreateDialog = false"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="dialog-body">
-          <div class="form-field">
-            <label>{{ t('groupManage.formName') }}</label>
-            <input type="text" placeholder="" />
-          </div>
-          <div class="form-field">
-            <label>{{ t('groupManage.formType') }}</label>
-            <select><option>静态组</option><option>动态组</option></select>
-          </div>
-          <div class="form-field">
-            <label>{{ t('groupManage.formDesc') }}</label>
-            <textarea rows="2" placeholder=""></textarea>
-          </div>
-          <div class="form-field full">
-            <label>{{ t('groupManage.formSelectHosts') }}</label>
-            <div class="host-select-area">
-              <span class="placeholder-text">点击选择主机...</span>
-              <button class="btn-small"><span class="material-symbols-outlined">add</span> 选择主机</button>
-            </div>
-          </div>
-        </div>
-        <div class="dialog-footer">
-          <button class="btn-cancel" @click="showCreateDialog = false">{{ t('common.cancel') }}</button>
-          <button class="btn-confirm litho-gradient">{{ t('common.confirm') }}</button>
-        </div>
+    <el-dialog v-model="showDialog" :title="editingId ? (isZh ? '编辑主机组' : 'Edit Group') : (isZh ? '新增主机组' : 'Create Group')" width="560px">
+      <div class="form-field">
+        <label>{{ isZh ? '组名称' : 'Group Name' }}</label>
+        <input v-model.trim="formData.groupName" />
       </div>
-    </div>
+      <div class="form-field">
+        <label>{{ isZh ? '组类型' : 'Group Type' }}</label>
+        <select v-model="formData.groupType">
+          <option value="static">{{ isZh ? '静态组' : 'Static' }}</option>
+          <option value="dynamic">{{ isZh ? '动态组' : 'Dynamic' }}</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>{{ isZh ? '主机数量' : 'Host Count' }}</label>
+        <input v-model.number="formData.hostCount" type="number" min="0" />
+      </div>
+      <div class="form-field">
+        <label>{{ isZh ? '描述' : 'Description' }}</label>
+        <textarea v-model.trim="formData.description" rows="3"></textarea>
+      </div>
+      <template #footer>
+        <button class="btn-cancel" @click="showDialog = false">{{ isZh ? '取消' : 'Cancel' }}</button>
+        <button class="btn-confirm litho-gradient" @click="handleSubmit">{{ isZh ? '保存' : 'Save' }}</button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { createHostGroup, deleteHostGroup, getHostGroupList, updateHostGroup } from '../../api/host'
+import { createMockGroup, deleteMockGroup, importMockGroups, listMockGroups, updateMockGroup } from '../../utils/assetMetaMockStore'
 
-const { t } = useI18n()
+const { locale } = useI18n()
+const isZh = computed(() => locale.value === 'zh')
+
+const groups = ref([])
 const searchKey = ref('')
 const filterType = ref('')
-const showCreateDialog = ref(false)
+const showDialog = ref(false)
+const editingId = ref(null)
+const useFallback = ref(false)
 
-const stats = [
-  { val: '8', lbl: t('groupManage.statTotal') },
-  { val: '5', lbl: t('groupManage.statStatic') },
-  { val: '3', lbl: t('groupManage.statDynamic') }
-]
+const formData = reactive({
+  groupName: '',
+  groupType: 'static',
+  hostCount: 0,
+  description: ''
+})
 
-const groups = [
-  { name: 'K8S-PROD-01', desc: '生产环境 K8S 节点组', type: 'static', typeLabel: '静态组', hostCount: 24, creator: 'zhang_san', updatedAt: '2026-04-08', hostAvatars: Array(5).fill('https://ui-avatars.com/api/?name=H&background=0F62FE&color=fff&size=64') },
-  { name: 'DB-Master-Slave', desc: '数据库主从集群', type: 'static', typeLabel: '静态组', hostCount: 6, creator: 'li_si', updatedAt: '2026-04-07', hostAvatars: Array(5).fill('https://ui-avatars.com/api/?name=D&background=C84000&color=fff&size=64') },
-  { name: 'Test-Env-All', desc: '测试环境全量（动态匹配）', type: 'dynamic', typeLabel: '动态组', hostCount: 18, creator: 'admin', updatedAt: '2026-04-06', hostAvatars: Array(5).fill('https://ui-avatars.com/api/?name=T&background=FFB800&color=000&size=64') },
-  { name: 'Beijing-IDC-A', desc: '北京机房 A 区服务器', type: 'static', typeLabel: '静态组', hostCount: 42, creator: 'zhang_san', updatedAt: '2026-04-05', hostAvatars: Array(5).fill('https://ui-avatars.com/api/?name=B&background=0F62FE&color=fff&size=64') },
-  { name: 'CentOS-All', desc: '所有 CentOS 操作系统主机（自动）', type: 'dynamic', typeLabel: '动态组', hostCount: 86, creator: 'system', updatedAt: '2026-04-08', hostAvatars: Array(5).fill('https://ui-avatars.com/api/?name=C&background=333&color=fff&size=64') }
-]
+const formatDate = value => (value ? String(value).replace('T', ' ').slice(0, 19) : '-')
+
+const resetForm = () => {
+  editingId.value = null
+  formData.groupName = ''
+  formData.groupType = 'static'
+  formData.hostCount = 0
+  formData.description = ''
+}
+
+const normalizeGroup = item => ({
+  id: item.id,
+  groupName: item.groupName || item.name || `GROUP-${item.id}`,
+  groupType: item.groupType || item.type || 'static',
+  description: item.description || item.desc || '',
+  hostCount: item.hostCount || 0,
+  createBy: item.createBy || item.creator || '-',
+  updateTime: item.updateTime || item.updatedAt
+})
+
+const loadFallback = () => {
+  useFallback.value = true
+  groups.value = listMockGroups({
+    keyword: searchKey.value,
+    groupType: filterType.value
+  }).map(normalizeGroup)
+}
+
+const reloadGroups = async () => {
+  if (useFallback.value) {
+    loadFallback()
+    return
+  }
+  try {
+    const res = await getHostGroupList({
+      keyword: searchKey.value,
+      groupType: filterType.value
+    })
+    groups.value = (res.data.records || res.data || []).map(normalizeGroup)
+  } catch (error) {
+    console.error('Failed to fetch groups:', error)
+    importMockGroups()
+    loadFallback()
+    ElMessage.warning(isZh.value ? '主机组接口暂不可用，已切换演示数据。' : 'Group API unavailable, switched to demo data.')
+  }
+}
+
+const openCreateDialog = () => {
+  resetForm()
+  showDialog.value = true
+}
+
+const openEditDialog = group => {
+  editingId.value = group.id
+  formData.groupName = group.groupName
+  formData.groupType = group.groupType || 'static'
+  formData.hostCount = group.hostCount || 0
+  formData.description = group.description || ''
+  showDialog.value = true
+}
+
+const handleSubmit = async () => {
+  if (!formData.groupName) {
+    ElMessage.warning(isZh.value ? '请填写组名称。' : 'Group name is required.')
+    return
+  }
+  const payload = {
+    groupName: formData.groupName,
+    groupType: formData.groupType,
+    hostCount: formData.hostCount,
+    description: formData.description
+  }
+  try {
+    if (useFallback.value) {
+      if (editingId.value) {
+        updateMockGroup(editingId.value, payload)
+      } else {
+        createMockGroup(payload)
+      }
+    } else if (editingId.value) {
+      await updateHostGroup(editingId.value, payload)
+    } else {
+      await createHostGroup(payload)
+    }
+    ElMessage.success(isZh.value ? '主机组已保存。' : 'Group saved.')
+    showDialog.value = false
+    resetForm()
+    await reloadGroups()
+  } catch (error) {
+    console.error('Failed to save group:', error)
+    ElMessage.error(isZh.value ? '保存失败。' : 'Save failed.')
+  }
+}
+
+const handleDelete = async group => {
+  try {
+    await ElMessageBox.confirm(
+      isZh.value ? `确认删除主机组 ${group.groupName}？` : `Delete group ${group.groupName}?`,
+      isZh.value ? '确认删除' : 'Confirm',
+      { type: 'warning' }
+    )
+    if (useFallback.value) {
+      deleteMockGroup(group.id)
+    } else {
+      await deleteHostGroup(group.id)
+    }
+    ElMessage.success(isZh.value ? '删除成功。' : 'Deleted.')
+    await reloadGroups()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to delete group:', error)
+      ElMessage.error(isZh.value ? '删除失败。' : 'Delete failed.')
+    }
+  }
+}
+
+reloadGroups()
 </script>
 
 <style scoped>
 .group-manage-page { padding: 32px; max-width: 1600px; margin: 0 auto; }
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.page-title { font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -0.02em; }
-.page-subtitle { font-size: 12px; color: var(--on-surface-variant); margin-top: 4px; }
-
+.page-header { display: flex; justify-content: space-between; align-items: center; }
+.page-title { font-size: 26px; font-weight: 900; color: #fff; }
+.page-subtitle { color: var(--on-surface-variant); margin-top: 6px; font-size: 12px; }
 .header-actions { display: flex; gap: 8px; }
-.action-btn {
-  padding: 9px 18px; border-radius: 8px; border: none;
-  font-family: var(--font-label); font-size: 11px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  cursor: pointer; display: flex; align-items: center; gap: 6px;
-}
+.action-btn { padding: 9px 16px; border: none; border-radius: 8px; cursor: pointer; display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 700; }
 .action-btn.secondary { background: var(--bg-surface-high); color: #fff; border: 1px solid rgba(66,70,86,0.1); }
-.action-btn.primary { color: var(--on-primary-container); box-shadow: 0 4px 15px rgba(15,98,254,0.25); }
-
-.stats-row {
-  display: flex; gap: 40px; padding: 18px 24px; margin-top: 20px; align-items: center;
-}
-.stat { display: flex; flex-direction: column; gap: 2px; }
-.stat-num { font-size: 28px; font-weight: 900; color: #fff; }
-.stat-lbl { font-size: 10px; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.08em; }
-
-.filter-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; margin-top: 16px; }
-.filter-left { display: flex; gap: 12px; align-items: center; }
-.search-box {
-  display: flex; align-items: center; background: var(--bg-base);
-  border-radius: 9999px; padding: 7px 14px; gap: 8px;
-  border: 1px solid rgba(66,70,86,0.1); min-width: 240px;
-}
-.search-box .material-symbols-outlined { font-size: 16px; color: var(--outline); }
-.search-box input { background: transparent; border: none; outline: none; color: #fff; font-size: 12px; flex: 1; }
-.filter-select {
-  background: var(--bg-base); border: 1px solid rgba(66,70,86,0.1);
-  border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 12px; outline: none;
-}
-.filter-select option { background: var(--bg-surface-container); }
-.result-count { font-size: 11px; color: var(--on-surface-variant); }
-
+.action-btn.primary { color: #fff; }
+.filter-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; margin-top: 18px; border-radius: 12px; }
+.filter-left { display: flex; gap: 10px; align-items: center; }
+.search-box { display: flex; align-items: center; gap: 8px; border: 1px solid rgba(66,70,86,0.1); border-radius: 9999px; padding: 8px 12px; min-width: 280px; }
+.search-box input { background: transparent; border: none; color: #fff; outline: none; width: 100%; }
+.filter-select { background: var(--bg-base); color: #fff; border: 1px solid rgba(66,70,86,0.1); border-radius: 8px; padding: 8px 12px; }
 .group-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-
-.group-card {
-  display: grid; grid-template-columns: 320px 1fr auto; gap: 20px;
-  align-items: center; padding: 18px 22px; border-radius: 12px;
-  transition: all 0.15s ease;
-}
-.group-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
-
-.card-left { display: flex; flex-direction: column; gap: 10px; }
-.type-badge {
-  display: inline-flex; align-items: center; gap: 6px; width: fit-content;
-  padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700;
-  letter-spacing: 0.05em; text-transform: uppercase;
-}
-.type-badge.static { background: rgba(15,98,254,0.1); color: var(--primary-container); }
-.type-badge.dynamic { background: rgba(255,184,0,0.1); color: #FFB800; }
-.group-name { font-size: 15px; font-weight: 800; color: #fff; }
-.group-desc { font-size: 11px; color: var(--on-surface-variant); line-height: 1.45; }
-
-.card-center { display: flex; gap: 32px; }
-.info-block { display: flex; flex-direction: column; gap: 2px; }
-.info-label { font-size: 9px; color: var(--outline); text-transform: uppercase; letter-spacing: 0.1em; }
-.info-value { font-size: 12px; color: #fff; font-weight: 600; }
-.text-sm { font-size: 11px !important; }
-
-.card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-.host-avatars { display: flex; align-items: center; }
-.host-avatar-sm {
-  width: 26px; height: 26px; border-radius: 6px;
-  border: 2px solid var(--bg-surface-low); object-fit: cover;
-  margin-right: -6px;
-}
-.more-count { font-size: 9px; color: var(--on-surface-variant); margin-left: 8px; }
-.card-actions { display: flex; gap: 6px; }
-.icon-btn {
-  width: 30px; height: 30px; border-radius: 7px; border: none;
-  background: var(--bg-surface-high); color: var(--on-surface-variant);
-  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-}
-.icon-btn .material-symbols-outlined { font-size: 16px !important; }
-.icon-btn:hover:not(.danger) { background: var(--primary-container); color: #fff; }
+.group-card { display: grid; grid-template-columns: 2fr 1.5fr auto; gap: 12px; padding: 16px 18px; border-radius: 12px; align-items: center; }
+.type-badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; padding: 3px 10px; font-size: 10px; font-weight: 700; width: fit-content; margin-bottom: 8px; }
+.type-badge.static { color: var(--primary-container); background: rgba(15,98,254,0.12); }
+.type-badge.dynamic { color: #FFB800; background: rgba(255,184,0,0.12); }
+.group-name { color: #fff; font-size: 14px; font-weight: 700; }
+.group-desc { color: var(--on-surface-variant); margin-top: 4px; font-size: 12px; }
+.card-center { display: flex; flex-direction: column; gap: 6px; color: var(--on-surface-variant); font-size: 12px; }
+.stat { color: #fff; font-weight: 700; }
+.card-actions { display: flex; gap: 8px; }
+.icon-btn { width: 30px; height: 30px; border: none; border-radius: 7px; background: var(--bg-surface-high); color: var(--on-surface-variant); cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .icon-btn.danger:hover { background: var(--error); color: #fff; }
-
-/* Dialog */
-.dialog-overlay {
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
-}
-.dialog { width: 520px; max-height: 85vh; overflow-y: auto; border-radius: 16px; }
-.dialog-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 20px 24px 16px; border-bottom: 1px solid rgba(66,70,86,0.08);
-}
-.dialog-header h3 { font-size: 16px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.03em; }
-.close-btn {
-  width: 32px; height: 32px; border-radius: 8px; border: none;
-  background: var(--bg-surface-high); color: var(--on-surface-variant);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.close-btn .material-symbols-outlined { font-size: 18px !important; }
-.dialog-body { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
-.form-field { display: flex; flex-direction: column; gap: 6px; }
-.form-field.full { grid-column: span 2; }
-.form-field label {
-  font-size: 10px; font-weight: 700; color: var(--on-surface-variant);
-  text-transform: uppercase; letter-spacing: 0.08em;
-}
-.form-field input,
-.form-field select,
-.form-field textarea {
-  background: var(--bg-base); border: 1px solid var(--outline-variant);
-  border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px;
-  outline: none; font-family: var(--font-body);
-}
-.form-field select option { background: var(--bg-surface-container); }
-.form-field textarea { resize: vertical; }
-
-.host-select-area {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px; border: 1px dashed var(--outline-variant); border-radius: 8px;
-  background: var(--bg-base);
-}
-.placeholder-text { font-size: 12px; color: var(--outline); }
-.btn-small {
-  padding: 6px 14px; border-radius: 6px; border: none;
-  background: var(--primary-container); color: #fff; font-size: 11px;
-  font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;
-}
-
-.dialog-footer {
-  display: flex; justify-content: flex-end; gap: 10px;
-  padding: 16px 24px; border-top: 1px solid rgba(66,70,86,0.08);
-}
-.btn-cancel {
-  padding: 9px 22px; border-radius: 8px; border: 1px solid rgba(66,70,86,0.15);
-  background: transparent; color: var(--on-surface-variant); font-size: 12px; font-weight: 600; cursor: pointer;
-}
-.btn-confirm {
-  padding: 9px 28px; border-radius: 8px; border: none;
-  color: var(--on-primary-container); font-size: 12px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer;
-  box-shadow: 0 4px 15px rgba(15,98,254,0.25);
-}
+.icon-btn:hover { background: var(--primary-container); color: #fff; }
+.no-data { text-align: center; padding: 44px; color: var(--on-surface-variant); border-radius: 12px; }
+.form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.form-field label { font-size: 11px; color: var(--on-surface-variant); }
+.form-field input, .form-field select, .form-field textarea { background: var(--bg-base); color: #fff; border: 1px solid var(--outline-variant); border-radius: 8px; padding: 9px 12px; outline: none; }
+.btn-cancel, .btn-confirm { border-radius: 8px; border: none; padding: 8px 18px; cursor: pointer; }
+.btn-cancel { background: transparent; color: var(--on-surface-variant); border: 1px solid var(--outline-variant); }
+.btn-confirm { color: #fff; }
 </style>

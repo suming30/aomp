@@ -2,74 +2,57 @@
   <div class="task-log-page">
     <div class="page-header">
       <div>
-        <h1 class="page-title">{{ t('tasks.realTimeLog') }}</h1>
-        <p class="page-subtitle font-mono">Task ID: EXEC-2024-001 | Started at 2024-05-24 14:32:01 UTC+8</p>
+        <h1 class="page-title">{{ isZh ? '实时日志' : 'Real-time Log' }}</h1>
+        <p class="page-subtitle font-mono">
+          {{ isZh ? '任务ID' : 'Task ID' }}: {{ taskId }}
+          |
+          {{ isZh ? '状态' : 'Status' }}: {{ taskInfo.status || '-' }}
+        </p>
       </div>
       <div class="header-actions">
-        <button class="action-btn warning">
-          <span class="material-symbols-outlined">pause_circle</span>
-          {{ t('tasks.pause') }}
-        </button>
-        <button class="action-btn danger">
-          <span class="material-symbols-outlined">stop_circle</span>
-          {{ t('tasks.stop') }}
-        </button>
-        <button class="action-btn primary litho-gradient">
-          <span class="material-symbols-outlined">download</span>
-          {{ t('tasks.exportLog') }}
-        </button>
+        <button class="action-btn warning" @click="pauseCurrentTask">{{ isZh ? '暂停' : 'Pause' }}</button>
+        <button class="action-btn danger" @click="terminateCurrentTask">{{ isZh ? '终止' : 'Stop' }}</button>
       </div>
     </div>
 
     <div class="progress-bar-wrap">
       <div class="progress-info">
-        <span class="progress-label">Progress</span>
-        <span class="progress-value font-mono">7/12 nodes completed</span>
+        <span>{{ isZh ? '进度' : 'Progress' }}</span>
+        <span class="font-mono">{{ progressSummary }}</span>
       </div>
       <div class="progress-track">
-        <div class="progress-fill success" style="width: 58%"></div>
-        <div class="progress-fill running" style="width: 17%; left: 58%"></div>
-      </div>
-      <div class="progress-stats">
-        <span><span class="stat-dot green"></span> Success: 7</span>
-        <span><span class="stat-dot blue"></span> Running: 2</span>
-        <span><span class="stat-dot gray"></span> Pending: 3</span>
+        <div class="progress-fill success" :style="{ width: `${successPercent}%` }"></div>
+        <div class="progress-fill running" :style="{ width: `${runningPercent}%`, left: `${successPercent}%` }"></div>
       </div>
     </div>
 
     <div class="log-layout">
-      <aside class="node-list-panel">
-        <h4 class="panel-title">Target Nodes</h4>
-        <div class="node-list">
-          <div v-for="(node, idx) in nodeList" :key="idx"
-               :class="['node-item', `status-${node.status}`]"
-               @click="activeNode = idx">
-            <span class="node-status-dot"></span>
-            <span class="node-ip font-mono">{{ node.ip }}</span>
-            <span class="node-time font-mono">{{ node.time }}</span>
-          </div>
-        </div>
+      <aside class="host-list">
+        <h3>{{ isZh ? '目标主机' : 'Target Hosts' }}</h3>
+        <button
+          v-for="item in hostSummary"
+          :key="item.hostId"
+          :class="['host-item', { active: selectedHostId === item.hostId }]"
+          @click="selectHost(item.hostId)"
+        >
+          <span class="font-mono">{{ item.hostIp }}</span>
+          <span :class="['tag', item.status]">{{ item.statusLabel }}</span>
+        </button>
       </aside>
-
-      <main class="log-viewer">
-        <div class="log-toolbar">
-          <div class="toolbar-left">
-            <span class="log-node-label font-mono">{{ activeNodeData.ip }} — {{ activeNodeData.statusLabel }}</span>
-          </div>
-          <div class="toolbar-right">
-            <button class="tool-btn"><span class="material-symbols-outlined">search</span></button>
-            <button class="tool-btn"><span class="material-symbols-outlined">content_copy</span></button>
-            <button class="tool-btn"><span class="material-symbols-outlined">expand_more</span></button>
-          </div>
+      <main class="log-content">
+        <div class="toolbar">
+          <span class="font-mono">{{ isZh ? '筛选主机' : 'Host Filter' }}: {{ selectedHostLabel }}</span>
+          <button class="tool-btn" @click="reloadLogs">{{ isZh ? '刷新' : 'Refresh' }}</button>
         </div>
-
-        <div class="log-content font-mono" ref="logContentRef">
-          <div v-for="(line, idx) in logLines" :key="idx" :class="['log-line', line.type]">
-            <span class="line-timestamp">{{ line.time }}</span>
-            <span class="line-level">[{{ line.level }}]</span>
-            <span class="line-message">{{ line.msg }}</span>
+        <div v-loading="loading" class="log-lines">
+          <div v-for="line in logLines" :key="line.id" :class="['log-line', line.logTypeClass]">
+            <span class="line-time">{{ formatDate(line.createTime) }}</span>
+            <span class="line-level">[{{ line.logType }}]</span>
+            <span class="line-msg">{{ line.content }}</span>
           </div>
-          <div class="log-line prompt"><span class="cursor-blink">▌</span></div>
+          <div v-if="logLines.length === 0 && !loading" class="empty-line">
+            {{ isZh ? '暂无日志数据' : 'No log lines' }}
+          </div>
         </div>
       </main>
     </div>
@@ -77,248 +60,202 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { ElMessage } from 'element-plus'
+import { getTaskById, getTaskLogs, pauseTask, terminateTask } from '../../api/task'
+import { getMockTaskById, getMockTaskLogs, resetMockTasks } from '../../utils/taskMockStore'
 
-const { t } = useI18n()
-const activeNode = ref(0)
-const logContentRef = ref(null)
+const { locale } = useI18n()
+const isZh = computed(() => locale.value === 'zh')
+const route = useRoute()
 
-const nodeList = [
-  { ip: '192.168.1.100', status: 'success', time: '14:32:05', statusLabel: 'SUCCESS' },
-  { ip: '192.168.1.101', status: 'success', time: '14:32:07', statusLabel: 'SUCCESS' },
-  { ip: '192.168.1.102', status: 'success', time: '14:32:09', statusLabel: 'SUCCESS' },
-  { ip: '192.168.1.103', status: 'success', time: '14:32:11', statusLabel: 'SUCCESS' },
-  { ip: '192.168.1.104', status: 'success', time: '14:32:14', statusLabel: 'SUCCESS' },
-  { ip: '192.168.1.105', status: 'success', time: '14:32:16', statusLabel: 'SUCCESS' },
-  { ip: '192.168.1.106', status: 'success', time: '14:32:19', statusLabel: 'SUCCESS' },
-  { ip: '192.168.1.107', status: 'running', time: 'Running...', statusLabel: 'RUNNING' },
-  { ip: '192.168.1.108', status: 'running', time: 'Running...', statusLabel: 'RUNNING' },
-  { ip: '192.168.1.109', status: 'pending', time: '--:--:--', statusLabel: 'PENDING' },
-  { ip: '192.168.1.110', status: 'pending', time: '--:--:--', statusLabel: 'PENDING' },
-  { ip: '192.168.1.111', status: 'pending', time: '--:--:--', statusLabel: 'PENDING' }
-]
+const taskId = computed(() => route.params.id)
+const loading = ref(false)
+const useFallback = ref(false)
 
-const activeNodeData = computed(() => nodeList[activeNode.value])
+const taskInfo = ref({
+  totalHosts: 0,
+  successHosts: 0,
+  runningHosts: 0,
+  failHosts: 0,
+  status: ''
+})
+const logLines = ref([])
+const hostSummary = ref([])
+const selectedHostId = ref(null)
 
-const logLines = [
-  { time: '14:32:01', level: 'INFO', msg: 'Connecting to target node...', type: 'info' },
-  { time: '14:32:01', level: 'INFO', msg: 'SSH connection established (ed25519)', type: 'info' },
-  { time: '14:32:02', level: 'INFO', msg: 'Loading script: deploy_k8s_node.sh v2.4.1', type: 'info' },
-  { time: '14:32:03', level: 'INFO', msg: 'Validating environment variables...', type: 'info' },
-  { time: '14:32:03', level: 'OK', msg: 'NODE_GROUP=K8S-PROD-01 ✓', type: 'success' },
-  { time: '14:32:04', level: 'INFO', msg: 'Executing preflight checks...', type: 'info' },
-  { time: '14:32:04', level: 'OK', msg: 'kubectl version: v1.29.0 ✓', type: 'success' },
-  { time: '14:32:05', level: 'OK', msg: 'kubeconfig valid ✓', type: 'success' },
-  { time: '14:32:05', level: 'INFO', msg: 'Applying manifest: node-config.yaml', type: 'info' },
-  { time: '14:32:08', level: 'OK', msg: 'deployment.apps/k8s-worker created', type: 'success' },
-  { time: '14:32:09', level: 'OK', msg: 'service/k8s-worker-svc created', type: 'success' },
-  { time: '14:32:10', level: 'OK', msg: 'configmap/app-config created', type: 'success' },
-  { time: '14:32:11', level: 'INFO', msg: 'Waiting for rollout to complete...', type: 'info' },
-  { time: '14:32:15', level: 'OK', msg: 'Rollout completed successfully.', type: 'success' },
-  { time: '14:32:15', level: 'INFO', msg: 'Post-deployment health check passed.', type: 'info' },
-  { time: '14:32:16', level: 'DONE', msg: 'Execution completed on 192.168.1.100 — Exit code: 0', type: 'success' }
-]
+const totalHosts = computed(() => Number(taskInfo.value.totalHosts || 0))
+const successPercent = computed(() => totalHosts.value ? Math.round((Number(taskInfo.value.successHosts || 0) / totalHosts.value) * 100) : 0)
+const runningPercent = computed(() => totalHosts.value ? Math.round((Number(taskInfo.value.runningHosts || 0) / totalHosts.value) * 100) : 0)
+const progressSummary = computed(() =>
+  `${taskInfo.value.successHosts || 0}/${taskInfo.value.totalHosts || 0} ${isZh.value ? '已完成' : 'completed'}`
+)
+
+const selectedHostLabel = computed(() => {
+  if (!selectedHostId.value) {
+    return isZh.value ? '全部主机' : 'All Hosts'
+  }
+  const host = hostSummary.value.find(item => item.hostId === selectedHostId.value)
+  return host?.hostIp || String(selectedHostId.value)
+})
+
+const formatDate = value => (value ? String(value).replace('T', ' ').slice(0, 19) : '-')
+
+const mapLogTypeClass = type => {
+  const lower = String(type || '').toLowerCase()
+  if (lower.includes('error')) return 'error'
+  if (lower.includes('success')) return 'success'
+  return 'info'
+}
+
+const mapTaskInfo = task => ({
+  totalHosts: task?.totalHosts || 0,
+  successHosts: task?.successHosts || 0,
+  runningHosts: task?.runningHosts || 0,
+  failHosts: task?.failHosts || 0,
+  status: task?.status || '-'
+})
+
+const buildHostSummary = records => {
+  const grouped = new Map()
+  records.forEach(item => {
+    const hostId = item.hostId || 0
+    if (!grouped.has(hostId)) {
+      grouped.set(hostId, {
+        hostId,
+        hostIp: item.hostIp || `HOST-${hostId}`,
+        status: 'info',
+        statusLabel: 'RUNNING'
+      })
+    }
+    if (String(item.logType || '').toLowerCase().includes('error')) {
+      grouped.get(hostId).status = 'error'
+      grouped.get(hostId).statusLabel = 'FAILED'
+    }
+    if (String(item.logType || '').toLowerCase().includes('success')) {
+      grouped.get(hostId).status = 'success'
+      grouped.get(hostId).statusLabel = 'SUCCESS'
+    }
+  })
+  hostSummary.value = [...grouped.values()]
+}
+
+const loadFallback = () => {
+  useFallback.value = true
+  const task = getMockTaskById(taskId.value)
+  taskInfo.value = mapTaskInfo(task || {})
+  const logRes = getMockTaskLogs({
+    taskId: taskId.value,
+    hostId: selectedHostId.value,
+    pageNum: 1,
+    pageSize: 200
+  })
+  logLines.value = logRes.records.map(item => ({
+    ...item,
+    logTypeClass: mapLogTypeClass(item.logType)
+  }))
+  buildHostSummary(logRes.records)
+}
+
+const reloadLogs = async () => {
+  loading.value = true
+  try {
+    if (useFallback.value) {
+      loadFallback()
+      return
+    }
+    const [taskRes, logRes] = await Promise.all([
+      getTaskById(taskId.value),
+      getTaskLogs(taskId.value, {
+        hostId: selectedHostId.value,
+        pageNum: 1,
+        pageSize: 200
+      })
+    ])
+    taskInfo.value = mapTaskInfo(taskRes.data || {})
+    const records = logRes.data.records || []
+    logLines.value = records.map(item => ({
+      ...item,
+      hostIp: `HOST-${item.hostId}`,
+      logTypeClass: mapLogTypeClass(item.logType)
+    }))
+    buildHostSummary(records.map(item => ({ ...item, hostIp: `HOST-${item.hostId}` })))
+  } catch (error) {
+    console.error('Failed to load task logs:', error)
+    resetMockTasks()
+    loadFallback()
+    ElMessage.warning(isZh.value ? '任务日志接口异常，已切换演示数据。' : 'Task log API unavailable, switched to demo data.')
+  } finally {
+    loading.value = false
+  }
+}
+
+const selectHost = hostId => {
+  selectedHostId.value = selectedHostId.value === hostId ? null : hostId
+  reloadLogs()
+}
+
+const pauseCurrentTask = async () => {
+  if (useFallback.value) {
+    ElMessage.info(isZh.value ? '演示模式下不执行真实暂停。' : 'Demo mode: pause is simulated.')
+    return
+  }
+  await pauseTask(taskId.value)
+  ElMessage.success(isZh.value ? '任务已暂停。' : 'Task paused.')
+  reloadLogs()
+}
+
+const terminateCurrentTask = async () => {
+  if (useFallback.value) {
+    ElMessage.info(isZh.value ? '演示模式下不执行真实终止。' : 'Demo mode: terminate is simulated.')
+    return
+  }
+  await terminateTask(taskId.value)
+  ElMessage.success(isZh.value ? '任务已终止。' : 'Task terminated.')
+  reloadLogs()
+}
+
+onMounted(() => {
+  reloadLogs()
+})
 </script>
 
 <style scoped>
-.task-log-page {
-  padding: 32px;
-  height: calc(100vh - 94px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.page-title {
-  font-size: 24px; font-weight: 900; color: #fff;
-  text-transform: uppercase; letter-spacing: -0.02em;
-}
-.page-subtitle { font-size: 11px; color: var(--on-surface-variant); margin-top: 4px; }
-
+.task-log-page { padding: 32px; height: calc(100vh - 94px); display: flex; flex-direction: column; }
+.page-header { display: flex; justify-content: space-between; align-items: center; }
+.page-title { font-size: 24px; color: #fff; font-weight: 900; }
+.page-subtitle { margin-top: 6px; color: var(--on-surface-variant); font-size: 11px; }
 .header-actions { display: flex; gap: 8px; }
-
-.progress-bar-wrap {
-  background: var(--bg-surface-container-low);
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-top: 20px;
-}
-
-.progress-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-.progress-label { font-size: 10px; font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; }
-.progress-value { font-size: 11px; color: #fff; font-weight: 600; }
-
-.progress-track {
-  height: 6px;
-  background: var(--bg-base);
-  border-radius: 3px;
-  position: relative;
-  overflow: hidden;
-}
-.progress-fill {
-  position: absolute;
-  top: 0; height: 100%;
-  border-radius: 3px;
-  transition: width 0.3s ease;
-}
+.action-btn { border: none; border-radius: 8px; padding: 9px 14px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.action-btn.warning { background: #6a4f00; }
+.action-btn.danger { background: #7a1a1a; }
+.progress-bar-wrap { margin-top: 16px; background: var(--bg-surface-container-low); padding: 12px 16px; border-radius: 10px; }
+.progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--on-surface-variant); }
+.progress-track { margin-top: 8px; height: 6px; background: var(--bg-base); border-radius: 9999px; position: relative; overflow: hidden; }
+.progress-fill { position: absolute; top: 0; height: 100%; }
 .progress-fill.success { background: var(--primary-container); }
-.progress-fill.running {
-  background: linear-gradient(90deg, transparent, var(--primary-container));
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% { opacity: 0.4; }
-  50% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
-
-.progress-stats {
-  display: flex;
-  gap: 20px;
-  margin-top: 8px;
-  font-size: 10px;
-  color: var(--on-surface-variant);
-}
-.stat-dot {
-  display: inline-block;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  margin-right: 4px;
-}
-.stat-dot.green { background: var(--primary-container); }
-.stat-dot.blue { background: #FFB800; }
-.stat-dot.gray { background: var(--outline); }
-
-.log-layout {
-  display: flex;
-  flex: 1;
-  gap: 0;
-  margin-top: 20px;
-  min-height: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(66, 70, 86, 0.06);
-}
-
-.node-list-panel {
-  width: 240px;
-  background: var(--bg-surface-container-low);
-  border-right: 1px solid rgba(66, 70, 86, 0.08);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.panel-title {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--on-surface-variant);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  padding: 16px 16px 12px;
-}
-
-.node-list { display: flex; flex-direction: column; }
-
-.node-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  cursor: pointer;
-  transition: all 0.15s;
-  border-left: 3px solid transparent;
-}
-.node-item:hover { background: var(--bg-surface-high); }
-.node-item.status-success { border-left-color: var(--primary-container); }
-.node-item.status-running { border-left-color: #FFB800; background: rgba(255, 184, 0, 0.03); }
-.node-item.status-pending { border-left-color: var(--outline); }
-
-.node-status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.status-success .node-status-dot { background: var(--primary-container); }
-.status-running .node-status-dot { background: #FFB800; animation: pulse-glow 1.5s infinite; }
-.status-pending .node-status-dot { background: var(--outline); }
-
-.node-ip { font-size: 11px; color: #fff; font-weight: 500; flex: 1; }
-.node-time { font-size: 9px; color: var(--on-surface-variant); }
-
-.log-viewer {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: #0a0a0a;
-  min-width: 0;
-}
-
-.log-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  background: var(--bg-surface-container);
-  border-bottom: 1px solid rgba(66, 70, 86, 0.08);
-}
-
-.log-node-label { font-size: 11px; color: var(--primary-container); font-weight: 600; }
-
-.toolbar-right { display: flex; gap: 4px; }
-
-.tool-btn {
-  width: 30px; height: 30px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 6px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--on-surface-variant);
-  transition: all 0.15s;
-}
-.tool-btn:hover { background: var(--bg-surface-high); color: #fff; }
-.tool-btn .material-symbols-outlined { font-size: 16px; }
-
-.log-content {
-  flex: 1;
-  padding: 16px 20px;
-  overflow-y: auto;
-  font-size: 11.5px;
-  line-height: 1.75;
-}
-
-.log-line { display: flex; gap: 6px; padding: 1px 0; }
-
-.line-timestamp {
-  color: var(--outline);
-  opacity: 0.5;
-  user-select: none;
-  min-width: 72px;
-}
-.line-level {
-  font-weight: 700;
-  min-width: 52px;
-  user-select: none;
-}
-.line-msg { color: var(--on-surface); word-break: break-all; }
-
+.progress-fill.running { background: #FFB800; }
+.log-layout { margin-top: 16px; display: grid; grid-template-columns: 280px 1fr; gap: 12px; min-height: 0; flex: 1; }
+.host-list { background: var(--bg-surface-container-low); border-radius: 10px; padding: 12px; overflow-y: auto; }
+.host-list h3 { color: #fff; font-size: 12px; margin-bottom: 8px; }
+.host-item { width: 100%; border: none; border-radius: 8px; background: var(--bg-base); color: #fff; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.host-item.active { outline: 1px solid var(--primary-container); }
+.tag { font-size: 10px; padding: 2px 6px; border-radius: 9999px; }
+.tag.success { background: rgba(15,98,254,0.12); color: var(--primary-container); }
+.tag.error { background: rgba(147,0,10,0.15); color: var(--error); }
+.tag.info { background: rgba(120,120,120,0.2); color: var(--on-surface-variant); }
+.log-content { background: #0a0a0a; border-radius: 10px; display: flex; flex-direction: column; min-height: 0; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid rgba(66,70,86,0.08); color: var(--on-surface-variant); }
+.tool-btn { background: transparent; border: 1px solid rgba(66,70,86,0.1); color: var(--on-surface-variant); border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+.log-lines { overflow-y: auto; padding: 12px; font-size: 12px; }
+.log-line { display: grid; grid-template-columns: 170px 90px 1fr; gap: 8px; margin-bottom: 4px; }
+.line-time { color: var(--outline); }
+.line-level { font-weight: 700; }
 .log-line.info .line-level { color: var(--on-surface-variant); }
 .log-line.success .line-level { color: var(--primary-container); }
-.log-line.warn .line-level { color: #FFB800; }
 .log-line.error .line-level { color: var(--error); }
-.log-line.prompt .line-msg { color: var(--primary); }
-
-.cursor-blink {
-  animation: blink 1s step-end infinite;
-}
-@keyframes blink {
-  50% { opacity: 0; }
-}
+.line-msg { color: #ddd; word-break: break-word; }
+.empty-line { color: var(--on-surface-variant); padding: 18px 0; }
 </style>

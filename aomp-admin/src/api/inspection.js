@@ -63,6 +63,21 @@ export function getInspectionTasks(params) {
   })
 }
 
+export function getInspectionTaskById(id) {
+  return request({
+    url: `/inspections/tasks/${id}`,
+    method: 'get'
+  })
+}
+
+export function getInspectionTaskResults(taskId, params) {
+  return request({
+    url: `/inspections/tasks/${taskId}/results`,
+    method: 'get',
+    params
+  })
+}
+
 export function getInspectionReportList(params) {
   return request({
     url: '/inspections/reports',
